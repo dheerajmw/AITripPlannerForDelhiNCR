@@ -1,0 +1,6 @@
+[out:json][timeout:90];
+(
+  node["amenity"~"^(bar|pub|biergarten|nightclub)$"]({{bbox}});
+  way["amenity"~"^(bar|pub|biergarten|nightclub)$"]({{bbox}});
+);
+out center;

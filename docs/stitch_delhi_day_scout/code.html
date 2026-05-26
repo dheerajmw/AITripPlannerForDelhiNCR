@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Delhi AI Trip Planner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #151024;
+            scroll-behavior: smooth;
+        }
+        .mesh-gradient {
+            background: radial-gradient(at 0% 0%, rgba(157, 80, 187, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(93, 217, 208, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(237, 177, 255, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 0% 100%, rgba(0, 162, 154, 0.1) 0px, transparent 50%);
+        }
+        .pulsing-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: .4; transform: scale(1.2); }
+        }
+        .travel-line-connector {
+            position: absolute;
+            left: 24px;
+            top: 40px;
+            bottom: -24px;
+            width: 2px;
+            background: linear-gradient(to bottom, #9d50bb, transparent);
+            z-index: 0;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#690005",
+                      "on-primary": "#520070",
+                      "secondary": "#5dd9d0",
+                      "on-tertiary-fixed": "#270057",
+                      "on-secondary-container": "#00302d",
+                      "secondary-container": "#00a29a",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#573092",
+                      "surface-container-low": "#1d182d",
+                      "outline": "#9a8c9b",
+                      "tertiary": "#d6baff",
+                      "on-secondary-fixed-variant": "#00504c",
+                      "secondary-fixed-dim": "#5dd9d0",
+                      "on-error-container": "#ffdad6",
+                      "primary": "#edb1ff",
+                      "on-primary-fixed-variant": "#6e208c",
+                      "on-primary-fixed": "#320046",
+                      "inverse-primary": "#883ca6",
+                      "surface-container-highest": "#373247",
+                      "surface-tint": "#edb1ff",
+                      "on-background": "#e7defb",
+                      "inverse-on-surface": "#322d43",
+                      "inverse-surface": "#e7defb",
+                      "on-surface-variant": "#d1c2d2",
+                      "tertiary-fixed": "#ecdcff",
+                      "primary-fixed": "#f9d8ff",
+                      "secondary-fixed": "#7cf6ec",
+                      "on-primary-container": "#fff3fd",
+                      "on-tertiary-container": "#fcf4ff",
+                      "tertiary-fixed-dim": "#d6baff",
+                      "surface": "#151024",
+                      "surface-container-high": "#2c273c",
+                      "surface-variant": "#373247",
+                      "on-secondary-fixed": "#00201e",
+                      "surface-bright": "#3b364c",
+                      "on-secondary": "#003734",
+                      "surface-container": "#211d31",
+                      "on-tertiary": "#40147a",
+                      "error": "#ffb4ab",
+                      "surface-container-lowest": "#100b1f",
+                      "on-surface": "#e7defb",
+                      "surface-dim": "#151024",
+                      "background": "#151024",
+                      "outline-variant": "#4e4350",
+                      "tertiary-container": "#835dc0",
+                      "primary-container": "#9d50bb",
+                      "primary-fixed-dim": "#edb1ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "2xl": "1rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "8px",
+                      "margin-mobile": "20px",
+                      "md": "24px",
+                      "lg": "40px",
+                      "margin-desktop": "120px",
+                      "sm": "12px",
+                      "xl": "64px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "container_padding_desktop": "40px",
+                      "card_gap": "24px",
+                      "container_padding_mobile": "16px"
+              },
+              "fontFamily": {
+                      "label-mono": ["JetBrains Mono"],
+                      "display-lg": ["Geist"],
+                      "headline-lg": ["Geist"],
+                      "headline-lg-mobile": ["Geist"],
+                      "body-md": ["Geist"],
+                      "mono-label": ["JetBrains Mono"],
+                      "button": ["Geist"]
+              },
+              "fontSize": {
+                      "label-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "button": ["15px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar (Predicted Component) -->
+<header class="flex justify-between items-center w-full px-container_padding_mobile md:px-container_padding_desktop z-50 backdrop-blur-md border-b border-outline-variant bg-surface/60 docked full-width top-0 sticky h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="explore">explore</span>
+<span class="text-xl font-bold text-primary tracking-tight">AI Trip Planner</span>
+</div>
+<div class="hidden md:flex gap-6">
+<a class="text-primary font-bold text-label-mono font-label-mono" href="#">Plan</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high/50 transition-all duration-200 text-label-mono font-label-mono px-2 py-1 rounded" href="#">Explore</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high/50 transition-all duration-200 text-label-mono font-label-mono px-2 py-1 rounded" href="#">Saved</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-full font-button text-button hover:opacity-90 transition-opacity active:scale-95 shadow-lg shadow-primary-container/20">
+        Live Status
+    </button>
+</header>
+<main class="max-w-3xl mx-auto px-container_padding_mobile md:px-container_padding_desktop pt-12 pb-32">
+<!-- Hero Section -->
+<section class="relative rounded-3xl overflow-hidden mb-12 p-8 md:p-12 mesh-gradient border border-outline-variant bg-surface-container">
+<div class="relative z-10 flex flex-col items-center text-center">
+<!-- ApiStatusBadge -->
+<div class="inline-flex items-center gap-2 bg-surface-container-highest px-3 py-1.5 rounded-full border border-outline-variant mb-6">
+<span class="w-2 h-2 bg-[#4ade80] rounded-full pulsing-dot"></span>
+<span class="text-label-mono font-label-mono text-on-surface-variant text-xs">API ready · 1,240 places</span>
+</div>
+<h1 class="text-headline-lg-mobile md:text-display-lg text-on-surface mb-4 leading-tight font-extrabold">
+                Plan your Delhi NCR day in <span class="text-primary">minutes</span>
+</h1>
+<p class="text-body-md text-on-surface-variant max-w-md mb-10">
+                Real OSM places, walking routes, and optional AI tips.
+            </p>
+<button class="group relative bg-primary-container text-on-primary-container px-8 py-4 rounded-2xl font-button text-lg shadow-[0_0_20px_rgba(157,80,187,0.3)] hover:shadow-[0_0_30px_rgba(157,80,187,0.5)] transition-all active:scale-95">
+                Start planning
+            </button>
+</div>
+<!-- Abstract background element -->
+<div class="absolute -bottom-10 -right-10 w-64 h-64 bg-primary opacity-10 blur-[80px] rounded-full"></div>
+</section>
+<!-- Feature Cards Grid -->
+<section class="grid grid-cols-1 gap-card_gap relative">
+<h2 class="text-label-mono font-label-mono text-primary uppercase tracking-widest mb-2 text-xs">Capabilities</h2>
+<!-- Card 1 -->
+<div class="relative flex gap-6 p-6 bg-surface border border-outline-variant rounded-2xl group hover:bg-surface-container-low transition-colors">
+<div class="travel-line-connector"></div>
+<div class="z-10 w-12 h-12 shrink-0 bg-surface-container-highest rounded-xl flex items-center justify-center border border-outline-variant group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="map">map</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-xl font-bold text-on-surface">Real OSM venues</h3>
+<p class="text-sm text-on-surface-variant">Accurate geospatial data for every cafe, monument, and metro station in the NCR region.</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="relative flex gap-6 p-6 bg-surface border border-outline-variant rounded-2xl group hover:bg-surface-container-low transition-colors">
+<div class="travel-line-connector"></div>
+<div class="z-10 w-12 h-12 shrink-0 bg-surface-container-highest rounded-xl flex items-center justify-center border border-outline-variant group-hover:border-secondary transition-colors">
+<span class="material-symbols-outlined text-secondary" data-icon="directions_walk">directions_walk</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-xl font-bold text-on-surface">Optimized walking route</h3>
+<p class="text-sm text-on-surface-variant">Smart pathfinding that accounts for Delhi's unique street layout and pedestrian shortcuts.</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="relative flex gap-6 p-6 bg-surface border border-outline-variant rounded-2xl group hover:bg-surface-container-low transition-colors">
+<div class="z-10 w-12 h-12 shrink-0 bg-surface-container-highest rounded-xl flex items-center justify-center border border-outline-variant group-hover:border-tertiary transition-colors">
+<span class="material-symbols-outlined text-tertiary" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<h3 class="text-xl font-bold text-on-surface">Optional AI tips</h3>
+<span class="bg-tertiary/10 text-tertiary text-[10px] px-2 py-0.5 rounded border border-tertiary/20 font-bold uppercase">Beta</span>
+</div>
+<p class="text-sm text-on-surface-variant">Contextual advice on peak hours, local etiquette, and hidden spots generated by our fine-tuned LLM.</p>
+</div>
+</div>
+</section>
+<!-- Visual Anchor: Map Preview -->
+<section class="mt-16 bg-surface-container rounded-3xl p-4 border border-outline-variant overflow-hidden group">
+<div class="relative h-64 w-full rounded-2xl overflow-hidden border border-outline-variant">
+<img alt="Delhi Map" class="w-full h-full object-cover grayscale opacity-50 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700" data-alt="A stylized digital map interface of Delhi NCR, featuring a dark mode aesthetic with glowing teal and saffron travel lines connecting various points of interest. The map is viewed from a high-angle perspective, showing the urban sprawl of the city at night with soft ambient light glowing from building clusters. Minimalist UI elements like location pins and route markers are rendered with elegant glassmorphism effects." data-location="Delhi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQQqpvMoOMa8OR057jcwdcJgp2flqAKhsTDi65kGcrrT3qvssCXcUPNKusgpkJngq8AFpsUHpz5XzyrGjZVy7POiV1M7QqnTrPt-f-5RKCKTpj4eeP2Ti_UJR48wq1-y2PBG78BBwCP9UYzlMCTuMYI7_Zb0QDLOYLfQOHo8aE7NX2MPNA_2RRIhGFJWUOHN3xI3KNJVKh4Q75bgYF8bBoFbUmAGzg4QigP9p2WgmaXupOcl9Y7bhljnJzUDO6WZPHLDXl6LHDxA4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 flex flex-col">
+<span class="text-label-mono font-label-mono text-primary text-xs font-bold">LIVE VIEW</span>
+<span class="text-2xl font-bold text-on-surface">Connaught Place</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col md:flex-row justify-between items-center py-8 px-container_padding_mobile md:px-container_padding_desktop gap-4 full-width relative border-t border-outline-variant bg-surface-container-lowest mb-16 md:mb-0">
+<div class="flex flex-col gap-1">
+<span class="text-on-surface font-bold text-lg">Delhi AI Travel</span>
+<p class="text-on-surface-variant text-sm">© 2024 Delhi AI Travel. Estimates are approximate.</p>
+</div>
+<nav class="flex gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-mono font-label-mono text-sm" href="#">Terms</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-mono font-label-mono text-sm" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-label-mono font-label-mono text-sm" href="#">Support</a>
+</nav>
+</footer>
+<!-- BottomNavBar (Predicted Component) -->
+<nav class="md:hidden flex justify-around items-center h-16 w-full px-4 fixed bottom-0 z-50 backdrop-blur-lg border-t border-outline-variant bg-surface/80">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span class="text-xs font-medium">Plan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-xs font-medium">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="text-xs font-medium">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-xs font-medium">Profile</span>
+</a>
+</nav>
+<script>
+    // Micro-interaction for primary button
+    const ctaBtn = document.querySelector('button.group');
+    if (ctaBtn) {
+        ctaBtn.addEventListener('mouseenter', () => {
+            ctaBtn.style.transform = 'translateY(-2px)';
+        });
+        ctaBtn.addEventListener('mouseleave', () => {
+            ctaBtn.style.transform = 'translateY(0px)';
+        });
+    }
+
+    // Horizontal parallax effect for mesh background
+    document.addEventListener('mousemove', (e) => {
+        const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+        const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+        const mesh = document.querySelector('.mesh-gradient');
+        if(mesh) {
+            mesh.style.backgroundPosition = `${moveX}px ${moveY}px`;
+        }
+    });
+</script>
+</body></html>

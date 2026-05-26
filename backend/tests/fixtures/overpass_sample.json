@@ -1,0 +1,24 @@
+{
+  "elements": [
+    {
+      "type": "node",
+      "id": 1001,
+      "lat": 28.6129,
+      "lon": 77.2295,
+      "tags": {
+        "tourism": "attraction",
+        "name": "India Gate"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1002,
+      "lat": 28.5931,
+      "lon": 77.219,
+      "tags": {
+        "leisure": "park",
+        "name": "Lodhi Garden"
+      }
+    }
+  ]
+}

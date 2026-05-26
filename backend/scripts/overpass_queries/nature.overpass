@@ -1,0 +1,8 @@
+[out:json][timeout:90];
+(
+  node["leisure"="park"]({{bbox}});
+  way["leisure"="park"]({{bbox}});
+  node["natural"]({{bbox}});
+  way["natural"]({{bbox}});
+);
+out center;

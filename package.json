@@ -1,0 +1,18 @@
+{
+  "name": "aitripplanner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Trip Planner — Delhi NCR MVP monorepo",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && .venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev:frontend": "cd frontend && npm run dev",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && python -m pytest",
+    "test:frontend": "cd frontend && npm test",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && pip install -e \".[dev]\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

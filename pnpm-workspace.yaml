@@ -1,0 +1,5 @@
+packages:
+  - "frontend"
+
+# Backend is Python (backend/pyproject.toml), not a pnpm package.
+# Use: npm run dev  (or make dev) from repo root.

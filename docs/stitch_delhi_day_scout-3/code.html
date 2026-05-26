@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-primary": "#520070",
+                        "secondary": "#5dd9d0",
+                        "on-tertiary-fixed": "#270057",
+                        "on-secondary-container": "#00302d",
+                        "secondary-container": "#00a29a",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#573092",
+                        "surface-container-low": "#1d182d",
+                        "outline": "#9a8c9b",
+                        "tertiary": "#d6baff",
+                        "on-secondary-fixed-variant": "#00504c",
+                        "secondary-fixed-dim": "#5dd9d0",
+                        "on-error-container": "#ffdad6",
+                        "primary": "#edb1ff",
+                        "on-primary-fixed-variant": "#6e208c",
+                        "on-primary-fixed": "#320046",
+                        "inverse-primary": "#883ca6",
+                        "surface-container-highest": "#373247",
+                        "surface-tint": "#edb1ff",
+                        "on-background": "#e7defb",
+                        "inverse-on-surface": "#322d43",
+                        "inverse-surface": "#e7defb",
+                        "on-surface-variant": "#d1c2d2",
+                        "tertiary-fixed": "#ecdcff",
+                        "primary-fixed": "#f9d8ff",
+                        "secondary-fixed": "#7cf6ec",
+                        "on-primary-container": "#fff3fd",
+                        "on-tertiary-container": "#fcf4ff",
+                        "tertiary-fixed-dim": "#d6baff",
+                        "surface": "#151024",
+                        "surface-container-high": "#2c273c",
+                        "surface-variant": "#373247",
+                        "on-secondary-fixed": "#00201e",
+                        "surface-bright": "#3b364c",
+                        "on-secondary": "#003734",
+                        "surface-container": "#211d31",
+                        "on-tertiary": "#40147a",
+                        "error": "#ffb4ab",
+                        "surface-container-lowest": "#100b1f",
+                        "on-surface": "#e7defb",
+                        "surface-dim": "#151024",
+                        "background": "#151024",
+                        "outline-variant": "#4e4350",
+                        "tertiary-container": "#835dc0",
+                        "primary-container": "#9d50bb",
+                        "primary-fixed-dim": "#edb1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "md": "24px",
+                        "lg": "40px",
+                        "margin-desktop": "120px",
+                        "sm": "12px",
+                        "xl": "64px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "container_padding_desktop": "40px",
+                        "container_padding_mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-mono": ["JetBrains Mono"],
+                        "display-lg": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "body-md": ["Geist"],
+                        "mono-label": ["JetBrains Mono"],
+                        "button": ["Geist"],
+                        "headline-md": ["Geist"]
+                    },
+                    "fontSize": {
+                        "label-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400"}],
+                        "mono-label": ["13px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "button": ["15px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #151024;
+            color: #e7defb;
+            font-family: 'Geist', sans-serif;
+        }
+        .travel-line {
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, #5dd9d0 0, #5dd9d0 8px, transparent 8px, transparent 16px);
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+        }
+        .ai-pulse {
+            box-shadow: 0 0 15px rgba(237, 177, 255, 0.2);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 sticky bg-surface/60 backdrop-blur-md border-b border-outline-variant z-50 flex justify-between items-center w-full px-container_padding_mobile md:px-container_padding_desktop h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="explore">explore</span>
+<h1 class="text-headline-md font-bold text-primary tracking-tight">AI Trip Planner</h1>
+</div>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-primary font-bold text-mono-label font-mono-label" href="#">Plan</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high/50 transition-all duration-200 px-3 py-1 rounded-lg text-mono-label font-mono-label" href="#">Explore</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high/50 transition-all duration-200 px-3 py-1 rounded-lg text-mono-label font-mono-label" href="#">Saved</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-full font-button text-button hover:opacity-80 active:scale-95 transition-all">
+        Live Status
+    </button>
+</header>
+<!-- TripSummaryBar (Sticky) -->
+<nav class="sticky top-16 z-40 bg-surface-container-low/90 backdrop-blur-md border-b border-outline-variant px-container_padding_mobile md:px-container_padding_desktop py-3">
+<div class="max-w-4xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-mono-label font-mono-label border border-secondary/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                Delhi
+            </span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-4 text-on-surface-variant text-mono-label font-mono-label">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span>8h</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">payments</span>₹500–1200</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">map</span>4 stops</span>
+</div>
+</div>
+<div class="hidden sm:flex items-center gap-2">
+<span class="ai-pulse w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-mono-label font-mono-label text-primary">AI Optimized</span>
+</div>
+</div>
+</nav>
+<main class="max-w-4xl mx-auto px-container_padding_mobile md:px-container_padding_desktop py-8 space-y-6">
+<!-- WarningsBanner -->
+<div class="bg-error-container/20 border border-error-container/40 rounded-xl p-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-error" data-icon="report_problem">report_problem</span>
+<p class="text-body-sm text-on-error-container">Meta warnings: AI fallback active. Live traffic data may be slightly delayed.</p>
+</div>
+<!-- ItineraryMap Placeholder -->
+<section class="w-full h-64 md:h-80 bg-surface-container-highest rounded-2xl relative overflow-hidden border border-outline-variant group">
+<div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1548013146-72479768bbaa?q=80&amp;w=2073&amp;auto=format&amp;fit=crop')] bg-cover bg-center grayscale brightness-50 contrast-125" data-location="Delhi"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+<div class="absolute top-4 right-4 flex flex-col gap-2">
+<button class="bg-surface-container-high p-2 rounded-lg text-on-surface shadow-lg border border-outline-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="bg-surface-container-high p-2 rounded-lg text-on-surface shadow-lg border border-outline-variant hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<!-- Pin Placeholders -->
+<div class="absolute left-1/3 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-8 h-8 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center font-bold text-sm border-2 border-background shadow-lg">1</div>
+</div>
+<div class="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-8 h-8 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center font-bold text-sm border-2 border-background shadow-lg">2</div>
+</div>
+</section>
+<!-- ItineraryTimeline -->
+<div class="space-y-0 relative">
+<!-- Stop 1 -->
+<div class="relative pl-12 pb-8">
+<div class="absolute left-4 top-2 bottom-0 travel-line z-0"></div>
+<div class="absolute left-0 top-0 w-8 h-8 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center z-10 font-bold">1</div>
+<div class="bg-surface-container border border-outline-variant rounded-2xl p-6 transition-all hover:bg-surface-container-high group">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<span class="text-mono-label font-mono-label text-secondary">09:15 - 11:00</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">History</span>
+</div>
+<h3 class="text-headline-md font-bold text-on-surface">Humayun's Tomb</h3>
+<div class="flex items-center gap-4 text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">hourglass_bottom</span>105m</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">payments</span>₹50-200</span>
+</div>
+</div>
+<div class="hidden md:block">
+<img alt="Humayun's Tomb" class="w-24 h-24 rounded-xl object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGH-VFCkXWYp3RVqKUQajSrRA6HC1u2nh5ZQdQv_EPaHyMyPn0UUFs3zcbYr2tfJ9shHf3BgEbwNodLPx7bNkzSE38aMFLm1tZ8-KnP7_yAZj_kR1wlGGa_fBAAlm76znh_aHmuXu8wFCAebzdtzkvyGlvEJdKJJCR0B3Khko2wM3sG7HhvfRyqmWoFOYEUFjMpQf_Q2cDdfkDjDl88QCjjmZEGJ-ArLRiamBMWc-v9DkC3Vop-0XGpCLmGoWJ_7wvq7dcXJUAvkk"/>
+</div>
+</div>
+<div class="mt-4 p-3 bg-primary-container/10 border-l-2 border-primary-container rounded-r-lg">
+<p class="text-body-sm text-primary flex items-start gap-2 italic">
+<span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                        "Beautiful Mughal architecture, best visited early to avoid the midday sun."
+                    </p>
+</div>
+</div>
+</div>
+<!-- TravelLeg -->
+<div class="relative pl-12 py-6">
+<div class="absolute left-4 top-0 bottom-0 travel-line z-0"></div>
+<div class="flex items-center gap-3 text-secondary">
+<div class="w-8 h-8 bg-surface-container border border-secondary rounded-full flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[18px]" data-icon="directions_walk">directions_walk</span>
+</div>
+<span class="text-body-sm font-bold">15 min walk to next stop</span>
+</div>
+</div>
+<!-- Stop 2 -->
+<div class="relative pl-12 pb-8">
+<div class="absolute left-4 top-0 h-1/2 travel-line z-0"></div>
+<div class="absolute left-0 top-0 w-8 h-8 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center z-10 font-bold">2</div>
+<div class="bg-surface-container border border-outline-variant rounded-2xl p-6 transition-all hover:bg-surface-container-high">
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<span class="text-mono-label font-mono-label text-secondary">11:15 - 13:00</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">Nature</span>
+</div>
+<h3 class="text-headline-md font-bold text-on-surface">Sunder Nursery</h3>
+<div class="flex items-center gap-4 text-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">hourglass_bottom</span>105m</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-sm">payments</span>₹50-100</span>
+</div>
+</div>
+<div class="hidden md:block">
+<img alt="Sunder Nursery" class="w-24 h-24 rounded-xl object-cover border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyFciDgI-OY8oSnXSds2CSxWy89i9rP9RG54SD1sgSfDlfZnFzWHsyXa_44WmfvFfaHUxkcI2PUb832_Z61bZwwwvMzonIu9uUW8Gi3UrOGGMEdDYYZIycKpHZnIh2f4D1rmgFgyUJZeRgKGwE4ICPmyj2QPvITP1mBzongKK2SZRryzuzAV_5tB-mUKuYeZw3JTptNzU6UDUFXXCLENWGoDsl4GPeHOdZi_YH1-SSVdTHPJxovaBiOCuW-aoTW6JdDScsfst3ciQ"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row items-center gap-4 pt-4 pb-12">
+<button class="w-full sm:w-auto flex-1 bg-primary-container text-on-primary-container py-4 rounded-xl font-button text-button shadow-[0_8px_20px_rgba(157,80,187,0.2)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">refresh</span>
+            Regenerate
+        </button>
+<button class="w-full sm:w-auto flex-1 border border-outline text-on-surface py-4 rounded-xl font-button text-button hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+            Plan another day
+        </button>
+</div>
+<!-- CostDisclaimer -->
+<footer class="text-center pb-24">
+<p class="text-[11px] font-mono-label text-on-surface-variant opacity-60 uppercase tracking-widest">
+            Cost ranges are estimates, not bookings. Prices may vary by season and demand.
+        </p>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface/80 backdrop-blur-lg border-t border-outline-variant flex justify-around items-center h-16 px-4">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-xl px-4 py-1 transition-all duration-150 scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="map" data-weight="fill" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="text-body-sm">Plan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="text-body-sm">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="text-body-sm">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-body-sm">Profile</span>
+</a>
+</nav>
+<!-- Desktop Footer -->
+<footer class="hidden md:flex flex-col md:flex-row justify-between items-center py-8 px-container_padding_desktop gap-4 bg-surface-container-lowest border-t border-outline-variant relative full-width">
+<div class="flex items-center gap-2">
+<span class="text-on-surface font-bold">AI Trip Planner</span>
+<span class="text-body-sm text-on-surface-variant">© 2024 Delhi AI Travel. Estimates are approximate.</span>
+</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant text-mono-label font-mono-label hover:text-secondary transition-colors" href="#">Terms</a>
+<a class="text-on-surface-variant text-mono-label font-mono-label hover:text-secondary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant text-mono-label font-mono-label hover:text-secondary transition-colors" href="#">Support</a>
+</div>
+</footer>
+<script>
+    // Simple interaction for cards
+    document.querySelectorAll('.bg-surface-container').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-2px)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Sticky header transparency logic
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 10) {
+            header.classList.add('shadow-xl');
+        } else {
+            header.classList.remove('shadow-xl');
+        }
+    });
+</script>
+</body></html>

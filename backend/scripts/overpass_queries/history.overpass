@@ -1,0 +1,8 @@
+[out:json][timeout:90];
+(
+  node["historic"]({{bbox}});
+  way["historic"]({{bbox}});
+  node["tourism"~"^(attraction|museum|artwork|viewpoint)$"]({{bbox}});
+  way["tourism"~"^(attraction|museum|artwork|viewpoint)$"]({{bbox}});
+);
+out center;

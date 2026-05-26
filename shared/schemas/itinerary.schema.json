@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aitripplanner.local/schemas/itinerary.schema.json",
+  "title": "Itinerary",
+  "type": "object",
+  "required": ["meta", "stops", "summary"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["city", "duration_minutes", "budget_tier", "schema_version"],
+      "properties": {
+        "city": { "type": "string" },
+        "duration_minutes": { "type": "integer", "minimum": 1 },
+        "budget_tier": { "enum": ["low", "medium", "high"] },
+        "schema_version": { "type": "string" },
+        "start_point": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lon": { "type": "number" },
+            "label": { "type": "string" }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "planner_mode": { "type": "string" },
+        "routing_source": { "type": "string" },
+        "ai_status": { "type": "string" },
+        "fallback_reason": { "type": "string" }
+      }
+    },
+    "stops": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "order",
+          "poi_id",
+          "name",
+          "arrive_at",
+          "depart_at",
+          "visit_minutes",
+          "cost_estimate_inr"
+        ],
+        "properties": {
+          "order": { "type": "integer", "minimum": 1 },
+          "poi_id": { "type": "string" },
+          "name": { "type": "string" },
+          "category": { "type": "string" },
+          "lat": { "type": "number" },
+          "lon": { "type": "number" },
+          "arrive_at": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$" },
+          "depart_at": { "type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$" },
+          "visit_minutes": { "type": "integer", "minimum": 1 },
+          "travel_to_next_minutes": { "type": ["integer", "null"], "minimum": 0 },
+          "cost_estimate_inr": {
+            "type": "object",
+            "required": ["low", "high"],
+            "properties": {
+              "low": { "type": "integer", "minimum": 0 },
+              "high": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "notes": { "type": "string" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["total_stops", "total_travel_min", "total_cost_inr"],
+      "properties": {
+        "total_stops": { "type": "integer", "minimum": 0 },
+        "total_travel_min": { "type": "integer", "minimum": 0 },
+        "total_visit_min": { "type": "integer", "minimum": 0 },
+        "total_cost_inr": {
+          "type": "object",
+          "required": ["low", "high"],
+          "properties": {
+            "low": { "type": "integer", "minimum": 0 },
+            "high": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    }
+  }
+}
