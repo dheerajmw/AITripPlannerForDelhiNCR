@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ApiError, checkHealth } from "./api";
+import { ApiError, checkHealth, isBackendReady } from "./api";
 
 describe("checkHealth", () => {
   afterEach(() => {
@@ -50,5 +50,29 @@ describe("checkHealth", () => {
       code: "SERVICE_UNAVAILABLE",
       status: 503,
     });
+  });
+});
+
+describe("isBackendReady", () => {
+  it("returns false when poi_count is null (stale API)", () => {
+    expect(
+      isBackendReady({
+        status: "ok",
+        version: "0.1.0",
+        city: "Delhi NCR",
+        poi_count: null,
+      }),
+    ).toBe(false);
+  });
+
+  it("returns true when poi_count is positive", () => {
+    expect(
+      isBackendReady({
+        status: "ok",
+        version: "0.1.0",
+        city: "Delhi NCR",
+        poi_count: 100,
+      }),
+    ).toBe(true);
   });
 });

@@ -41,11 +41,17 @@ async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const err = data as ApiErrorBody | null;
     if (err?.error) {
+      const message =
+        response.status === 404 && err.error.message === "Not Found"
+          ? "Planner API not found. Stop any old server on port 8000, then run `make dev-backend` from the project root."
+          : err.error.message;
+      throw new ApiError(err.error.code, message, response.status, err.error.details);
+    }
+    if (response.status === 404) {
       throw new ApiError(
-        err.error.code,
-        err.error.message,
-        response.status,
-        err.error.details,
+        "API_NOT_FOUND",
+        "Planner API not found. Stop any old server on port 8000, then run `make dev-backend` from the project root.",
+        404,
       );
     }
     throw new ApiError("HTTP_ERROR", response.statusText, response.status);
@@ -61,6 +67,11 @@ export async function checkHealth(): Promise<HealthResponse> {
     cache: "no-store",
   });
   return parseResponse<HealthResponse>(response);
+}
+
+/** True when health looks like the full AITripPlanner backend (not a stale minimal server). */
+export function isBackendReady(health: HealthResponse): boolean {
+  return health.status === "ok" && health.poi_count != null && health.poi_count > 0;
 }
 
 export async function generateItinerary(

@@ -55,8 +55,21 @@ Open [http://localhost:3000](http://localhost:3000) — the landing page shows *
 If the browser says **“connection failed”**, the frontend is usually not started — run `make dev-frontend` (or `make dev` for both).
 
 ```bash
-./scripts/dev-check.sh   # verifies :8000 and :3000
+./scripts/dev-check.sh   # verifies :8000, planner route, and :3000
 ```
+
+### Troubleshooting “Not Found” when generating
+
+If **Generate Itinerary** shows **Not Found**, port **8000** is almost always an **old or wrong** Python process (only `/health`, no planner routes).
+
+```bash
+lsof -i :8000          # find the PID
+kill <PID>             # stop the stale server
+make dev-backend       # from repo root — must use backend/ in this project
+./scripts/dev-check.sh # should print OK planner + poi_count > 0
+```
+
+Health should look like: `"poi_count": 13705` (not `null`). If `poi_count` is `null`, restart the backend from this repo and run `make ingest` if the DB is missing.
 
 ### 3. Both apps (from repo root)
 
