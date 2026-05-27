@@ -35,24 +35,28 @@ Open http://localhost:8501
 3. **Main file path:** `streamlit_app.py`
 4. **App URL** (optional): customize subdomain.
 
-### Secrets (Settings → Secrets)
+### Secrets (Settings → Secrets) — optional for POI DB
+
+The app **auto-downloads** the POI database from the public release on first start:
+
+`https://github.com/dheerajmw/AITripPlannerForDelhiNCR/releases/download/v0.1.0-poi/pois.db`
+
+You only need secrets if you override that URL or want AI tips:
 
 ```toml
-POI_DB_DOWNLOAD_URL = "https://github.com/dheerajmw/AITripPlannerForDelhiNCR/releases/download/v0.1.0/pois.db"
 GROQ_API_KEY = "your-groq-key"
 OSRM_BASE_URL = "http://router.project-osrm.org"
+# POI_DB_DOWNLOAD_URL = "..."   # optional override
 ```
 
-`POI_DB_DOWNLOAD_URL` is **required** on Cloud because `data/pois.db` is not in git (`.gitignore`).
+First boot on Cloud may take **30–60 seconds** while `pois.db` (~2.4 MB) downloads.
 
-### Publish `pois.db` for Cloud
+### Refresh the hosted POI database
 
 ```bash
-# After make ingest locally:
-gh release create v0.1.0 data/pois.db --title "POI database for Streamlit"
+make ingest
+./scripts/publish-poi-release.sh v0.1.0-poi
 ```
-
-Use the release asset URL as `POI_DB_DOWNLOAD_URL`.
 
 ## What runs in Streamlit
 

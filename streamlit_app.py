@@ -183,16 +183,15 @@ def main() -> None:
         st.markdown(bootstrap_msg)
         st.markdown(
             """
-            **Streamlit Cloud setup**
-            1. Upload `data/pois.db` to a GitHub Release (or cloud storage).
-            2. In app **Settings → Secrets**, add:
-            ```
-            POI_DB_DOWNLOAD_URL = "https://github.com/.../pois.db"
-            GROQ_API_KEY = "..."   # optional, for AI tips
-            ```
-            3. Reboot the app.
+            **Streamlit Cloud:** Reboot the app — it should download the POI database automatically
+            (~2.4 MB, first load can take up to a minute).
 
-            **Local:** run `make ingest`, then `streamlit run streamlit_app.py`
+            If download fails, add this secret and reboot:
+            ```
+            POI_DB_DOWNLOAD_URL = "https://github.com/dheerajmw/AITripPlannerForDelhiNCR/releases/download/v0.1.0-poi/pois.db"
+            ```
+
+            **Local:** `make ingest` then `streamlit run streamlit_app.py`
             """
         )
         return

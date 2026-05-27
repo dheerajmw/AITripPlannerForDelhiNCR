@@ -9,6 +9,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 BACKEND_DIR = REPO_ROOT / "backend"
 
+# Public GitHub Release asset (see scripts/publish-poi-release.sh to refresh).
+DEFAULT_POI_DB_DOWNLOAD_URL = (
+    "https://github.com/dheerajmw/AITripPlannerForDelhiNCR/releases/download/v0.1.0-poi/pois.db"
+)
+
 
 def configure_import_path() -> None:
     backend = str(BACKEND_DIR)
@@ -54,13 +59,9 @@ def ensure_poi_database() -> tuple[bool, str]:
     if db_path.exists() and db_path.stat().st_size > 10_000:
         return True, f"POI database ready ({db_path.name})"
 
-    download_url = os.environ.get("POI_DB_DOWNLOAD_URL", "").strip()
-    if not download_url:
-        return False, (
-            "POI database not found. For Streamlit Cloud, set secret **POI_DB_DOWNLOAD_URL** "
-            "to a direct download link for `pois.db` (e.g. GitHub release asset). "
-            "Locally, run `make ingest` from the repo root."
-        )
+    download_url = (
+        os.environ.get("POI_DB_DOWNLOAD_URL", "").strip() or DEFAULT_POI_DB_DOWNLOAD_URL
+    )
 
     import httpx
 
