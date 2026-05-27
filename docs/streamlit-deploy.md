@@ -9,7 +9,7 @@ Deploy the **TripPilot AI** UI on [Streamlit Community Cloud](https://streamlit.
 | `streamlit_app.py` | Main app (set this as the Cloud **Main file path**) |
 | `requirements.txt` | Python dependencies (repo root) |
 | `.streamlit/config.toml` | Theme and server options |
-| `streamlit/bootstrap.py` | Path setup, secrets, POI DB download |
+| `trippilot_deploy/bootstrap.py` | Path setup, secrets, POI DB download (not named `streamlit/` — avoids import clash with the Streamlit library) |
 
 ## Local run
 

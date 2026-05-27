@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from streamlit.bootstrap import init_backend
+from trippilot_deploy.bootstrap import init_backend
 
 st.set_page_config(
     page_title="TripPilot AI — Delhi NCR",
