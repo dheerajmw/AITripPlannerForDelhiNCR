@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: `${APP_NAME} — Delhi NCR`,
-  description: "AI-assisted day trip planner for Delhi NCR",
+  description: "TripPilot AI — day trip planner for Delhi NCR",
 };
 
 export default function RootLayout({

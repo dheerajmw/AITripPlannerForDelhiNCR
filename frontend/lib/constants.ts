@@ -7,5 +7,5 @@
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "/api/v1";
 
-export const APP_NAME = "AI Trip Planner";
+export const APP_NAME = "TripPilot AI";
 export const DEFAULT_CITY = "Delhi NCR";

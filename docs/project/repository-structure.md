@@ -1,6 +1,6 @@
 # Repository Structure
 
-Canonical layout for the AI Trip Planner monorepo. Phase-specific details and checklists live under [`docs/phases/`](../phases/).
+Canonical layout for the TripPilot AI monorepo. Phase-specific details and checklists live under [`docs/phases/`](../phases/).
 
 ```
 AITripPlanner/

@@ -1,4 +1,4 @@
-# Problem Statement: AI Trip Planner (Delhi-Focused MVP)
+# Problem Statement: TripPilot AI (Delhi-Focused MVP)
 
 ## Overview
 

@@ -19,7 +19,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "AI Trip Planner API"
+    app_name: str = "TripPilot AI API"
     debug: bool = False
 
     database_url: str = Field(

@@ -1,4 +1,4 @@
-# Implementation Plan: AI Trip Planner (Delhi MVP)
+# Implementation Plan: TripPilot AI (Delhi MVP)
 
 Actionable build plan derived from [architecture.md](./architecture.md), [problemStatement.md](./problemStatement.md), and [edgeCases.md](./edgeCases.md).
 

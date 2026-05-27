@@ -1,4 +1,4 @@
-# AI Trip Planner (Delhi NCR MVP)
+# TripPilot AI (Delhi NCR MVP)
 
 Monorepo for a Delhi-focused, AI-assisted day trip planner. The **backend** (FastAPI) owns all business logic and Groq calls; the **frontend** (Next.js) is UI-only.
 
@@ -92,6 +92,19 @@ The UI calls `/api/v1` on the same host; Next.js proxies those requests to the b
 | Frontend | `frontend/.env.local` | `NEXT_PUBLIC_API_URL` only |
 
 **Never** put `GROQ_API_KEY` in the frontend.
+
+## Streamlit deployment
+
+Run the planner as a Streamlit app (no Next.js / separate API process):
+
+```bash
+pip install -r requirements.txt
+make ingest
+make streamlit   # → http://localhost:8501
+```
+
+**Streamlit Cloud:** set main file to `streamlit_app.py`, add secrets for `POI_DB_DOWNLOAD_URL` and optional `GROQ_API_KEY`.  
+Full guide: [docs/streamlit-deploy.md](docs/streamlit-deploy.md)
 
 ## POI data (Phase 1)
 

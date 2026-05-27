@@ -1,4 +1,4 @@
-.PHONY: dev dev-backend dev-frontend test test-backend test-frontend install ingest
+.PHONY: dev dev-backend dev-frontend streamlit test test-backend test-frontend install ingest
 
 # Run backend + frontend together
 dev:
@@ -13,6 +13,9 @@ dev-backend:
 
 dev-frontend:
 	cd frontend && npm run dev
+
+streamlit:
+	streamlit run streamlit_app.py
 
 test: test-backend test-frontend
 

@@ -1,1 +1,1 @@
-"""AI Trip Planner backend application."""
+"""TripPilot AI backend application."""

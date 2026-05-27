@@ -1,5 +1,5 @@
 ---
-name: Delhi AI Voyager
+name: TripPilot AI
 colors:
   surface: '#151024'
   surface-dim: '#151024'

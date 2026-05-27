@@ -69,7 +69,7 @@ export async function checkHealth(): Promise<HealthResponse> {
   return parseResponse<HealthResponse>(response);
 }
 
-/** True when health looks like the full AITripPlanner backend (not a stale minimal server). */
+/** True when health looks like the full TripPilot AI backend (not a stale minimal server). */
 export function isBackendReady(health: HealthResponse): boolean {
   return health.status === "ok" && health.poi_count != null && health.poi_count > 0;
 }

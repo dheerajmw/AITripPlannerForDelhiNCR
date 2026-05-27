@@ -16,6 +16,7 @@ venv/
 .env.local
 backend/.env
 frontend/.env.local
+.streamlit/secrets.toml
 
 # Data
 data/*.db

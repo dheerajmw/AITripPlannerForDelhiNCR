@@ -1,4 +1,4 @@
-# Documentation — AI Trip Planner
+# Documentation — TripPilot AI
 
 All project documentation lives under `docs/`. **Application code** stays at the repo root (`backend/`, `frontend/`).
 

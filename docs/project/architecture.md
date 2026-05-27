@@ -1,4 +1,4 @@
-# Phase-Wise Architecture: AI Trip Planner (Delhi MVP)
+# Phase-Wise Architecture: TripPilot AI (Delhi MVP)
 
 This document defines how the system is built **incrementally**, aligned with [problemStatement.md](./problemStatement.md). Each phase has a clear goal, components, data flow, and exit criteria before the next phase starts.
 

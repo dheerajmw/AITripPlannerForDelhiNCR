@@ -1,7 +1,7 @@
 [project]
-name = "aitripplanner-backend"
+name = "trippilot-backend"
 version = "0.1.0"
-description = "AI Trip Planner API — Delhi NCR MVP"
+description = "TripPilot AI API — Delhi NCR MVP"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [

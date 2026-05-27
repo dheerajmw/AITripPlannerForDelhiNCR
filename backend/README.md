@@ -1,6 +1,6 @@
 # Backend — FastAPI
 
-REST API for AI Trip Planner. All planner logic, POI data, routing, and Groq integration live here.
+REST API for TripPilot AI. All planner logic, POI data, routing, and Groq integration live here.
 
 **Phase 0 docs:** [docs/phases/phase-0-foundation/](../docs/phases/phase-0-foundation/)
 

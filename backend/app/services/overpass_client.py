@@ -48,7 +48,7 @@ class OverpassClient:
                         self._url,
                         data={"data": query},
                         headers={
-                            "User-Agent": "AITripPlanner/0.1 (Delhi MVP; contact: local-dev)",
+                            "User-Agent": "TripPilotAI/0.1 (Delhi MVP; contact: local-dev)",
                         },
                     )
                 if response.status_code == 429:

@@ -1,6 +1,6 @@
 # Frontend UI — Stitch / AI Prompt Guide
 
-Use this document to generate or refine the **AI Trip Planner** frontend in **Next.js 15 + TypeScript + Tailwind**. Paste sections into [Stitch](https://stitch.withgoogle.com), Cursor, v0, or any UI agent.
+Use this document to generate or refine the **TripPilot AI** frontend in **Next.js 15 + TypeScript + Tailwind**. Paste sections into [Stitch](https://stitch.withgoogle.com), Cursor, v0, or any UI agent.
 
 **Sources of truth:** [architecture.md](./project/architecture.md) (Phase 5), [implementationPlan.md](./project/implementationPlan.md) (§10), [itinerary.schema.json](../shared/schemas/itinerary.schema.json).
 
@@ -11,7 +11,7 @@ Use this document to generate or refine the **AI Trip Planner** frontend in **Ne
 ## 1. Project context (paste first)
 
 ```
-Product: AI Trip Planner — Delhi NCR day/half-day itineraries from real OpenStreetMap POIs.
+Product: TripPilot AI — Delhi NCR day/half-day itineraries from real OpenStreetMap POIs.
 
 Stack:
 - frontend/ — Next.js 15 App Router, React 19, TypeScript, Tailwind CSS 3.4
@@ -127,7 +127,7 @@ frontend/
 Copy everything inside the block:
 
 ```markdown
-Build a complete dark-theme Next.js 15 App Router UI for "AI Trip Planner" (Delhi NCR).
+Build a complete dark-theme Next.js 15 App Router UI for "TripPilot AI" (Delhi NCR).
 
 DESIGN: Modern, cool dark UI. Background #0B0F14, surfaces #12181F, accent #FF6B35 (saffron-orange), teal #4ECDC4 for travel connectors. Glass header, rounded-2xl cards, subtle gradients. Use Tailwind only (no CSS modules). Install lucide-react for icons.
 
@@ -207,7 +207,7 @@ Do not add share/export buttons (EC-UI-06). No broken features.
 ### 5.1 Landing only
 
 ```
-Dark landing page for AI Trip Planner, Delhi NCR. Next.js + Tailwind.
+Dark landing page for TripPilot AI, Delhi NCR. Next.js + Tailwind.
 Hero with gradient mesh background (#0B0F14 → #1a1f2e). Large headline, muted subtext.
 Orange CTA button "Start planning" → /plan.
 Small API status pill (connected / offline) using fetch /health.

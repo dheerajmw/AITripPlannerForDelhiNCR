@@ -1,4 +1,4 @@
-# Edge Cases: AI Trip Planner (Delhi MVP)
+# Edge Cases: TripPilot AI (Delhi MVP)
 
 Detailed edge-case catalog for implementation and QA, derived from [problemStatement.md](./problemStatement.md) and [architecture.md](./architecture.md).
 
