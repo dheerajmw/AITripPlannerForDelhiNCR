@@ -55,10 +55,17 @@ def hero_plan() -> str:
     """
 
 
-def feature_card(icon: str, title: str, text: str, beta: bool = False) -> str:
+def feature_card(
+    icon: str,
+    title: str,
+    text: str,
+    beta: bool = False,
+    accent: str = "primary",
+) -> str:
     beta_html = '<span class="beta-tag">Beta</span>' if beta else ""
+    accent_class = f"accent-{accent}" if accent in ("primary", "secondary", "tertiary") else "accent-primary"
     return f"""
-    <div class="glass-card feature">
+    <div class="glass-card glass-card-hover feature {accent_class}">
       <div class="feature-icon">{icon}</div>
       <div>
         <h3 style="margin:0;font-size:1.15rem;color:#e7defb!important;">
@@ -72,14 +79,24 @@ def feature_card(icon: str, title: str, text: str, beta: bool = False) -> str:
     """
 
 
+def cta_button_html(label: str, page: str) -> str:
+    return f"""
+    <p style="text-align:center;margin-top:1.25rem;">
+      <a class="btn-primary-cta" href="?page={page}">{html.escape(label)}</a>
+    </p>
+    """
+
+
 def map_preview_block() -> str:
     return f"""
-    <div class="glass-card" style="padding:1rem;">
+    <div class="glass-card glass-card-hover" style="padding:1rem;">
+      <div class="map-preview-wrap">
       <div class="map-preview" style="background-image:url('{MAP_PREVIEW}');">
         <div class="label">
           <span>LIVE VIEW</span><br/>
           <span>Connaught Place</span>
         </div>
+      </div>
       </div>
     </div>
     """

@@ -11,6 +11,7 @@ import streamlit as st
 from trippilot_deploy.bootstrap import init_backend
 from trippilot_deploy.theme import inject_theme
 from trippilot_deploy.ui import (
+    cta_button_html,
     feature_card,
     header_html,
     hero_home,
@@ -62,21 +63,35 @@ def _format_inr(low: int, high: int) -> str:
 
 def render_home(poi_count: int) -> None:
     st.markdown(hero_home(), unsafe_allow_html=True)
-
-    if st.button("Start planning →", type="primary", use_container_width=False):
-        _go("plan")
+    st.markdown(cta_button_html("Start planning →", "plan"), unsafe_allow_html=True)
 
     st.markdown('<span class="section-label">Capabilities</span>', unsafe_allow_html=True)
     st.markdown(
-        feature_card("🗺️", "Real OSM venues", "Accurate geospatial data for cafes, monuments, and metro stations in NCR."),
+        feature_card(
+            "🗺️",
+            "Real OSM venues",
+            "Accurate geospatial data for cafes, monuments, and metro stations in NCR.",
+            accent="primary",
+        ),
         unsafe_allow_html=True,
     )
     st.markdown(
-        feature_card("👣", "Optimized walking route", "Smart pathfinding for Delhi street layout and pedestrian shortcuts."),
+        feature_card(
+            "👣",
+            "Optimized walking route",
+            "Smart pathfinding for Delhi street layout and pedestrian shortcuts.",
+            accent="secondary",
+        ),
         unsafe_allow_html=True,
     )
     st.markdown(
-        feature_card("✨", "Optional AI tips", "Peak hours, local etiquette, and hidden spots from Groq.", beta=True),
+        feature_card(
+            "✨",
+            "Optional AI tips",
+            "Peak hours, local etiquette, and hidden spots from Groq.",
+            beta=True,
+            accent="tertiary",
+        ),
         unsafe_allow_html=True,
     )
     st.markdown(map_preview_block(), unsafe_allow_html=True)
@@ -173,7 +188,7 @@ def render_plan(poi_count: int) -> None:
 
     st.markdown(
         '<p style="text-align:center;margin-top:1.5rem;">'
-        '<a href="?page=home" style="color:#edb1ff;">← Back to home</a></p>',
+        '<a class="tp-back-link" href="?page=home">← Back to home</a></p>',
         unsafe_allow_html=True,
     )
 

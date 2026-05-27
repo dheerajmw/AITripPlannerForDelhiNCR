@@ -74,6 +74,21 @@ h1, h2, h3, h4, p, label, .stMarkdown, span {
     color: #d1c2d2 !important;
     border-radius: 9999px !important;
     font-weight: 500 !important;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+        box-shadow 0.2s ease, transform 0.15s ease !important;
+}
+
+@media (hover: hover) {
+    [data-testid="stPills"] button:hover:not([aria-pressed="true"]) {
+        background: #2c273c !important;
+        border-color: #7a6a7d !important;
+        color: #e7defb !important;
+        transform: translateY(-1px);
+    }
+
+    [data-testid="stPills"] button[aria-pressed="true"]:hover {
+        box-shadow: 0 0 16px rgba(157, 80, 187, 0.35) !important;
+    }
 }
 
 [data-testid="stPills"] button[aria-pressed="true"] {
@@ -93,6 +108,11 @@ div[data-baseweb="select"] > div {
     border-color: #4e4350 !important;
 }
 
+.stButton > button {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+        transform 0.15s ease, filter 0.2s ease !important;
+}
+
 .stButton > button[kind="primary"] {
     background: #9d50bb !important;
     color: #fff3fd !important;
@@ -103,11 +123,64 @@ div[data-baseweb="select"] > div {
     width: 100%;
 }
 
+@media (hover: hover) {
+    .stButton > button[kind="primary"]:hover:not(:disabled) {
+        box-shadow: 0 0 32px rgba(157, 80, 187, 0.55) !important;
+        filter: brightness(1.08);
+        transform: translateY(-2px);
+    }
+
+    .stButton > button[kind="primary"]:active:not(:disabled) {
+        transform: scale(0.98) translateY(0) !important;
+        box-shadow: 0 0 18px rgba(157, 80, 187, 0.4) !important;
+    }
+
+    .stButton > button[kind="secondary"]:hover:not(:disabled) {
+        background: #2c273c !important;
+        border-color: #9d50bb !important;
+        color: #edb1ff !important;
+        transform: translateY(-1px);
+    }
+
+    .stButton > button[kind="secondary"]:active:not(:disabled) {
+        transform: scale(0.98) !important;
+    }
+}
+
 .stButton > button[kind="secondary"] {
     background: transparent !important;
     color: #e7defb !important;
     border: 1px solid #4e4350 !important;
     border-radius: 1rem !important;
+}
+
+/* HTML CTA (matches .btn-primary on Next.js) */
+a.btn-primary-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1.5rem auto 0;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    background: #9d50bb;
+    color: #fff3fd !important;
+    font-weight: 600;
+    text-decoration: none !important;
+    box-shadow: 0 0 20px rgba(157, 80, 187, 0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+@media (hover: hover) {
+    a.btn-primary-cta:hover {
+        box-shadow: 0 0 32px rgba(157, 80, 187, 0.55);
+        filter: brightness(1.08);
+        transform: translateY(-2px);
+    }
+
+    a.btn-primary-cta:active {
+        transform: scale(0.98);
+    }
 }
 
 div[data-testid="stMetric"] {
@@ -132,6 +205,25 @@ div[data-testid="stMetricLabel"] {
 /* Toggle */
 [data-testid="stToggle"] label span {
     color: #e7defb !important;
+}
+
+@media (hover: hover) {
+    [data-testid="stToggle"]:hover label span {
+        color: #edb1ff !important;
+    }
+}
+
+a.tp-back-link {
+    color: #edb1ff !important;
+    text-decoration: none !important;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+@media (hover: hover) {
+    a.tp-back-link:hover {
+        color: #fff3fd !important;
+        text-decoration: underline !important;
+    }
 }
 
 /* Custom components */
@@ -166,6 +258,20 @@ div[data-testid="stMetricLabel"] {
     color: #d1c2d2 !important;
     text-decoration: none;
     font-weight: 500;
+}
+
+.tp-nav a {
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+@media (hover: hover) {
+    .tp-nav a:hover { color: #edb1ff !important; }
+    .tp-nav a.active:hover { color: #fff3fd !important; }
+    .tp-brand:hover { filter: brightness(1.15); }
+    .tp-badge:hover {
+        border-color: #7a6a7d;
+        background: #3f3a52;
+    }
 }
 
 .tp-nav a.active { color: #edb1ff !important; font-weight: 700; }
@@ -205,6 +311,18 @@ div[data-testid="stMetricLabel"] {
         radial-gradient(at 100% 100%, rgba(237, 177, 255, 0.05) 0px, transparent 50%);
     background-color: #211d31;
     text-align: center;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (hover: hover) {
+    .tp-hero.mesh:hover {
+        border-color: rgba(157, 80, 187, 0.45);
+        box-shadow: 0 0 48px rgba(157, 80, 187, 0.14);
+    }
+
+    .tp-hero.photo:hover {
+        border-color: rgba(93, 217, 208, 0.25);
+    }
 }
 
 .tp-hero.photo {
@@ -249,6 +367,37 @@ div[data-testid="stMetricLabel"] {
     background: #211d31;
     padding: 1.5rem;
     margin-bottom: 1rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@media (hover: hover) {
+    .glass-card-hover:hover,
+    .glass-card.feature:hover {
+        background: #1d182d !important;
+        border-color: #6b5a6d !important;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+        transform: translateY(-2px);
+    }
+
+    .glass-card.feature.accent-primary:hover .feature-icon {
+        border-color: #edb1ff !important;
+        box-shadow: 0 0 14px rgba(237, 177, 255, 0.3);
+    }
+
+    .glass-card.feature.accent-secondary:hover .feature-icon {
+        border-color: #5dd9d0 !important;
+        box-shadow: 0 0 14px rgba(93, 217, 208, 0.3);
+    }
+
+    .glass-card.feature.accent-tertiary:hover .feature-icon {
+        border-color: #d6baff !important;
+        box-shadow: 0 0 14px rgba(214, 186, 255, 0.3);
+    }
+
+    .glass-card.feature:hover .feature-icon {
+        transform: scale(1.06);
+    }
 }
 
 .glass-card.feature {
@@ -267,6 +416,7 @@ div[data-testid="stMetricLabel"] {
     justify-content: center;
     font-size: 1.25rem;
     flex-shrink: 0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .section-label {
@@ -297,6 +447,14 @@ div[data-testid="stMetricLabel"] {
     border: 1px solid rgba(78, 67, 80, 0.5);
     background: #1d182d;
     margin: 1rem 0;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+@media (hover: hover) {
+    .ai-toggle-box:hover {
+        border-color: rgba(157, 80, 187, 0.4);
+        background: #211d31;
+    }
 }
 
 .summary-bar {
@@ -344,10 +502,23 @@ div[data-testid="stMetricLabel"] {
     background: #211d31;
     padding: 1.5rem;
     margin-bottom: 1rem;
-    transition: background 0.2s;
+    transition: background 0.2s ease, border-color 0.2s ease,
+        box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.stop-card:hover { background: #2c273c; }
+@media (hover: hover) {
+    .stop-card:hover {
+        background: #2c273c;
+        border-color: #6b5a6d;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .stop-notes:hover {
+        background: rgba(157, 80, 187, 0.16) !important;
+        border-left-color: #edb1ff !important;
+    }
+}
 
 .stop-time {
     font-size: 0.8rem;
@@ -395,6 +566,37 @@ div[data-testid="stMetricLabel"] {
     margin-bottom: 1.5rem;
     background: #211d31;
     padding: 0.5rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+div[data-testid="stMap"] {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease;
+}
+
+@media (hover: hover) {
+    .map-frame:hover {
+        border-color: #6b5a6d;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .map-frame:hover div[data-testid="stMap"] {
+        box-shadow: inset 0 0 0 1px rgba(157, 80, 187, 0.2);
+    }
+}
+
+.map-preview-wrap {
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid #4e4350;
+    transition: border-color 0.3s ease;
+}
+
+@media (hover: hover) {
+    .map-preview-wrap:hover {
+        border-color: #7a6a7d;
+    }
 }
 
 .map-preview {
@@ -404,6 +606,17 @@ div[data-testid="stMetricLabel"] {
     background-position: center;
     position: relative;
     overflow: hidden;
+    filter: grayscale(1);
+    opacity: 0.55;
+    transition: transform 0.7s ease, filter 0.7s ease, opacity 0.7s ease;
+}
+
+@media (hover: hover) {
+    .map-preview-wrap:hover .map-preview {
+        transform: scale(1.05);
+        filter: grayscale(0.2);
+        opacity: 0.85;
+    }
 }
 
 .map-preview::after {
