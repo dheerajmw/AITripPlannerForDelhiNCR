@@ -46,8 +46,8 @@ class Settings(BaseSettings):
     groq_timeout_sec: int = 25
 
     osrm_base_url: str = Field(
-        default="https://router.project-osrm.org",
-        description="OSRM API base (Phase 2)",
+        default="http://router.project-osrm.org",
+        description="OSRM API base (Phase 2). Use http:// for the public demo on macOS LibreSSL.",
     )
 
     @property

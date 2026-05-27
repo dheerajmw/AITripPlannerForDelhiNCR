@@ -3,6 +3,7 @@
 import logging
 import math
 from typing import List, Optional, Tuple
+from urllib.parse import urlparse, urlunparse
 
 import httpx
 
@@ -24,6 +25,11 @@ def haversine_m(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
     )
     return 2 * r * math.asin(math.sqrt(a))
+
+
+def _http_fallback_url(https_url: str) -> str:
+    parsed = urlparse(https_url)
+    return urlunparse(parsed._replace(scheme="http"))
 
 
 def haversine_duration_sec(
@@ -75,10 +81,7 @@ class RoutingClient:
         url = f"{self._base_url}/table/v1/{profile}/{coord_str}"
         params = {"annotations": "duration"}
 
-        with httpx.Client(timeout=self._timeout) as client:
-            response = client.get(url, params=params)
-            response.raise_for_status()
-            data = response.json()
+        data = self._get_json(url, params)
 
         if data.get("code") != "Ok":
             raise RuntimeError(data.get("message", "OSRM table error"))
@@ -96,6 +99,26 @@ class RoutingClient:
                 row.append(val)
             matrix.append(row)
         return matrix
+
+    def _get_json(self, url: str, params: dict) -> dict:
+        """GET JSON from OSRM; retry over HTTP when HTTPS fails (common on macOS LibreSSL)."""
+        last_exc: Optional[Exception] = None
+        urls = [url]
+        if url.startswith("https://"):
+            urls.append(_http_fallback_url(url))
+
+        with httpx.Client(timeout=self._timeout, follow_redirects=True) as client:
+            for attempt_url in urls:
+                try:
+                    response = client.get(attempt_url, params=params)
+                    response.raise_for_status()
+                    return response.json()
+                except httpx.HTTPError as exc:
+                    last_exc = exc
+                    if attempt_url == urls[-1]:
+                        raise
+                    logger.info("OSRM HTTPS failed (%s), retrying over HTTP", exc)
+        raise RuntimeError("OSRM request failed") from last_exc
 
     def _haversine_matrix(self, coordinates: List[Tuple[float, float]]) -> DurationMatrix:
         n = len(coordinates)

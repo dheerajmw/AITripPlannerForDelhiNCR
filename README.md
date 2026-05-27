@@ -71,6 +71,10 @@ make dev-backend       # from repo root — must use backend/ in this project
 
 Health should look like: `"poi_count": 13705` (not `null`). If `poi_count` is `null`, restart the backend from this repo and run `make ingest` if the DB is missing.
 
+### “OSRM unavailable” warning
+
+On macOS, system Python often uses **LibreSSL**, which cannot complete TLS to the public OSRM demo over `https://`. The backend defaults to `http://router.project-osrm.org` and retries over HTTP if HTTPS fails. Restart the backend after pulling updates. Override with `OSRM_BASE_URL` in `backend/.env` if you run your own OSRM instance.
+
 ### 3. Both apps (from repo root)
 
 ```bash
