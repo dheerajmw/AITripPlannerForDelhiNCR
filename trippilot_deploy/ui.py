@@ -1,102 +1,143 @@
-"""HTML layout helpers for Streamlit (mirrors Next.js components)."""
+"""HTML layout helpers for Streamlit (Night Explorer / stitch_trip_pilot_ai_planner)."""
 
 from __future__ import annotations
 
 import html
 
-from trippilot_deploy.theme import HERO_IMAGE, MAP_PREVIEW
+from trippilot_deploy.theme import HERO_IMAGE, NIGHTSCAPE_IMAGE
+
+NAV_ITEMS = [
+    ("home", "Dashboard", "📊"),
+    ("plan", "Generate Trip", "✨"),
+    ("itinerary", "Saved Trips", "🔖"),
+]
 
 
-def header_html(active: str, poi_count: int | None = None) -> str:
-    def link(page: str, label: str, href_page: str) -> str:
-        cls = "active" if active == page else ""
-        return f'<a class="{cls}" href="?page={href_page}">{label}</a>'
+def sidebar_html(active: str, poi_count: int | None = None) -> str:
+    items = []
+    for page, label, icon in NAV_ITEMS:
+        cls = "nav-item-active" if active == page else ""
+        items.append(
+            f'<a class="nav-item {cls}" href="?page={page}">'
+            f'<span>{icon}</span><span>{html.escape(label)}</span></a>'
+        )
+    nav = "\n".join(items)
 
     badge = ""
     if poi_count is not None and poi_count > 0:
         badge = (
-            f'<span class="tp-badge"><span class="dot"></span>'
-            f"API ready · {poi_count:,} places</span>"
+            f'<p class="sidebar-badge">'
+            f'<span class="dot"></span> {poi_count:,} places loaded</p>'
         )
-    elif poi_count is not None:
-        badge = '<span class="tp-badge">Starting…</span>'
 
     return f"""
-    <div class="tp-header">
-      <span class="tp-brand">🧭 TripPilot AI</span>
-      <nav class="tp-nav">
-        {link("home", "Home", "home")}
-        {link("plan", "Plan", "plan")}
-        {link("itinerary", "Itinerary", "itinerary")}
-      </nav>
+    <aside class="tp-sidebar">
+      <div class="sidebar-brand">
+        <h1>Trip Pilot</h1>
+        <p>AI Navigator</p>
+      </div>
+      <nav class="sidebar-nav">{nav}</nav>
       {badge}
-    </div>
+      <a class="btn-sidebar-cta" href="?page=plan">＋ New Expedition</a>
+    </aside>
     """
 
 
-def hero_home(city: str = "Delhi NCR") -> str:
+def top_bar_html(status: str = "Ready") -> str:
     return f"""
-    <div class="tp-hero mesh">
-      <h1>Plan your {html.escape(city)} day in <span class="accent">minutes</span></h1>
-      <p>Real OSM places, walking routes, and optional AI tips.</p>
-    </div>
+    <header class="tp-topbar">
+      <div class="tp-topbar-left">
+        <span class="tp-status-label">Status</span>
+        <span class="tp-status-active">{html.escape(status)}</span>
+      </div>
+      <div class="tp-topbar-right">
+        <span class="tp-search">Search destinations…</span>
+      </div>
+    </header>
+    """
+
+
+def hero_explore(city: str = "Delhi NCR") -> str:
+    return f"""
+    <section class="hero-explore">
+      <div class="hero-bg" style="background-image:url('{NIGHTSCAPE_IMAGE}')"></div>
+      <div class="hero-gradient"></div>
+      <div class="ai-orbit ai-orbit-lg"></div>
+      <div class="ai-orbit ai-orbit-xl"></div>
+      <div class="hero-content">
+        <h1>Explore {html.escape(city)}<br/><span class="accent">with AI</span></h1>
+        <p>Your luxury digital concierge. Craft a personalized expedition using real OSM data
+        and optional Groq tips.</p>
+      </div>
+    </section>
     """
 
 
 def hero_plan() -> str:
     return f"""
-    <div class="tp-hero photo" style="background-image: url('{HERO_IMAGE}');">
-      <div>
-        <h1>Customize Your Trip</h1>
-        <p>Tailor your Delhi experience with AI-driven precision. Every route is optimized for
-        walking times and your interests.</p>
+    <section class="hero-plan" style="background-image:url('{HERO_IMAGE}')">
+      <div class="hero-gradient"></div>
+      <div class="hero-content-left">
+        <h1>Generate Your Expedition</h1>
+        <p>Tailor your Delhi experience with AI-driven precision and optimized walking routes.</p>
       </div>
-    </div>
+    </section>
     """
 
 
-def feature_card(
-    icon: str,
-    title: str,
-    text: str,
-    beta: bool = False,
-    accent: str = "primary",
-) -> str:
-    beta_html = '<span class="beta-tag">Beta</span>' if beta else ""
-    accent_class = f"accent-{accent}" if accent in ("primary", "secondary", "tertiary") else "accent-primary"
-    return f"""
-    <div class="glass-card glass-card-hover feature {accent_class}">
-      <div class="feature-icon">{icon}</div>
-      <div>
-        <h3 style="margin:0;font-size:1.15rem;color:#e7defb!important;">
-          {html.escape(title)} {beta_html}
-        </h3>
-        <p style="margin:0.35rem 0 0;color:#d1c2d2!important;font-size:0.875rem;">
-          {html.escape(text)}
-        </p>
-      </div>
-    </div>
-    """
-
-
-def cta_button_html(label: str, page: str) -> str:
-    return f"""
-    <p style="text-align:center;margin-top:1.25rem;">
-      <a class="btn-primary-cta" href="?page={page}">{html.escape(label)}</a>
-    </p>
-    """
-
-
-def map_preview_block() -> str:
-    return f"""
-    <div class="glass-card glass-card-hover" style="padding:1rem;">
-      <div class="map-preview-wrap">
-      <div class="map-preview" style="background-image:url('{MAP_PREVIEW}');">
-        <div class="label">
-          <span>LIVE VIEW</span><br/>
-          <span>Connaught Place</span>
+def quick_plan_card() -> str:
+    return """
+    <div class="glass-panel quick-plan-card">
+      <div class="shine-line"></div>
+      <div class="quick-plan-grid">
+        <div><span class="field-label">📍 Destination</span>
+          <p class="field-value">India Gate, Delhi</p></div>
+        <div><span class="field-label">🕐 Duration</span>
+          <p class="field-value">4h · 8h · 1 day</p></div>
+        <div><span class="field-label">✨ Interests</span>
+          <div class="chip-row">
+            <span class="chip chip-cyan">Food</span>
+            <span class="chip chip-teal">History</span>
+            <span class="chip chip-amber">Nature</span>
+          </div></div>
+        <div class="quick-plan-cta">
+          <a class="btn-primary-cta" href="?page=plan">Customize →</a>
         </div>
       </div>
+    </div>
+    """
+
+
+def bento_grid_html() -> str:
+    return """
+    <div class="bento-grid">
+      <div class="glass-panel bento-card bento-wide">
+        <span class="bento-tag">Exclusive Access</span>
+        <h3>Curated Dining at Taj</h3>
+        <p>AI identified lower wait times for window seats at Varq tonight.</p>
+      </div>
+      <div class="glass-panel bento-card bento-stats">
+        <div class="stats-icon">📊</div>
+        <h3>Live Insights</h3>
+        <div class="stat-row"><span>Crowd: GK-II</span><span class="teal">Low</span></div>
+        <div class="stat-bar"><div class="stat-fill teal" style="width:30%"></div></div>
+        <div class="stat-row"><span>Traffic: Cyber Hub</span><span class="error">High</span></div>
+        <div class="stat-bar"><div class="stat-fill error" style="width:85%"></div></div>
+      </div>
+      <div class="glass-panel bento-card bento-sm">
+        <span class="bento-icon">🚕</span>
+        <h4>Premium Transit</h4>
+        <p>Zero-wait travel coordinated with your AI itinerary.</p>
+      </div>
+      <div class="glass-panel bento-card bento-sm">
+        <span class="bento-icon">🏛️</span>
+        <h4>Historical Walk</h4>
+        <p>AI audio guide for Lodhi Gardens at your pace.</p>
+      </div>
+      <div class="glass-panel bento-card bento-sm">
+        <span class="bento-icon">🎭</span>
+        <h4>Late Night Arts</h4>
+        <p>Immersive theater — AI recommends tickets.</p>
       </div>
     </div>
     """
@@ -110,18 +151,61 @@ def summary_bar_html(meta: dict, summary: dict) -> str:
     ai = ""
     if meta.get("planner_mode") == "ai":
         status = "AI Optimized" if meta.get("ai_status") == "success" else "AI Fallback"
-        ai = f'<span style="color:#edb1ff;font-size:0.8rem;">✨ {status}</span>'
+        ai = f'<span class="ai-badge">✨ {status}</span>'
     return f"""
     <div class="summary-bar">
-      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.75rem;">
-        <span class="summary-pill">📍 {html.escape(meta.get("city", "Delhi NCR"))}</span>
-        <span class="summary-stats">
-          <span>🕐 {hours}h</span>
-          <span>₹{low:,}–₹{high:,}</span>
-          <span>{summary.get("total_stops", 0)} stops</span>
-        </span>
-      </div>
+      <span class="summary-pill">📍 {html.escape(meta.get("city", "Delhi NCR"))}</span>
+      <span class="summary-stats">
+        <span>🕐 {hours}h</span>
+        <span>₹{low:,}–₹{high:,}</span>
+        <span>{summary.get("total_stops", 0)} stops</span>
+      </span>
       {ai}
+    </div>
+    """
+
+
+def expedition_header_html(meta: dict, summary: dict) -> str:
+    mode = "AI-enhanced" if meta.get("planner_mode") == "ai" else "Standard"
+    budget = meta.get("budget_tier", "medium")
+    hours = round(meta.get("duration_minutes", 0) / 60)
+    return f"""
+    <div class="expedition-header">
+      <h1>Your expedition</h1>
+      <div class="badge-row">
+        <span class="badge badge-teal">{hours}h</span>
+        <span class="badge badge-amber">{html.escape(budget)} budget</span>
+        {"<span class='badge badge-cyan'>✨ AI enhanced</span>" if mode == "AI-enhanced" else ""}
+      </div>
+      <p class="expedition-sub">
+        {mode} plan · {summary.get("total_travel_min", 0)} min walking ·
+        {summary.get("total_stops", 0)} stops
+      </p>
+    </div>
+    """
+
+
+def stats_panel_html(meta: dict, summary: dict) -> str:
+    cost = summary.get("total_cost_inr", {})
+    routing = meta.get("routing_source") or "planner"
+    return f"""
+    <div class="glass-panel stats-panel">
+      <h3>Expedition stats</h3>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <p class="stat-label">Travel</p>
+          <p class="stat-value">{summary.get("total_travel_min", 0)}<span> min</span></p>
+        </div>
+        <div class="stat-box">
+          <p class="stat-label">Est. cost</p>
+          <p class="stat-value">₹{cost.get("low", 0):,}–{cost.get("high", 0):,}</p>
+        </div>
+        <div class="stat-box stat-wide">
+          <p class="stat-tip-title">✨ Pilot intelligence</p>
+          <p class="stat-tip">Routing via {html.escape(routing)}. Costs are rough estimates —
+          not bookings or tickets.</p>
+        </div>
+      </div>
     </div>
     """
 
@@ -135,14 +219,22 @@ def stop_card_html(stop: dict) -> str:
         notes = f'<div class="stop-notes">✨ {html.escape(stop["notes"])}</div>'
     return f"""
     <div class="stop-card">
-      <div>
-        <span class="stop-time">{html.escape(stop.get("arrive_at", ""))} – {html.escape(stop.get("depart_at", ""))}</span>
-        <span class="stop-cat">{html.escape(stop.get("category", ""))}</span>
-        <div class="stop-name">{stop.get("order", "")}. {html.escape(stop.get("name", ""))}</div>
-        <div class="stop-meta">
-          Visit {stop.get("visit_minutes", 0)}m · ₹{cost.get("low", 0):,}–₹{cost.get("high", 0):,}{travel_txt}
-        </div>
+      <span class="stop-time">{html.escape(stop.get("arrive_at", ""))} – {html.escape(stop.get("depart_at", ""))}</span>
+      <span class="stop-cat">{html.escape(stop.get("category", ""))}</span>
+      <div class="stop-name">{stop.get("order", "")}. {html.escape(stop.get("name", ""))}</div>
+      <div class="stop-meta">
+        Visit {stop.get("visit_minutes", 0)}m · ₹{cost.get("low", 0):,}–₹{cost.get("high", 0):,}{travel_txt}
       </div>
       {notes}
+    </div>
+    """
+
+
+def empty_itinerary_html() -> str:
+    return """
+    <div class="glass-panel empty-state">
+      <p class="empty-icon">📍</p>
+      <h2>No saved trips yet</h2>
+      <p>Generate a plan to see your expedition itinerary.</p>
     </div>
     """

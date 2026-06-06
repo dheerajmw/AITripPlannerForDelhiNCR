@@ -1,7 +1,8 @@
 """
-TripPilot AI — Delhi NCR (Streamlit)
+Trip Pilot — Delhi NCR (Streamlit)
 
-Matches the Next.js UI (dark Voyager theme). Deploy with main file: streamlit_app.py
+Night Explorer UI — matches Next.js stitch_trip_pilot_ai_planner design.
+Deploy with main file: streamlit_app.py
 """
 
 from __future__ import annotations
@@ -11,18 +12,21 @@ import streamlit as st
 from trippilot_deploy.bootstrap import init_backend
 from trippilot_deploy.theme import inject_theme
 from trippilot_deploy.ui import (
-    cta_button_html,
-    feature_card,
-    header_html,
-    hero_home,
+    bento_grid_html,
+    empty_itinerary_html,
+    expedition_header_html,
+    hero_explore,
     hero_plan,
-    map_preview_block,
+    quick_plan_card,
+    sidebar_html,
+    stats_panel_html,
     stop_card_html,
     summary_bar_html,
+    top_bar_html,
 )
 
 st.set_page_config(
-    page_title="TripPilot AI — Delhi NCR",
+    page_title="Trip Pilot — Delhi NCR",
     page_icon="🧭",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -31,6 +35,7 @@ st.set_page_config(
 inject_theme()
 
 PAGES = ("home", "plan", "itinerary")
+STATUS = {"home": "Ready", "plan": "Planning", "itinerary": "Itinerary"}
 
 
 def _current_page() -> str:
@@ -44,7 +49,7 @@ def _go(page: str) -> None:
     st.rerun()
 
 
-@st.cache_resource(show_spinner="Starting TripPilot AI…")
+@st.cache_resource(show_spinner="Starting Trip Pilot…")
 def _bootstrap() -> tuple[bool, str]:
     return init_backend()
 
@@ -57,48 +62,31 @@ def _poi_count() -> int:
         return POIService(db).count()
 
 
-def _format_inr(low: int, high: int) -> str:
-    return f"₹{low:,}–₹{high:,}"
+def _shell_start(page: str, poi_count: int | None) -> None:
+    st.markdown(sidebar_html(page, poi_count), unsafe_allow_html=True)
+    st.markdown('<div class="tp-main-wrap">', unsafe_allow_html=True)
+    st.markdown(top_bar_html(STATUS.get(page, "Ready")), unsafe_allow_html=True)
+    # Mobile nav
+    cols = st.columns(3)
+    labels = [("home", "Dashboard"), ("plan", "Generate"), ("itinerary", "Saved")]
+    for col, (p, label) in zip(cols, labels, strict=True):
+        with col:
+            if st.button(label, use_container_width=True, type="primary" if page == p else "secondary"):
+                _go(p)
 
 
-def render_home(poi_count: int) -> None:
-    st.markdown(hero_home(), unsafe_allow_html=True)
-    st.markdown(cta_button_html("Start planning →", "plan"), unsafe_allow_html=True)
+def _shell_end() -> None:
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown('<span class="section-label">Capabilities</span>', unsafe_allow_html=True)
+
+def render_home() -> None:
+    st.markdown(hero_explore(), unsafe_allow_html=True)
     st.markdown(
-        feature_card(
-            "🗺️",
-            "Real OSM venues",
-            "Accurate geospatial data for cafes, monuments, and metro stations in NCR.",
-            accent="primary",
-        ),
+        '<div style="padding:0 1.5rem;">' + quick_plan_card() + "</div>",
         unsafe_allow_html=True,
     )
-    st.markdown(
-        feature_card(
-            "👣",
-            "Optimized walking route",
-            "Smart pathfinding for Delhi street layout and pedestrian shortcuts.",
-            accent="secondary",
-        ),
-        unsafe_allow_html=True,
-    )
-    st.markdown(
-        feature_card(
-            "✨",
-            "Optional AI tips",
-            "Peak hours, local etiquette, and hidden spots from Groq.",
-            beta=True,
-            accent="tertiary",
-        ),
-        unsafe_allow_html=True,
-    )
-    st.markdown(map_preview_block(), unsafe_allow_html=True)
-    st.markdown(
-        '<p class="footer-note">Estimates only · MVP · No bookings or tickets</p>',
-        unsafe_allow_html=True,
-    )
+    st.markdown(bento_grid_html(), unsafe_allow_html=True)
+    st.markdown('<p class="footer-note">Estimates only · MVP · No bookings or tickets</p>', unsafe_allow_html=True)
 
 
 def render_plan(poi_count: int) -> None:
@@ -110,103 +98,73 @@ def render_plan(poi_count: int) -> None:
 
     st.markdown(hero_plan(), unsafe_allow_html=True)
 
-    with st.container():
-        st.markdown('<div class="form-panel">', unsafe_allow_html=True)
+    st.markdown('<div style="padding:0 1.5rem 2rem;">', unsafe_allow_html=True)
+    st.markdown('<div class="glass-panel form-panel">', unsafe_allow_html=True)
+    st.markdown('<div class="shine-line"></div>', unsafe_allow_html=True)
 
-        budget = st.pills(
-            "Estimated Budget",
-            ["low", "medium", "high"],
-            default="medium",
-            selection_mode="single",
-            key="pill_budget",
-        )
-        interests = st.pills(
-            "Primary Interests",
-            ["food", "history", "nature", "nightlife"],
-            default=["history", "nature"],
-            selection_mode="multi",
-            key="pill_interests",
-        )
-        duration = st.pills(
-            "Travel Duration",
-            ["4h", "8h", "1d"],
-            default="8h",
-            selection_mode="single",
-            key="pill_duration",
-        )
-
-        st.markdown(
-            """
-            <div class="ai-toggle-box">
-              <div>
-                <strong style="color:#e7defb;">Enhance with AI (Groq)</strong>
-                <p style="margin:0.25rem 0 0;font-size:0.85rem;color:#d1c2d2;">
-                  Real-time tips &amp; hidden gems per stop
-                </p>
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        use_ai = st.toggle("Enable AI tips", value=False, label_visibility="collapsed")
-
-        st.caption(f"{poi_count:,} places in database")
-
-        if st.button("Generate Itinerary →", type="primary", use_container_width=True):
-            if not interests:
-                st.error("Select at least one interest.")
-            else:
-                try:
-                    body = ItineraryGenerateRequest(
-                        budget=budget or "medium",
-                        interests=list(interests),
-                        duration=duration or "8h",
-                    )
-                except ValueError as exc:
-                    st.error(str(exc))
-                else:
-                    with st.spinner(
-                        "Building your itinerary…" + (" (AI tips)" if use_ai else "")
-                    ):
-                        try:
-                            with get_session_factory()() as db:
-                                if use_ai:
-                                    result = AIPlannerService(db).generate(body)
-                                else:
-                                    result = PlannerOrchestrator(db).generate(body)
-                        except AppError as exc:
-                            st.error(exc.message)
-                        except Exception as exc:
-                            st.error(f"Could not generate itinerary: {exc}")
-                        else:
-                            st.session_state["itinerary"] = result.model_dump()
-                            st.session_state["use_ai"] = use_ai
-                            st.session_state["last_interests"] = list(interests)
-                            _go("itinerary")
-
-        st.markdown("</div>", unsafe_allow_html=True)
-
-    st.markdown(
-        '<p style="text-align:center;margin-top:1.5rem;">'
-        '<a class="tp-back-link" href="?page=home">← Back to home</a></p>',
-        unsafe_allow_html=True,
+    budget = st.pills(
+        "Estimated Budget",
+        ["low", "medium", "high"],
+        default="medium",
+        selection_mode="single",
+        key="pill_budget",
     )
+    interests = st.pills(
+        "Primary Interests",
+        ["food", "history", "nature", "nightlife"],
+        default=["history", "nature"],
+        selection_mode="multi",
+        key="pill_interests",
+    )
+    duration = st.pills(
+        "Travel Duration",
+        ["4h", "8h", "1d"],
+        default="8h",
+        selection_mode="single",
+        key="pill_duration",
+    )
+
+    use_ai = st.toggle("✨ Enhance with AI (Groq) — real-time tips per stop", value=False)
+    st.caption(f"{poi_count:,} places in database")
+
+    if st.button("⚡ Generate My Trip", type="primary", use_container_width=True):
+        if not interests:
+            st.error("Select at least one interest.")
+        else:
+            try:
+                body = ItineraryGenerateRequest(
+                    budget=budget or "medium",
+                    interests=list(interests),
+                    duration=duration or "8h",
+                )
+            except ValueError as exc:
+                st.error(str(exc))
+            else:
+                with st.spinner("AI Navigator processing…" + (" (Groq tips)" if use_ai else "")):
+                    try:
+                        with get_session_factory()() as db:
+                            if use_ai:
+                                result = AIPlannerService(db).generate(body)
+                            else:
+                                result = PlannerOrchestrator(db).generate(body)
+                    except AppError as exc:
+                        st.error(exc.message)
+                    except Exception as exc:
+                        st.error(f"Could not generate itinerary: {exc}")
+                    else:
+                        st.session_state["itinerary"] = result.model_dump()
+                        st.session_state["use_ai"] = use_ai
+                        st.session_state["last_interests"] = list(interests)
+                        _go("itinerary")
+
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
 
 def render_itinerary() -> None:
     data = st.session_state.get("itinerary")
     if not data:
-        st.markdown(
-            """
-            <div class="glass-card" style="text-align:center;padding:3rem;">
-              <p style="font-size:2rem;margin:0;">📍</p>
-              <h2 style="color:#e7defb!important;">No itinerary yet</h2>
-              <p style="color:#d1c2d2!important;">Generate a plan to see your day itinerary.</p>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if st.button("Plan your day", type="primary"):
+        st.markdown(empty_itinerary_html(), unsafe_allow_html=True)
+        if st.button("＋ New Expedition", type="primary"):
             _go("plan")
         return
 
@@ -215,43 +173,45 @@ def render_itinerary() -> None:
     stops = data["stops"]
 
     st.markdown(summary_bar_html(meta, summary), unsafe_allow_html=True)
-
-    mode = "AI-enhanced" if meta.get("planner_mode") == "ai" else "Standard"
-    st.markdown(
-        f"### Your itinerary\n"
-        f"<span style='color:#d1c2d2;'>{mode} plan · "
-        f"{summary.get('total_travel_min', 0)} min walking</span>",
-        unsafe_allow_html=True,
-    )
+    st.markdown(expedition_header_html(meta, summary), unsafe_allow_html=True)
 
     for warning in meta.get("warnings") or []:
         st.warning(warning)
     if meta.get("fallback_reason"):
         st.info(f"AI fallback: {meta['fallback_reason']}")
 
-    if stops:
-        import pandas as pd
+    col_timeline, col_side = st.columns([3, 2])
 
-        st.markdown('<div class="map-frame">', unsafe_allow_html=True)
-        map_df = pd.DataFrame(
-            {"lat": [s["lat"] for s in stops], "lon": [s["lon"] for s in stops]}
-        )
-        st.map(map_df, latitude="lat", longitude="lon", zoom=11, height=320)
+    with col_timeline:
+        st.markdown('<div class="itinerary-body">', unsafe_allow_html=True)
+        st.markdown('<span class="section-label">Timeline</span>', unsafe_allow_html=True)
+        for stop in stops:
+            st.markdown(stop_card_html(stop), unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown('<span class="section-label">Timeline</span>', unsafe_allow_html=True)
-    for stop in stops:
-        st.markdown(stop_card_html(stop), unsafe_allow_html=True)
+    with col_side:
+        if stops:
+            import pandas as pd
 
-    col1, col2 = st.columns(2)
-    with col1:
+            st.markdown(
+                '<div class="map-frame"><div class="map-label">Live Route</div>',
+                unsafe_allow_html=True,
+            )
+            map_df = pd.DataFrame(
+                {"lat": [s["lat"] for s in stops], "lon": [s["lon"] for s in stops]}
+            )
+            st.map(map_df, latitude="lat", longitude="lon", zoom=11, height=280)
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown(stats_panel_html(meta, summary), unsafe_allow_html=True)
+
+    c1, c2 = st.columns(2)
+    with c1:
         if st.button("↻ Regenerate", type="primary", use_container_width=True):
             _regenerate_itinerary()
-    with col2:
+    with c2:
         if st.button("＋ Plan another day", use_container_width=True):
             _go("plan")
-
-    st.caption("Costs are rough estimates for planning only — not bookings or tickets.")
 
 
 def _regenerate_itinerary() -> None:
@@ -310,36 +270,25 @@ def main() -> None:
         except Exception:
             poi_count = None
 
-    st.markdown(header_html(page, poi_count), unsafe_allow_html=True)
-
-    # Nav fallback (query-param links in header work on full reload; buttons always work)
-    n1, n2, n3, _ = st.columns([1, 1, 1, 4])
-    with n1:
-        if st.button("Home", use_container_width=True, type="secondary" if page != "home" else "primary"):
-            _go("home")
-    with n2:
-        if st.button("Plan", use_container_width=True, type="secondary" if page != "plan" else "primary"):
-            _go("plan")
-    with n3:
-        if st.button("Itinerary", use_container_width=True, type="secondary" if page != "itinerary" else "primary"):
-            _go("itinerary")
+    _shell_start(page, poi_count if ok else None)
 
     if not ok:
         st.error("Cannot start planner")
         st.markdown(bootstrap_msg)
         st.markdown(
-            "Reboot the app on Streamlit Cloud. The POI database should download automatically "
-            "(~1 minute). See [docs/streamlit-deploy.md](https://github.com/dheerajmw/"
-            "AITripPlannerForDelhiNCR/blob/main/docs/streamlit-deploy.md)."
+            "Reboot the app on Streamlit Cloud — the POI database downloads automatically (~1 min)."
         )
+        _shell_end()
         return
 
     if page == "home":
-        render_home(poi_count or 0)
+        render_home()
     elif page == "plan":
         render_plan(poi_count or 0)
     else:
         render_itinerary()
+
+    _shell_end()
 
 
 if __name__ == "__main__":
