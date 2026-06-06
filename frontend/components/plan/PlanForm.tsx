@@ -2,22 +2,24 @@
 
 import Image from "next/image";
 import {
-  ArrowRight,
+  Calendar,
   Diamond,
   Footprints,
   History,
-  Loader2,
+  MapPin,
   Moon,
-  Wallet,
   Sparkles,
   UtensilsCrossed,
+  Wallet,
   WifiOff,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 
+import { AiProcessingView } from "@/components/plan/AiProcessingView";
 import { ApiError, generateItinerary } from "@/lib/api";
 import { loadPlanForm, saveItinerary, savePlanForm } from "@/lib/storage";
 import { validatePlanForm } from "@/lib/validation";
@@ -26,11 +28,36 @@ import type { BudgetTier, DurationKey, Interest } from "@/types/itinerary";
 const HERO_IMAGE =
   "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=1600&auto=format&fit=crop";
 
-const INTERESTS: { id: Interest; label: string; icon: LucideIcon }[] = [
-  { id: "food", label: "Food", icon: UtensilsCrossed },
-  { id: "history", label: "History", icon: History },
-  { id: "nature", label: "Nature", icon: Footprints },
-  { id: "nightlife", label: "Nightlife", icon: Moon },
+const INTERESTS: {
+  id: Interest;
+  label: string;
+  icon: LucideIcon;
+  chipClass: string;
+}[] = [
+  {
+    id: "food",
+    label: "Food",
+    icon: UtensilsCrossed,
+    chipClass: "border-secondary/20 bg-secondary/10 text-secondary",
+  },
+  {
+    id: "history",
+    label: "History",
+    icon: History,
+    chipClass: "border-primary/20 bg-primary/10 text-primary",
+  },
+  {
+    id: "nature",
+    label: "Nature",
+    icon: Footprints,
+    chipClass: "border-secondary/20 bg-secondary/10 text-secondary",
+  },
+  {
+    id: "nightlife",
+    label: "Nightlife",
+    icon: Moon,
+    chipClass: "border-tertiary/20 bg-tertiary/10 text-tertiary",
+  },
 ];
 
 const BUDGETS: { id: BudgetTier; label: string; icon: LucideIcon }[] = [
@@ -135,10 +162,13 @@ export function PlanForm() {
     });
   }
 
+  if (pending) {
+    return <AiProcessingView useAi={useAi} />;
+  }
+
   return (
-    <div className="-mx-container-mobile md:-mx-container-desktop">
-      {/* Hero */}
-      <section className="relative flex h-[265px] w-full items-end overflow-hidden px-container-mobile pb-8 md:px-container-desktop">
+    <div>
+      <section className="relative flex h-[240px] w-full items-end overflow-hidden px-6 pb-8 md:px-10">
         <Image
           src={HERO_IMAGE}
           alt="India Gate at dusk"
@@ -149,7 +179,7 @@ export function PlanForm() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
         <div className="relative z-10 max-w-3xl">
-          <h1 className="text-display-lg font-bold text-on-surface">Customize Your Trip</h1>
+          <h1 className="text-headline-lg font-bold text-on-surface">Generate Your Expedition</h1>
           <p className="mt-2 max-w-xl text-body-md text-on-surface-variant">
             Tailor your Delhi experience with AI-driven precision. Every route is optimized for
             walking times and your interests.
@@ -157,7 +187,7 @@ export function PlanForm() {
         </div>
       </section>
 
-      <section className="mx-auto mt-8 max-w-3xl px-container-mobile md:px-0">
+      <section className="relative z-10 -mt-8 px-6 pb-16 md:px-10">
         {offline ? (
           <div className="mb-6 flex items-center gap-2 rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
             <WifiOff className="h-4 w-4 shrink-0" aria-hidden />
@@ -167,48 +197,80 @@ export function PlanForm() {
 
         <form
           onSubmit={onSubmit}
-          className="space-y-10 rounded-xl border border-outline-variant bg-surface-container p-8 shadow-2xl"
+          className="glass-panel relative mx-auto max-w-4xl overflow-hidden rounded-2xl p-8 shadow-2xl md:p-10"
         >
-          {/* Budget */}
-          <div className="space-y-4">
-            <span className="section-label">Estimated Budget</span>
-            <div className="grid grid-cols-3 gap-3">
-              {BUDGETS.map(({ id, label, icon: Icon }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setBudget(id)}
-                  className={`flex flex-col items-center justify-center rounded-xl border py-4 text-sm transition-all ${
-                    budget === id
-                      ? "border-primary-container bg-primary-container text-on-primary-container shadow-glow"
-                      : "border-outline-variant text-on-surface-variant hover:bg-surface-container-high"
-                  }`}
-                >
-                  <Icon className="mb-1 h-5 w-5" aria-hidden />
-                  {label}
-                </button>
-              ))}
+          <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+            {/* Budget */}
+            <div className="space-y-4">
+              <span className="section-label flex items-center gap-2">
+                <Wallet className="h-4 w-4" aria-hidden />
+                Estimated Budget
+              </span>
+              <div className="grid grid-cols-3 gap-3">
+                {BUDGETS.map(({ id, label, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setBudget(id)}
+                    className={`flex flex-col items-center justify-center rounded-xl border py-4 text-sm transition-all active:scale-95 ${
+                      budget === id
+                        ? "border-primary bg-primary/15 text-primary shadow-glow"
+                        : "border-outline-variant text-on-surface-variant hover:border-primary/30 hover:bg-white/5"
+                    }`}
+                  >
+                    <Icon className="mb-1 h-5 w-5" aria-hidden />
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Duration */}
+            <div className="space-y-4">
+              <span className="section-label flex items-center gap-2">
+                <Calendar className="h-4 w-4" aria-hidden />
+                Travel Duration
+              </span>
+              <div className="flex gap-3">
+                {DURATIONS.map(({ id, label }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setDuration(id)}
+                    className={`flex-1 rounded-xl border py-3 text-center text-sm transition-all active:scale-95 ${
+                      duration === id
+                        ? "border-primary bg-primary text-on-primary-container shadow-glow"
+                        : "border-outline-variant text-on-surface-variant hover:border-primary/30 hover:bg-white/5"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Interests */}
-          <div className="space-y-4">
-            <span className="section-label">Primary Interests</span>
+          <div className="mt-10 space-y-4">
+            <span className="section-label flex items-center gap-2">
+              <MapPin className="h-4 w-4" aria-hidden />
+              Primary Interests
+            </span>
             <div className="flex flex-wrap gap-3">
-              {INTERESTS.map(({ id, label, icon: Icon }) => {
+              {INTERESTS.map(({ id, label, icon: Icon, chipClass }) => {
                 const on = selected.includes(id);
                 return (
                   <button
                     key={id}
                     type="button"
                     onClick={() => toggleInterest(id)}
-                    className={`flex items-center gap-2 rounded-full border px-6 py-3 text-body-md transition-all ${
-                      on
-                        ? "border-primary-container bg-primary-container/15 text-primary"
-                        : "border-outline-variant text-on-surface-variant hover:bg-surface-container-high"
+                    className={`interest-chip flex items-center gap-2 px-4 py-2 text-xs ${
+                      on ? chipClass : "border-outline-variant bg-surface-container-low text-on-surface-variant hover:bg-white/5"
                     }`}
                   >
-                    <Icon className="h-4 w-4" aria-hidden />
+                    <Icon className="h-3.5 w-3.5" aria-hidden />
                     {label}
                   </button>
                 );
@@ -216,31 +278,10 @@ export function PlanForm() {
             </div>
           </div>
 
-          {/* Duration */}
-          <div className="space-y-4">
-            <span className="section-label">Travel Duration</span>
-            <div className="flex gap-4">
-              {DURATIONS.map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setDuration(id)}
-                  className={`flex-1 rounded-xl border py-3 text-center text-sm transition-all ${
-                    duration === id
-                      ? "border-primary-container bg-primary-container text-on-primary-container"
-                      : "border-outline-variant text-on-surface-variant hover:bg-surface-container-high"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* AI toggle */}
-          <div className="flex items-center justify-between rounded-xl border border-outline-variant/30 bg-surface-container-low p-4">
+          <div className="ai-toggle-box mt-10 flex items-center justify-between rounded-xl border border-outline-variant/30 bg-surface-container-low p-4 transition-colors hover:border-primary/30">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-primary-container/20 p-2">
+              <div className="rounded-lg bg-primary/20 p-2">
                 <Sparkles className="h-5 w-5 text-primary" aria-hidden />
               </div>
               <div>
@@ -257,13 +298,13 @@ export function PlanForm() {
                 onChange={(e) => setUseAi(e.target.checked)}
                 className="peer sr-only"
               />
-              <div className="peer h-6 w-11 rounded-full bg-surface-container-highest after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-primary-container peer-checked:after:translate-x-full" />
+              <div className="peer h-6 w-11 rounded-full bg-surface-container-highest after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-primary peer-checked:after:translate-x-full" />
             </label>
           </div>
 
           {error ? (
             <div
-              className="rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container"
+              className="mt-6 rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container"
               role="alert"
             >
               {error}
@@ -273,37 +314,23 @@ export function PlanForm() {
             </div>
           ) : null}
 
-          {pending && slowHint ? (
-            <p className="text-sm text-on-surface-variant">Still working… this can take a moment.</p>
+          {slowHint ? (
+            <p className="mt-4 text-sm text-on-surface-variant">Still working… this can take a moment.</p>
           ) : null}
 
-          <div className="pt-2">
-            {pending ? (
-              <div className="flex flex-col items-center justify-center space-y-4 py-4">
-                <Loader2 className="h-12 w-12 animate-spin text-primary" aria-hidden />
-                <div className="text-center">
-                  <p className="animate-pulse font-bold text-primary">
-                    {useAi ? "Generating with AI tips…" : "Building your itinerary…"}
-                  </p>
-                  {useAi ? (
-                    <p className="mt-1 font-mono text-label-mono text-on-surface-variant">
-                      Usually 5–20 seconds
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-            ) : (
-              <button type="submit" disabled={offline} className="btn-primary w-full rounded-xl py-5">
-                Generate Itinerary
-                <ArrowRight className="h-5 w-5" aria-hidden />
-              </button>
-            )}
-          </div>
+          <button
+            type="submit"
+            disabled={offline}
+            className="btn-primary mt-8 w-full rounded-xl py-5"
+          >
+            Generate My Trip
+            <Zap className="h-5 w-5" aria-hidden />
+          </button>
         </form>
 
         <p className="mt-8 text-center text-sm text-on-surface-variant">
-          <Link href="/" className="text-primary hover:underline">
-            Back to home
+          <Link href="/" className="text-primary transition-colors hover:text-secondary">
+            ← Back to dashboard
           </Link>
         </p>
       </section>

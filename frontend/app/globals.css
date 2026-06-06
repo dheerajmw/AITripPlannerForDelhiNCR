@@ -4,14 +4,15 @@
 
 :root {
   color-scheme: dark;
-  --background: #151024;
-  --on-surface: #e7defb;
-  --on-surface-variant: #d1c2d2;
-  --outline-variant: #4e4350;
-  --surface-container: #211d31;
-  --surface-container-low: #1d182d;
-  --primary-container: #9d50bb;
-  --on-primary-container: #fff3fd;
+  --background: #0e1416;
+  --on-surface: #dee3e6;
+  --on-surface-variant: #bcc9cd;
+  --outline-variant: #3d494c;
+  --surface-container: #1b2122;
+  --surface-container-low: #171d1e;
+  --primary: #4cd7f6;
+  --primary-container: #06b6d4;
+  --on-primary-container: #00424f;
 }
 
 html {
@@ -19,41 +20,44 @@ html {
 }
 
 body {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
   color: var(--on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(180deg, #0d0b1f 0%, #1a0b2e 50%, #151024 100%);
+  background: #0e1416;
   min-height: 100dvh;
 }
 
 @layer components {
   .glass-panel {
-    border: 1px solid var(--outline-variant);
-    background-color: rgb(21 16 36 / 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(14, 20, 22, 0.72);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(148, 163, 184, 0.12);
   }
 
   .glass-card {
     border-radius: 1rem;
     border: 1px solid var(--outline-variant);
     background-color: var(--surface-container);
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+      transform 0.2s ease;
   }
 
   .glass-card-hover:hover {
     background-color: var(--surface-container-low);
+    border-color: rgba(76, 215, 246, 0.35);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+    transform: translateY(-2px);
   }
 
   .section-label {
-    font-family: var(--font-geist-mono), monospace;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.05em;
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
-    color: var(--on-surface-variant);
+    color: var(--primary);
   }
 
   .btn-primary {
@@ -61,17 +65,22 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 1rem;
-    background-color: var(--primary-container);
+    border-radius: 0.75rem;
+    background-color: var(--primary);
     padding: 1rem 2rem;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--on-primary-container);
-    box-shadow: 0 0 20px rgba(157, 80, 187, 0.3);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.875rem;
+    box-shadow: 0 0 20px rgba(76, 215, 246, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   }
 
   .btn-primary:hover {
-    box-shadow: 0 0 30px rgba(157, 80, 187, 0.5);
+    box-shadow: 0 0 35px rgba(76, 215, 246, 0.6);
+    filter: brightness(1.08);
+    transform: translateY(-1px);
   }
 
   .btn-primary:active {
@@ -83,13 +92,64 @@ body {
     cursor: not-allowed;
   }
 
-  .travel-line-connector {
-    position: absolute;
-    left: 1.5rem;
-    top: 2.5rem;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, var(--primary-container), transparent);
+  .btn-ghost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--outline-variant);
+    background: transparent;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: var(--on-surface);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(76, 215, 246, 0.35);
+    color: var(--primary);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: var(--on-surface-variant);
+    transition: all 0.3s ease;
+  }
+
+  .nav-item:hover {
+    color: var(--on-surface);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 15px rgba(173, 198, 255, 0.12);
+  }
+
+  .nav-item-active {
+    background: rgba(6, 182, 212, 0.2);
+    color: var(--primary);
+    border: 1px solid rgba(76, 215, 246, 0.3);
+    box-shadow: 0 0 10px rgba(173, 198, 255, 0.2);
+  }
+
+  .interest-chip {
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .interest-chip:hover {
+    transform: translateY(-1px);
   }
 
   .travel-line-dashed {
@@ -98,13 +158,24 @@ body {
     top: 0;
     bottom: 0;
     width: 2px;
-    background: repeating-linear-gradient(
-      to bottom,
-      #5dd9d0 0,
-      #5dd9d0 8px,
-      transparent 8px,
-      transparent 16px
-    );
+    background: linear-gradient(to bottom, #4cd7f6 0%, transparent 100%);
+    opacity: 0.35;
+  }
+
+  .ai-orbit {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(76, 215, 246, 0.3);
+    animation: orbit-spin 20s linear infinite;
+    pointer-events: none;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 15px rgba(76, 215, 246, 0.25);
+  }
+
+  .glow-cyan:hover {
+    box-shadow: 0 0 25px rgba(76, 215, 246, 0.45);
   }
 
   .pulsing-dot {
@@ -113,7 +184,7 @@ body {
 
   .ai-pulse {
     animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    box-shadow: 0 0 15px rgba(237, 177, 255, 0.2);
+    box-shadow: 0 0 15px rgba(76, 215, 246, 0.25);
   }
 }
 
@@ -129,18 +200,27 @@ body {
   }
 }
 
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .leaflet-container {
-  background: #211d31 !important;
+  background: #090f11 !important;
   border-radius: 1rem;
   font-family: inherit;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #211d31;
-  color: #e7defb;
+  background: #1b2122;
+  color: #dee3e6;
   border-radius: 0.5rem;
 }
 
 .leaflet-popup-tip {
-  background: #211d31;
+  background: #1b2122;
 }

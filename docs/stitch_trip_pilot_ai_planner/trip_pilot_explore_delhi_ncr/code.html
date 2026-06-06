@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trip Pilot | Night Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#303638",
+                    "secondary-fixed": "#71f8e4",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-dim": "#0e1416",
+                    "outline": "#869397",
+                    "surface-variant": "#303638",
+                    "surface-container-lowest": "#090f11",
+                    "surface-container-low": "#171d1e",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container": "#1b2122",
+                    "on-surface-variant": "#bcc9cd",
+                    "primary-fixed": "#acedff",
+                    "on-secondary": "#003731",
+                    "inverse-on-surface": "#2b3133",
+                    "on-primary-fixed-variant": "#004e5c",
+                    "surface": "#0e1416",
+                    "inverse-surface": "#dee3e6",
+                    "on-primary-container": "#00424f",
+                    "on-tertiary": "#472a00",
+                    "surface-tint": "#4cd7f6",
+                    "on-secondary-container": "#003f38",
+                    "secondary-container": "#04b4a2",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-error-container": "#ffdad6",
+                    "error": "#ffb4ab",
+                    "on-surface": "#dee3e6",
+                    "primary-fixed-dim": "#4cd7f6",
+                    "primary-container": "#06b6d4",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-background": "#dee3e6",
+                    "secondary": "#4fdbc8",
+                    "inverse-primary": "#00687a",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-primary": "#003640",
+                    "tertiary-container": "#e79400",
+                    "outline-variant": "#3d494c",
+                    "tertiary": "#ffb95f",
+                    "background": "#0e1416",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#4fdbc8",
+                    "on-tertiary-container": "#563400",
+                    "surface-container-high": "#252b2d",
+                    "on-secondary-fixed": "#00201c",
+                    "on-primary-fixed": "#001f26",
+                    "surface-bright": "#343a3c",
+                    "primary": "#4cd7f6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "container-margin": "24px",
+                    "section-gap": "48px",
+                    "gutter": "16px",
+                    "unit": "8px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0e1416;
+            color: #dee3e6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .ai-orbit {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(76, 215, 246, 0.3);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .glow-button {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 35px rgba(6, 182, 212, 0.6);
+            transform: translateY(-1px);
+        }
+        .map-overlay {
+            mask-image: radial-gradient(circle at center, black, transparent 80%);
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="dark selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-white/10 bg-surface/60 backdrop-blur-xl flex flex-col p-6 z-50 shadow-[0_0_20px_rgba(173,198,255,0.1)]">
+<div class="mb-10">
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-primary">Trip Pilot</h1>
+<p class="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-bold opacity-70">AI Navigator</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container/20 text-primary border border-primary/30 shadow-[0_0_10px_rgba(173,198,255,0.2)] transition-all duration-300 ease-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-body-md text-body-md">Generate Trip</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-body-md text-body-md">Saved Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-body-md text-body-md">Explore Delhi NCR</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-body-md text-body-md">AI Insights</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 border-t border-white/5 pt-6">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-label-md text-label-md mb-4 active:scale-95 transition-transform">
+                New Expedition
+            </button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen relative overflow-hidden">
+<!-- Top App Bar -->
+<header class="w-full h-16 sticky top-0 z-40 flex justify-between items-center px-10 bg-gradient-to-b from-background to-transparent">
+<div class="flex gap-8">
+<a class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Status</a>
+<a class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors" href="#">Updates</a>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<input class="bg-surface-container-low/60 border border-outline-variant/30 rounded-full px-6 py-1.5 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all w-64" placeholder="Search destinations..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1.5 text-on-surface-variant text-xl">search</span>
+</div>
+<div class="flex gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="relative h-[614px] flex flex-col items-center justify-center text-center px-6">
+<!-- Background Elements -->
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background z-10"></div>
+<img alt="Delhi Nightscape" class="w-full h-full object-cover opacity-40 mix-blend-screen" data-alt="A cinematic night-time aerial view of Delhi's urban landscape featuring glowing city lights and winding highways. The atmosphere is hazy and evocative, with deep midnight blue shadows and vibrant orange and cyan artificial lighting reflecting off architectural surfaces. A digital map grid overlay subtly glows across the scene, creating a sophisticated, high-tech travel atmosphere consistent with a premium AI luxury concierge aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFRovKqB0AJDEq0AXPsKfsVG5LfmWVj-FhOsg0eQZeFW7nx46a_Qief5XqB--1tFB061WK6duk3jAgv1PL0bnDpt5ZpGq_VMUWrzfmM5M_h8FAXElr678j2kcJ3VQq39RJFKRnErSAxPpLv0ZzcDh3KzcjJUCt2ZVIClkx7DoTxSMK2rgSk57RUBheoQug3dBTAJb36O5VBH42xiKT66Y5AjjCk_LExG-S8rZ_79XSrlNKQtRi6uMxi3kOPAiqolWyt98tMI2oq_ul"/>
+<div class="map-overlay absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+</div>
+<!-- AI Orbit Visual Decoration -->
+<div class="ai-orbit w-[500px] h-[500px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 pointer-events-none"></div>
+<div class="ai-orbit w-[700px] h-[700px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none" style="animation-direction: reverse; animation-duration: 35s;"></div>
+<div class="relative z-20 max-w-4xl">
+<h2 class="font-display-lg text-display-lg mb-4 text-white drop-shadow-2xl">
+                    Explore Delhi NCR <br/> <span class="text-primary italic">with AI</span>
+</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto opacity-80">
+                    Your luxury digital concierge. Seamlessly craft a personalized expedition across the National Capital Region using our advanced neural engine.
+                </p>
+</div>
+</section>
+<!-- Planning Card (Glassmorphism) -->
+<section class="relative z-30 -mt-24 px-10 pb-20">
+<div class="glass-panel max-w-5xl mx-auto rounded-2xl p-10 shadow-2xl relative overflow-hidden">
+<!-- Subtle Gradient Shine -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="space-y-3">
+<label class="font-label-md text-label-md text-primary uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            Destination
+                        </label>
+<select class="w-full bg-surface-container-lowest/50 border-none rounded-lg p-3 text-on-surface focus:ring-2 focus:ring-primary/40 appearance-none">
+<option>Connaught Place, Delhi</option>
+<option>Cyber Hub, Gurgaon</option>
+<option>Sector 18, Noida</option>
+<option>Hauz Khas Village</option>
+</select>
+</div>
+<div class="space-y-3">
+<label class="font-label-md text-label-md text-primary uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">calendar_today</span>
+                            Duration
+                        </label>
+<select class="w-full bg-surface-container-lowest/50 border-none rounded-lg p-3 text-on-surface focus:ring-2 focus:ring-primary/40 appearance-none">
+<option>Single Night Out</option>
+<option>Full Weekend</option>
+<option>3-Day Expedition</option>
+</select>
+</div>
+<div class="space-y-3">
+<label class="font-label-md text-label-md text-primary uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">auto_awesome</span>
+                            Interests
+                        </label>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-[10px] text-secondary font-bold uppercase cursor-pointer hover:bg-secondary/20 transition-colors">Nightlife</span>
+<span class="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] text-primary font-bold uppercase cursor-pointer hover:bg-primary/20 transition-colors">Dining</span>
+<span class="px-3 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-[10px] text-tertiary font-bold uppercase cursor-pointer hover:bg-tertiary/20 transition-colors">Culture</span>
+</div>
+</div>
+<div class="flex items-end">
+<button class="glow-button w-full bg-primary text-on-primary py-4 rounded-xl font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2">
+                            Generate My Trip
+                            <span class="material-symbols-outlined">bolt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bento Grid - Recent AI Insights & Recommendations -->
+<div class="mt-20 grid grid-cols-1 md:grid-cols-12 gap-6 max-w-6xl mx-auto">
+<!-- Large Feature Card -->
+<div class="md:col-span-8 glass-panel rounded-2xl p-6 h-80 relative group overflow-hidden cursor-pointer">
+<img alt="Taj Mahal" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 transition-transform duration-700" data-alt="A luxurious interior of a modern restaurant in Delhi at night. The lighting is low and warm, featuring architectural pendant lights and neon accents. Outside the large glass windows, the blurred lights of the city create a cinematic bokeh effect. The overall mood is sophisticated, exclusive, and representative of high-end urban exploration in a dark-mode travel application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU2ZUfGwdQZjShWVos5l32viliSN9QqTK1AZnFmipxuuKff5pbibLR4EXgw9NY23aoDrztH0c2fXVkA0czLM7HC_RsyvMwbBwYog-hj5VX45wfLFd6q8oxsg22GqUlc9SFIBrjUPupwCvdzd1tSz3dXG0b4mJbFg17Jgur8PxrQ_UKJGMlmoIENahLWmLmhxElgEXxT7624Zbp_h5vjUa2Np8kVohLfr-iERjzr9x0gRaf_K0A7RKSXv5Z9STjI_m8Y2ZtwSmE1xoA"/>
+<div class="relative z-10 flex flex-col h-full justify-end">
+<span class="text-secondary font-bold uppercase text-[10px] tracking-widest mb-2">Exclusive Access</span>
+<h3 class="font-headline-lg text-headline-lg text-white mb-2">Curated Dining at Taj</h3>
+<p class="text-on-surface-variant text-sm max-w-md">Our AI identified a 15% lower wait time for window seats at Varq tonight. Book now for a seamless experience.</p>
+</div>
+</div>
+<!-- Small Info Card -->
+<div class="md:col-span-4 glass-panel rounded-2xl p-6 h-80 flex flex-col justify-between border-primary/20">
+<div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">insights</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-white">Live Insights</h4>
+<div class="mt-4 space-y-4">
+<div class="flex items-center justify-between text-sm">
+<span class="text-on-surface-variant">Crowd Density: GK-II</span>
+<span class="text-secondary">Low</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[30%] shadow-[0_0_8px_#4fdbc8]"></div>
+</div>
+<div class="flex items-center justify-between text-sm">
+<span class="text-on-surface-variant">Traffic: Cyber Hub</span>
+<span class="text-error">High</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-error h-full w-[85%] shadow-[0_0_8px_#ffb4ab]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Cards -->
+<div class="md:col-span-4 glass-panel rounded-2xl p-6 h-64 flex flex-col border-white/5 hover:border-primary/40 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-primary mb-4 transition-transform group-hover:rotate-12">local_taxi</span>
+<h4 class="text-white font-bold mb-2">Premium Transit</h4>
+<p class="text-on-surface-variant text-sm flex-1">Coordinate luxury fleet arrivals with your AI-generated itinerary for zero-wait travel.</p>
+</div>
+<div class="md:col-span-4 glass-panel rounded-2xl p-6 h-64 flex flex-col border-white/5 hover:border-secondary/40 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-secondary mb-4 transition-transform group-hover:scale-110">history_edu</span>
+<h4 class="text-white font-bold mb-2">Historical Walk</h4>
+<p class="text-on-surface-variant text-sm flex-1">New AI audio guide available for Lodhi Gardens. Discover the sultanate era at your own pace.</p>
+</div>
+<div class="md:col-span-4 glass-panel rounded-2xl p-6 h-64 flex flex-col border-white/5 hover:border-tertiary/40 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-tertiary mb-4 transition-transform group-hover:translate-x-1">theater_comedy</span>
+<h4 class="text-white font-bold mb-2">Late Night Arts</h4>
+<p class="text-on-surface-variant text-sm flex-1">Immersive theater experience at Mandi House starting at 10:00 PM. AI recommends tickets.</p>
+</div>
+</div>
+</section>
+<!-- Dynamic Map Background Decor -->
+<div class="absolute bottom-0 right-0 w-[600px] h-[600px] opacity-10 pointer-events-none" style="background: radial-gradient(circle, rgba(76,215,246,0.15) 0%, transparent 70%);"></div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Interactive Glow Following Cursor
+        document.addEventListener('mousemove', (e) => {
+            const panels = document.querySelectorAll('.glass-panel');
+            panels.forEach(panel => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (x > 0 && y > 0 && x < rect.width && y < rect.height) {
+                    panel.style.boxShadow = `inset 0 0 40px rgba(76, 215, 246, 0.05), 0 10px 30px -10px rgba(0, 0, 0, 0.5)`;
+                } else {
+                    panel.style.boxShadow = `none`;
+                }
+            });
+        });
+
+        // Simple tab state handler (simulation)
+        const navItems = document.querySelectorAll('nav a');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => {
+                    nav.classList.remove('bg-primary-container/20', 'text-primary', 'border-primary/30', 'shadow-[0_0_10px_rgba(173,198,255,0.2)]');
+                    nav.classList.add('text-on-surface-variant');
+                });
+                item.classList.add('bg-primary-container/20', 'text-primary', 'border-primary/30', 'shadow-[0_0_10px_rgba(173,198,255,0.2)]');
+                item.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

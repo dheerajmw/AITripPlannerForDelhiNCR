@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trip Pilot | AI Navigator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-surface {
+            background: rgba(15, 23, 42, 0.78);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .ai-pulse-ring {
+            animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .route-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 5s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        .glow-cyan { box-shadow: 0 0 15px rgba(76, 215, 246, 0.3); }
+        .glow-teal { box-shadow: 0 0 15px rgba(79, 219, 200, 0.3); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-highest": "#303638",
+                      "secondary-fixed": "#71f8e4",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface-dim": "#0e1416",
+                      "outline": "#869397",
+                      "surface-variant": "#303638",
+                      "surface-container-lowest": "#090f11",
+                      "surface-container-low": "#171d1e",
+                      "error-container": "#93000a",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "surface-container": "#1b2122",
+                      "on-surface-variant": "#bcc9cd",
+                      "primary-fixed": "#acedff",
+                      "on-secondary": "#003731",
+                      "inverse-on-surface": "#2b3133",
+                      "on-primary-fixed-variant": "#004e5c",
+                      "surface": "#0e1416",
+                      "inverse-surface": "#dee3e6",
+                      "on-primary-container": "#00424f",
+                      "on-tertiary": "#472a00",
+                      "surface-tint": "#4cd7f6",
+                      "on-secondary-container": "#003f38",
+                      "secondary-container": "#04b4a2",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "on-error-container": "#ffdad6",
+                      "error": "#ffb4ab",
+                      "on-surface": "#dee3e6",
+                      "primary-fixed-dim": "#4cd7f6",
+                      "primary-container": "#06b6d4",
+                      "tertiary-fixed": "#ffddb8",
+                      "on-background": "#dee3e6",
+                      "secondary": "#4fdbc8",
+                      "inverse-primary": "#00687a",
+                      "on-secondary-fixed-variant": "#005048",
+                      "on-primary": "#003640",
+                      "tertiary-container": "#e79400",
+                      "outline-variant": "#3d494c",
+                      "tertiary": "#ffb95f",
+                      "background": "#0e1416",
+                      "on-error": "#690005",
+                      "secondary-fixed-dim": "#4fdbc8",
+                      "on-tertiary-container": "#563400",
+                      "surface-container-high": "#252b2d",
+                      "on-secondary-fixed": "#00201c",
+                      "on-primary-fixed": "#001f26",
+                      "surface-bright": "#343a3c",
+                      "primary": "#4cd7f6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "container-margin": "24px",
+                      "section-gap": "48px",
+                      "gutter": "16px",
+                      "unit": "8px",
+                      "stack-md": "16px",
+                      "stack-lg": "32px"
+              },
+              "fontFamily": {
+                      "label-md": ["Inter"],
+                      "caption": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background selection:bg-primary/30">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-white/10 bg-surface/60 backdrop-blur-xl shadow-[0_0_20px_rgba(173,198,255,0.1)] z-50 flex flex-col p-8">
+<div class="mb-12">
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-primary">Trip Pilot</h1>
+<p class="font-body-md text-on-surface-variant/60 text-sm mt-1 uppercase tracking-widest">AI Navigator</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container/20 text-primary border border-primary/30 shadow-[0_0_10px_rgba(173,198,255,0.2)] transition-all duration-300 ease-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all duration-300 ease-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-body-md">Generate Trip</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all duration-300 ease-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-body-md">Saved Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all duration-300 ease-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-body-md">Explore Delhi NCR</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all duration-300 ease-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-body-md">AI Insights</span>
+</a>
+</nav>
+<div class="mt-auto pt-8 border-t border-white/5">
+<button class="w-full py-4 bg-primary text-on-primary font-label-md rounded-xl shadow-[0_0_20px_rgba(76,215,246,0.3)] hover:brightness-110 transition-all mb-6">
+                New Expedition
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span class="text-sm font-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="help">help</span>
+<span class="text-sm font-label-md">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 min-h-screen relative overflow-hidden bg-[#07111F]">
+<!-- TopAppBar Placeholder -->
+<header class="w-full h-16 sticky top-0 z-40 flex justify-between items-center px-12 bg-gradient-to-b from-background to-transparent">
+<div class="flex gap-8">
+<a class="font-label-md text-label-md uppercase tracking-widest text-primary font-bold border-b-2 border-primary pb-1" href="#">Status</a>
+<a class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors" href="#">Updates</a>
+</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<div class="flex items-center gap-3 glass-surface px-3 py-1.5 rounded-full">
+<img alt="User" class="w-6 h-6 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeRvdlQVaJy5yUpeLdyYlZ1UEyoH8GCyf9ES163cKBQA1gdZ2jliDCdtQvCWhfIrMFzAoXvcE9XFsqu_7Ptt1HA8z9XRpwJXnCuNzzLcpTmmMzblG8lVIYFjdBPsHk2uBykV6L6O4byjAnc_wEue6MDBdK4nZ3ckURcWiGlgY2xq0rwQD8JzNcAgGm6GcA7o03bPRHO1GBlolCgyrkucW4ooGcQroHsqD3lpJW63mNNXBmFGZNRD6FyUtMCMeaESJStZPl6Buvh41-"/>
+<span class="text-sm font-label-md">Commander</span>
+</div>
+</div>
+</header>
+<!-- AI Processing Scene -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<!-- Background Decorative Stars/Dust -->
+<div class="absolute inset-0 opacity-20">
+<div class="absolute top-1/4 left-1/4 w-1 h-1 bg-white rounded-full"></div>
+<div class="absolute top-3/4 left-1/3 w-1 h-1 bg-primary rounded-full"></div>
+<div class="absolute top-1/2 left-2/3 w-1 h-1 bg-secondary rounded-full"></div>
+<div class="absolute top-1/5 left-4/5 w-1 h-1 bg-white rounded-full"></div>
+</div>
+<!-- Central AI Orbit/Pulse -->
+<div class="relative w-96 h-96 flex items-center justify-center">
+<div class="absolute inset-0 ai-pulse-ring rounded-full border-2 border-primary/30"></div>
+<div class="absolute inset-4 ai-pulse-ring rounded-full border-2 border-secondary/20" style="animation-delay: 1s"></div>
+<div class="absolute inset-12 ai-pulse-ring rounded-full border-2 border-primary/10" style="animation-delay: 2s"></div>
+<div class="relative glass-surface w-32 h-32 rounded-full flex items-center justify-center glow-cyan z-10 border-primary/40">
+<span class="material-symbols-outlined text-5xl text-primary animate-pulse" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<!-- Floating Location Cards -->
+<div class="absolute -top-20 -left-10 float-animation w-48 glass-surface p-4 rounded-xl glow-cyan" style="animation-delay: 0.5s">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="location_on">location_on</span>
+<span class="text-xs font-label-md text-primary tracking-widest uppercase">Location</span>
+</div>
+<p class="text-sm font-headline-md leading-tight">Majestic Taj Mahal</p>
+<div class="mt-2 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary animate-[shimmer_2s_infinite]" style="width: 75%"></div>
+</div>
+</div>
+<div class="absolute -bottom-16 -right-20 float-animation w-56 glass-surface p-4 rounded-xl glow-teal" style="animation-delay: 2s">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="restaurant">restaurant</span>
+<span class="text-xs font-label-md text-secondary tracking-widest uppercase">Cuisine</span>
+</div>
+<p class="text-sm font-headline-md leading-tight">Old Delhi Food Walk</p>
+<p class="text-[10px] text-on-surface-variant mt-1">Analyzing 4,200+ reviews...</p>
+</div>
+<div class="absolute top-1/2 -right-40 float-animation w-40 glass-surface p-3 rounded-xl border-white/5" style="animation-delay: 1.2s">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="hotel">hotel</span>
+<span class="text-[10px] font-label-md text-tertiary tracking-widest uppercase">Stay</span>
+</div>
+<p class="text-xs font-bold mt-1">Oberoi Amarvilas</p>
+</div>
+<!-- SVG Animated Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" viewbox="0 0 400 400">
+<path class="route-path opacity-40" d="M50,100 Q200,50 350,150" fill="none" stroke="url(#cyan-grad)" stroke-width="1.5"></path>
+<path class="route-path opacity-40" d="M350,250 Q250,350 100,300" fill="none" stroke="url(#teal-grad)" stroke-width="1.5" style="animation-delay: 2.5s"></path>
+<defs>
+<lineargradient id="cyan-grad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:var(--primary);stop-opacity:0"></stop>
+<stop offset="50%" style="stop-color:#4cd7f6;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:var(--primary);stop-opacity:0"></stop>
+</lineargradient>
+<lineargradient id="teal-grad" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:var(--secondary);stop-opacity:0"></stop>
+<stop offset="50%" style="stop-color:#4fdbc8;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:var(--secondary);stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+</div>
+<!-- Processing Text Content -->
+<div class="absolute bottom-24 left-1/2 -translate-x-1/2 text-center w-full max-w-xl px-6">
+<div class="space-y-6" id="status-container">
+<div class="flex flex-col items-center">
+<div class="flex items-center gap-4 mb-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<h2 class="font-headline-lg text-headline-lg text-primary tracking-tight" id="status-heading">Discovering locations...</h2>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md" id="status-subtext">Scouring the globe for hidden gems and premium experiences tailored to your traveler profile.</p>
+</div>
+<!-- Progress Bar -->
+<div class="w-full h-1 bg-surface-container-highest/30 rounded-full overflow-hidden glass-surface border-none relative">
+<div class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000 ease-out" id="main-progress" style="width: 15%"></div>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="glass-surface p-4 rounded-xl text-center border-primary/20">
+<p class="text-xs font-label-md text-on-surface-variant uppercase mb-1">Nodes Visited</p>
+<p class="text-xl font-headline-md text-primary">12,482</p>
+</div>
+<div class="glass-surface p-4 rounded-xl text-center border-secondary/20">
+<p class="text-xs font-label-md text-on-surface-variant uppercase mb-1">Opt. Routes</p>
+<p class="text-xl font-headline-md text-secondary">85</p>
+</div>
+<div class="glass-surface p-4 rounded-xl text-center border-white/5">
+<p class="text-xs font-label-md text-on-surface-variant uppercase mb-1">Confidence</p>
+<p class="text-xl font-headline-md">98.4%</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Atmospheric Elements -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] -z-10"></div>
+<div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 blur-[120px] -z-10"></div>
+</main>
+<script>
+        const statuses = [
+            {
+                title: "Discovering locations...",
+                sub: "Scouring the globe for hidden gems and premium experiences tailored to your traveler profile.",
+                progress: 35
+            },
+            {
+                title: "Optimizing routes...",
+                sub: "Calculating time-efficient paths between selected landmarks using real-time traffic and seasonal data.",
+                progress: 65
+            },
+            {
+                title: "Building itinerary...",
+                sub: "Structuring your day-by-day plan with the perfect balance of adventure and relaxation.",
+                progress: 92
+            }
+        ];
+
+        let currentIndex = 0;
+        const heading = document.getElementById('status-heading');
+        const subtext = document.getElementById('status-subtext');
+        const progress = document.getElementById('main-progress');
+
+        function updateStatus() {
+            currentIndex = (currentIndex + 1) % statuses.length;
+            const current = statuses[currentIndex];
+
+            // Fade out
+            heading.classList.add('opacity-0');
+            subtext.classList.add('opacity-0');
+
+            setTimeout(() => {
+                heading.innerText = current.title;
+                subtext.innerText = current.sub;
+                progress.style.width = current.progress + '%';
+                
+                // Fade in
+                heading.classList.remove('opacity-0');
+                subtext.classList.remove('opacity-0');
+            }, 500);
+        }
+
+        setInterval(updateStatus, 5000);
+
+        // Add some random activity to the "Nodes Visited" counter
+        const nodeCounter = document.querySelectorAll('p.text-xl')[0];
+        let nodes = 12482;
+        setInterval(() => {
+            nodes += Math.floor(Math.random() * 50);
+            nodeCounter.innerText = nodes.toLocaleString();
+        }, 800);
+    </script>
+</body></html>

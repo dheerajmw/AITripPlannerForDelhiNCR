@@ -47,7 +47,7 @@ export function ApiStatusBadge({ compact = false }: Props) {
   if (compact) {
     return (
       <div
-        className="hidden items-center gap-2 rounded-full border border-outline-variant bg-surface-container-highest px-3 py-1.5 sm:inline-flex"
+        className="hidden items-center gap-2 rounded-full border border-white/10 bg-surface-container-highest/80 px-3 py-1.5 sm:inline-flex"
         role="status"
         aria-live="polite"
       >
@@ -65,7 +65,7 @@ export function ApiStatusBadge({ compact = false }: Props) {
 
   return (
     <div
-      className="inline-flex items-center gap-2 rounded-full border border-outline-variant bg-surface-container-highest px-3 py-1.5"
+      className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-surface-container-highest/80 px-3 py-1.5"
       role="status"
       aria-live="polite"
     >

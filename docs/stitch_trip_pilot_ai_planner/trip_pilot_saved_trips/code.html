@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trip Pilot - Saved Expeditions</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#303638",
+                    "secondary-fixed": "#71f8e4",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface-dim": "#0e1416",
+                    "outline": "#869397",
+                    "surface-variant": "#303638",
+                    "surface-container-lowest": "#090f11",
+                    "surface-container-low": "#171d1e",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-container": "#1b2122",
+                    "on-surface-variant": "#bcc9cd",
+                    "primary-fixed": "#acedff",
+                    "on-secondary": "#003731",
+                    "inverse-on-surface": "#2b3133",
+                    "on-primary-fixed-variant": "#004e5c",
+                    "surface": "#0e1416",
+                    "inverse-surface": "#dee3e6",
+                    "on-primary-container": "#00424f",
+                    "on-tertiary": "#472a00",
+                    "surface-tint": "#4cd7f6",
+                    "on-secondary-container": "#003f38",
+                    "secondary-container": "#04b4a2",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-error-container": "#ffdad6",
+                    "error": "#ffb4ab",
+                    "on-surface": "#dee3e6",
+                    "primary-fixed-dim": "#4cd7f6",
+                    "primary-container": "#06b6d4",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-background": "#dee3e6",
+                    "secondary": "#4fdbc8",
+                    "inverse-primary": "#00687a",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-primary": "#003640",
+                    "tertiary-container": "#e79400",
+                    "outline-variant": "#3d494c",
+                    "tertiary": "#ffb95f",
+                    "background": "#0e1416",
+                    "on-error": "#690005",
+                    "secondary-fixed-dim": "#4fdbc8",
+                    "on-tertiary-container": "#563400",
+                    "surface-container-high": "#252b2d",
+                    "on-secondary-fixed": "#00201c",
+                    "on-primary-fixed": "#001f26",
+                    "surface-bright": "#343a3c",
+                    "primary": "#4cd7f6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "container-margin": "24px",
+                    "section-gap": "48px",
+                    "gutter": "16px",
+                    "unit": "8px",
+                    "stack-md": "16px",
+                    "stack-lg": "32px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "caption": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0e1416;
+            color: #dee3e6;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(14, 20, 22, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+        .ai-orbit {
+            position: relative;
+        }
+        .ai-orbit::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            border: 2px solid #4cd7f6;
+            opacity: 0.3;
+            animation: spin 4s linear infinite;
+            mask-image: linear-gradient(to right, transparent, black);
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(76, 215, 246, 0.2);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary/30">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-white/10 bg-surface/60 backdrop-blur-xl shadow-[0_0_20px_rgba(173,198,255,0.1)] z-50 flex flex-col p-lg">
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-primary">Trip Pilot</h1>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-70">AI Navigator</p>
+</div>
+<button class="mb-stack-lg w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-primary to-secondary text-on-primary font-label-md text-label-md rounded-xl shadow-[0_0_15px_rgba(76,215,246,0.4)] transition-transform active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+            New Expedition
+        </button>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-body-md text-body-md">Generate Trip</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container/20 text-primary border border-primary/30 shadow-[0_0_10px_rgba(173,198,255,0.2)]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+<span class="font-body-md text-body-md">Saved Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-body-md text-body-md">Explore Delhi NCR</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-body-md text-body-md">AI Insights</span>
+</a>
+</nav>
+<div class="mt-auto pt-stack-lg border-t border-white/5 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+<div class="flex items-center gap-3 px-4 py-3 mt-stack-md">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest overflow-hidden ai-orbit">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfkyABm9fYlfScZul_GsMElhWqQ_VLeTQprlcvxGnu_E0e4YKI0iljKtqiCSUEv9eSNCXOH1_elC8N08AbkUPnJPOckWFxmZsTRnu5a9EigzBTQe7P31MaRdZeOAIY-1aXd7dLcQRr8A4ZYWmgXPS5e3wxXCZU5k76vKlEcOyXBvoJNwHlzYDSZLGNQLTM8iiiptHKRs-OkqrRXUCaYCg_7LpBrFF0_RcKh-lVjiLdc57xL-c4rEkS4agPF3VAwef_09lYBUuO9ceX"/>
+</div>
+<div class="flex flex-col">
+<span class="text-label-md font-label-md">Alex Rivera</span>
+<span class="text-[10px] uppercase tracking-widest text-primary">Explorer Elite</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar -->
+<header class="w-full h-16 sticky top-0 z-40 flex justify-between items-center px-xl bg-gradient-to-b from-background to-transparent">
+<div class="flex items-center gap-8">
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-on-surface font-label-md text-label-md uppercase tracking-widest transition-colors" href="#">Status</a>
+<a class="text-on-surface-variant hover:text-on-surface font-label-md text-label-md uppercase tracking-widest transition-colors" href="#">Updates</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="relative group">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="bg-surface-container-low border border-white/10 rounded-full py-2 pl-10 pr-4 w-64 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 text-body-md font-body-md transition-all" placeholder="Search expeditions..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Canvas Container -->
+<div class="p-container-margin max-w-7xl mx-auto">
+<div class="flex flex-col gap-stack-lg mb-section-gap">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Saved Expeditions</h2>
+<p class="text-body-lg text-on-surface-variant">Review and refine your curated journeys.</p>
+</div>
+<div class="flex gap-stack-sm">
+<button class="px-4 py-2 rounded-lg bg-surface-container border border-white/5 text-label-md font-label-md flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter
+                        </button>
+<button class="px-4 py-2 rounded-lg bg-surface-container border border-white/5 text-label-md font-label-md flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">sort</span>
+                            Recently Saved
+                        </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Feature Card -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl glass-panel glow-hover transition-all duration-500 h-[400px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A cinematic wide-angle shot of a futuristic neon-lit Tokyo street at night, with reflections on rain-slicked pavement and vibrant cyan and teal signage. The atmosphere is immersive and high-tech, featuring a sophisticated color palette of deep navy and electric blue. The mood is one of sophisticated urban exploration, mirroring a luxury flight deck aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeXtSHru2Ffm5UgfQ-f6plSTj0FMFfqtLJEEH0zcYT4-HxTpXX4BN-seobC7nCRAzfRvWSD9GWnQr7WWYyg6GhkNIxCytl_NUcXKy2jEo99MInorLrFbqgwXTZzOPNbsYSRiGsiEkutg0LieVxBOPULPirKwsWvp_X6_sOFnlSZ7jSMY3TxycpfuIWyEU_7axwUAgShbs6LQwGLyoHZ2wdanMjctNs-njNyAAT8KTaEyHaxvgMjlIZZ_pkIYSZ-FoZQfMEGU_vYcXX"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-primary/20 backdrop-blur-md border border-primary/30 text-primary px-3 py-1 rounded-full text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+                                AI Crafted
+                            </span>
+<span class="bg-black/40 backdrop-blur-md border border-white/10 text-white px-3 py-1 rounded-full text-caption">12 Days</span>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-display-lg text-[32px] font-bold text-white mb-2">Tokyo Neo-Noir</h3>
+<p class="text-on-surface-variant font-body-md max-w-md">An immersive deep-dive into the culinary and architectural heart of modern Japan.</p>
+</div>
+<button class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Side Card 1 -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel glow-hover transition-all duration-500 h-[400px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="An ethereal, dimly lit tropical beach cove in the Maldives during twilight, with bio-luminescent waves glowing in vibrant teal along the shore. Soft, atmospheric lighting catches the palm leaves, creating a serene and premium night explorer feeling. The visual style is cinematic and sophisticated, with a deep space navy background and cool cyan highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-LzeouffA4cZBf6nI9g9cCMQJr3UeSPw_p_Y5F0dTtyoi34UaTx0pRHqMtkh8O66mURLU_o8GX6hbx0_5A3my-DTnDZpTOqas4icYUw24ys-Hc9jVGy7CXfwNza-h6NaeeIU3oRGqCTmhBRCvoI-OxC9lGk22R6xbHkVblnAYlCqAk4hcExjV1H1fjmenF_9rX_kERAaTORvzC8D6XHG77I2L9_tiJc_kL_tKSAaEDu7VhC0NkGkYZlllGgD4DHl_pImvQrVSFH4h"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/20 to-transparent"></div>
+<div class="absolute top-4 left-4">
+<span class="bg-tertiary/20 backdrop-blur-md border border-tertiary/30 text-tertiary px-3 py-1 rounded-full text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                Premium
+                            </span>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<h3 class="font-headline-md text-headline-md font-bold text-white mb-1">Azure Archipelago</h3>
+<p class="text-on-surface-variant font-caption">Maldives • Oct 12-18</p>
+</div>
+</div>
+<!-- Grid Item 3 -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel glow-hover transition-all duration-500 aspect-square">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70" data-alt="A misty morning view of Lake Como, Italy, with historic villas nestled against lush green mountains, all shrouded in a cool, atmospheric fog. The lighting is soft and high-end, focusing on a sophisticated European luxury travel aesthetic. The palette features muted teals, deep greens, and soft grays, creating a tranquil yet high-tech discovery mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7A6DNwMPG8eUCOoOKLXglh8vfZ6qYo1txnLex3Wtw9bbgHgb0cK-BmAAt8kIQmfqEKzhf13upgGViMEX-MyY0Cvctz9c--74wT4LOVUqwBd69xRfnflJU_gnWDraGC5KHi-xheVdafJ0ONi7CQvZFUNNz0Xj6H0DXDPn0dRXBYo2rws_CbxqkAnYZgM1tRXNAlOfq8JTTOZNXzL6toAFA-a1NnQKMhxtx5Cem_txTrJYHKfXbxJDxUUUAb11iUTHhISk2J-5LvTwn"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-primary font-label-md text-label-md uppercase tracking-tighter">Italian Lakes</p>
+<h4 class="font-headline-md text-white">Lombardy Soul</h4>
+</div>
+</div>
+<!-- Grid Item 4 -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl glass-panel glow-hover transition-all duration-500 aspect-square">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70" data-alt="A dramatic night shot of Santorini, Greece, with the iconic white-domed buildings illuminated by soft amber lights against a deep sapphire Aegean sea. The sky is filled with faint stars, adding to the cinematic night explorer theme. The visual style is clean, premium, and sophisticated, using glassmorphism effects for a luxury concierge experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjwKaeE6jlh5IxulysAvfs2H9cPqoyWDGnYyNgDzny2Tiah9Be242dH4NFZoFO1tGrRYKXiBMyezIRucb1FGZcGmw8uFMwwEvdeFscVnOM_zG8udbIIg9Hf28y4ibfreAtigDo2hAF--zyhTTrWx-W-eb0ZnHqtu4TY2vPvbWmTjlLQQyxTdrsakQmti41o41pFLHrw94s9i5qIUn62fgqU7T5mfr8qsHHCCMYgbYzvr_KHp0yTeVAQYqS9D33rX569NyjYJhx8n90"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<p class="text-secondary font-label-md text-label-md uppercase tracking-tighter">Cyclades Discovery</p>
+<h4 class="font-headline-md text-white">Santorini Twilight</h4>
+</div>
+</div>
+<!-- Grid Item 5 (Action Card) -->
+<div class="md:col-span-4 rounded-xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center p-stack-lg group hover:border-primary/50 transition-all cursor-pointer bg-white/2 hover:bg-white/5">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-stack-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-3xl">add</span>
+</div>
+<h4 class="font-headline-md text-on-surface">Start New Draft</h4>
+<p class="text-caption text-on-surface-variant text-center px-6 mt-2">Let AI build your next unforgettable journey from scratch.</p>
+</div>
+</div>
+</div>
+<!-- Stats Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mt-section-gap">
+<div class="glass-panel p-stack-lg rounded-xl">
+<span class="text-caption text-primary uppercase tracking-widest font-bold">Exploration Score</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-display-lg font-display-lg">84%</span>
+<span class="text-secondary text-caption flex items-center">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +5%
+                        </span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full mt-4 overflow-hidden">
+<div class="h-full bg-primary w-[84%]"></div>
+</div>
+</div>
+<div class="glass-panel p-stack-lg rounded-xl">
+<span class="text-caption text-tertiary uppercase tracking-widest font-bold">Planned Kilometers</span>
+<div class="flex items-baseline gap-2 mt-2">
+<span class="text-display-lg font-display-lg">12.4k</span>
+<span class="text-on-surface-variant text-caption">Across 6 countries</span>
+</div>
+<div class="flex gap-1 mt-4">
+<div class="h-1 bg-tertiary/60 flex-1 rounded-full"></div>
+<div class="h-1 bg-tertiary/40 flex-1 rounded-full"></div>
+<div class="h-1 bg-tertiary/20 flex-1 rounded-full"></div>
+</div>
+</div>
+<div class="glass-panel p-stack-lg rounded-xl flex items-center justify-between">
+<div>
+<span class="text-caption text-on-surface-variant uppercase tracking-widest font-bold">Next Milestone</span>
+<h4 class="text-headline-md font-headline-md mt-1">Global Voyager</h4>
+</div>
+<div class="w-12 h-12 rounded-full border-2 border-primary/30 flex items-center justify-center ai-orbit">
+<span class="material-symbols-outlined text-primary">emoji_events</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Simple micro-interaction for the search bar
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+
+        // Hover effect on cards to brighten sibling cards slightly
+        const cards = document.querySelectorAll('.glass-panel');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                cards.forEach(c => {
+                    if (c !== card) c.style.opacity = '0.7';
+                });
+            });
+            card.addEventListener('mouseleave', () => {
+                cards.forEach(c => {
+                    c.style.opacity = '1';
+                });
+            });
+        });
+    </script>
+</body></html>
