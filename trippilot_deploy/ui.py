@@ -43,9 +43,17 @@ def sidebar_html(active: str, poi_count: int | None = None) -> str:
     """
 
 
-def top_bar_html(status: str = "Ready") -> str:
+def top_bar_html(status: str = "Ready", active: str = "home") -> str:
+    nav_links = []
+    for page, label, _icon in NAV_ITEMS:
+        short = label.split()[0]
+        cls = "active" if active == page else ""
+        nav_links.append(
+            f'<a class="{cls}" href="?page={page}">{html.escape(short)}</a>'
+        )
+    mobile_nav = '<div class="tp-mobile-nav">' + "".join(nav_links) + "</div>"
     return f"""
-    <header class="tp-topbar">
+    <div class="tp-topbar">
       <div class="tp-topbar-left">
         <span class="tp-status-label">Status</span>
         <span class="tp-status-active">{html.escape(status)}</span>
@@ -53,13 +61,26 @@ def top_bar_html(status: str = "Ready") -> str:
       <div class="tp-topbar-right">
         <span class="tp-search">Search destinations…</span>
       </div>
-    </header>
+      {mobile_nav}
+    </div>
     """
+
+
+def home_page_html(city: str = "Delhi NCR") -> str:
+    """Single HTML block for dashboard — Streamlit renders one markdown block reliably."""
+    return (
+        hero_explore(city)
+        + '<div style="padding:0 1.5rem;">'
+        + quick_plan_card()
+        + "</div>"
+        + bento_grid_html()
+        + '<p class="footer-note">Estimates only · MVP · No bookings or tickets</p>'
+    )
 
 
 def hero_explore(city: str = "Delhi NCR") -> str:
     return f"""
-    <section class="hero-explore">
+    <div class="hero-explore">
       <div class="hero-bg" style="background-image:url('{NIGHTSCAPE_IMAGE}')"></div>
       <div class="hero-gradient"></div>
       <div class="ai-orbit ai-orbit-lg"></div>
@@ -69,19 +90,19 @@ def hero_explore(city: str = "Delhi NCR") -> str:
         <p>Your luxury digital concierge. Craft a personalized expedition using real OSM data
         and optional Groq tips.</p>
       </div>
-    </section>
+    </div>
     """
 
 
 def hero_plan() -> str:
     return f"""
-    <section class="hero-plan" style="background-image:url('{HERO_IMAGE}')">
+    <div class="hero-plan" style="background-image:url('{HERO_IMAGE}')">
       <div class="hero-gradient"></div>
       <div class="hero-content-left">
         <h1>Generate Your Expedition</h1>
         <p>Tailor your Delhi experience with AI-driven precision and optimized walking routes.</p>
       </div>
-    </section>
+    </div>
     """
 
 

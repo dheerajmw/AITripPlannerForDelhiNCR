@@ -46,23 +46,26 @@ html, body, [class*="css"] {
     background: transparent !important;
 }
 
-.block-container {
+/* Offset all Streamlit content right of the fixed sidebar */
+section.main > div.block-container {
     max-width: 100% !important;
-    padding: 0 !important;
-}
-
-.main .block-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-/* Main canvas offset for sidebar */
-.tp-main-wrap {
-    margin-left: 0;
-    min-height: 100vh;
+    padding: 1rem 1.5rem 2rem !important;
 }
 @media (min-width: 768px) {
-    .tp-main-wrap { margin-left: 16rem; }
+    section.main > div.block-container {
+        padding-left: 17rem !important;
+    }
+}
+
+[data-testid="stMarkdownContainer"],
+[data-testid="stVerticalBlockBorderWrapper"] {
+    overflow: visible !important;
+}
+
+[data-testid="stMarkdownContainer"] .hero-explore,
+[data-testid="stMarkdownContainer"] .hero-plan,
+[data-testid="stMarkdownContainer"] .bento-grid {
+    width: 100%;
 }
 
 h1, h2, h3, h4, p, label, .stMarkdown { color: #dee3e6; }
@@ -161,14 +164,41 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dee3e6; }
 /* ── Top bar ── */
 .tp-topbar {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    height: 4rem;
-    padding: 0 1.5rem;
+    gap: 0.75rem;
+    min-height: 4rem;
+    padding: 0.75rem 0;
     background: linear-gradient(to bottom, #0e1416, transparent);
     position: sticky;
     top: 0;
     z-index: 40;
+}
+.tp-mobile-nav {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .tp-mobile-nav { display: none; }
+}
+.tp-mobile-nav a {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    border: 1px solid #3d494c;
+    color: #bcc9cd !important;
+    background: #171d1e;
+}
+.tp-mobile-nav a.active {
+    background: rgba(76, 215, 246, 0.15);
+    border-color: #4cd7f6;
+    color: #4cd7f6 !important;
 }
 .tp-status-label {
     font-size: 0.75rem;
@@ -553,10 +583,6 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dee3e6; }
         background: rgba(255,255,255,0.05) !important;
     }
 }
-
-/* Mobile nav row */
-.mobile-nav { display: flex; gap: 0.5rem; padding: 0.75rem 1rem; }
-@media (min-width: 768px) { .mobile-nav { display: none; } }
 
 .section-label {
     display: block;

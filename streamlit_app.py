@@ -12,12 +12,10 @@ import streamlit as st
 from trippilot_deploy.bootstrap import init_backend
 from trippilot_deploy.theme import inject_theme
 from trippilot_deploy.ui import (
-    bento_grid_html,
     empty_itinerary_html,
     expedition_header_html,
-    hero_explore,
     hero_plan,
-    quick_plan_card,
+    home_page_html,
     sidebar_html,
     stats_panel_html,
     stop_card_html,
@@ -64,29 +62,11 @@ def _poi_count() -> int:
 
 def _shell_start(page: str, poi_count: int | None) -> None:
     st.markdown(sidebar_html(page, poi_count), unsafe_allow_html=True)
-    st.markdown('<div class="tp-main-wrap">', unsafe_allow_html=True)
-    st.markdown(top_bar_html(STATUS.get(page, "Ready")), unsafe_allow_html=True)
-    # Mobile nav
-    cols = st.columns(3)
-    labels = [("home", "Dashboard"), ("plan", "Generate"), ("itinerary", "Saved")]
-    for col, (p, label) in zip(cols, labels, strict=True):
-        with col:
-            if st.button(label, use_container_width=True, type="primary" if page == p else "secondary"):
-                _go(p)
-
-
-def _shell_end() -> None:
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(top_bar_html(STATUS.get(page, "Ready"), active=page), unsafe_allow_html=True)
 
 
 def render_home() -> None:
-    st.markdown(hero_explore(), unsafe_allow_html=True)
-    st.markdown(
-        '<div style="padding:0 1.5rem;">' + quick_plan_card() + "</div>",
-        unsafe_allow_html=True,
-    )
-    st.markdown(bento_grid_html(), unsafe_allow_html=True)
-    st.markdown('<p class="footer-note">Estimates only · MVP · No bookings or tickets</p>', unsafe_allow_html=True)
+    st.markdown(home_page_html(), unsafe_allow_html=True)
 
 
 def render_plan(poi_count: int) -> None:
@@ -278,7 +258,6 @@ def main() -> None:
         st.markdown(
             "Reboot the app on Streamlit Cloud — the POI database downloads automatically (~1 min)."
         )
-        _shell_end()
         return
 
     if page == "home":
@@ -288,8 +267,5 @@ def main() -> None:
     else:
         render_itinerary()
 
-    _shell_end()
 
-
-if __name__ == "__main__":
-    main()
+main()
