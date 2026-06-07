@@ -2,40 +2,27 @@
 
 import { usePathname } from "next/navigation";
 
-import { AppSidebar } from "@/components/layout/AppSidebar";
+import { AuroraBackground } from "@/components/layout/AuroraBackground";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
-import { TopAppBar } from "@/components/layout/TopAppBar";
+import { TopNav } from "@/components/layout/TopNav";
 
 type Props = {
   children: React.ReactNode;
 };
 
-function statusForPath(pathname: string): string {
-  if (pathname === "/plan") return "Planning";
-  if (pathname === "/itinerary") return "Itinerary";
-  return "Ready";
-}
-
-/** Night Explorer shell: sidebar + top bar + main canvas. */
+/** Purple Aurora shell: cosmic backdrop + floating top nav. */
 export function AppChrome({ children }: Props) {
   const pathname = usePathname();
-  const fullBleed = pathname === "/" || pathname === "/plan";
+  // Aerial Delhi backdrop is decorative only — hide on itinerary so the real OSM map is clear.
+  const showAerialBackdrop = pathname !== "/itinerary";
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppSidebar />
-      <div className="flex min-h-screen flex-col md:ml-64">
-        <TopAppBar statusLabel={statusForPath(pathname)} />
-        <main
-          className={
-            fullBleed
-              ? "relative flex-1 overflow-hidden pb-24 md:pb-0"
-              : "mx-auto w-full max-w-6xl flex-1 px-container-mobile pb-24 pt-4 md:px-container-margin md:pb-12"
-          }
-        >
-          {children}
-        </main>
-      </div>
+    <div className="relative min-h-screen">
+      <AuroraBackground showMap={showAerialBackdrop} />
+      <TopNav />
+      <main className="relative z-10 mx-auto max-w-7xl px-gutter pb-28 pt-[7.5rem] md:pb-16">
+        {children}
+      </main>
       <MobileBottomNav />
     </div>
   );

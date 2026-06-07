@@ -12,28 +12,25 @@ function FitBounds({ positions }: { positions: [number, number][] }) {
   const map = useMap();
   useEffect(() => {
     if (positions.length === 0) return;
-    if (positions.length === 1) {
-      map.setView(positions[0], 14);
-      return;
-    }
-    map.fitBounds(L.latLngBounds(positions), { padding: [40, 40] });
+    const timer = window.setTimeout(() => {
+      map.invalidateSize();
+      if (positions.length === 1) {
+        map.setView(positions[0], 15);
+        return;
+      }
+      map.fitBounds(L.latLngBounds(positions), { padding: [48, 48], maxZoom: 15 });
+    }, 100);
+    return () => window.clearTimeout(timer);
   }, [map, positions]);
   return null;
 }
 
-function numberedIcon(order: number, variant: "primary" | "secondary") {
-  const bg = variant === "secondary" ? "#00a29a" : "#9d50bb";
-  const fg = variant === "secondary" ? "#00302d" : "#fff3fd";
+function numberedIcon(order: number) {
   return L.divIcon({
     className: "aitp-marker",
-    html: `<span style="
-      display:flex;align-items:center;justify-content:center;
-      width:32px;height:32px;border-radius:50%;
-      background:${bg};color:${fg};font-weight:700;font-size:13px;
-      border:2px solid #151024;box-shadow:0 4px 12px rgba(0,0,0,.4);
-    ">${order}</span>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
+    html: `<span class="aitp-marker-pin">${order}</span>`,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
   });
 }
 
@@ -42,7 +39,7 @@ type Props = {
 };
 
 export default function ItineraryMapInner({ data }: Props) {
-  const [mapFailed, setMapFailed] = useState(false);
+  const [tileErrors, setTileErrors] = useState(0);
 
   const stopPositions = useMemo(
     () =>
@@ -61,6 +58,8 @@ export default function ItineraryMapInner({ data }: Props) {
     return points;
   }, [data.meta.start_point, stopPositions]);
 
+  const mapKey = data.stops.map((s) => s.poi_id).join("|");
+
   if (stopPositions.length === 0) {
     return (
       <p className="rounded-2xl border border-outline-variant bg-surface-container-highest p-4 text-center text-sm text-on-surface-variant">
@@ -69,7 +68,7 @@ export default function ItineraryMapInner({ data }: Props) {
     );
   }
 
-  if (mapFailed) {
+  if (tileErrors > 8) {
     return (
       <p className="rounded-2xl border border-outline-variant bg-surface-container-highest p-4 text-center text-sm text-on-surface-variant">
         Map tiles could not load. Your timeline below is still complete.
@@ -80,53 +79,67 @@ export default function ItineraryMapInner({ data }: Props) {
   const center = stopPositions[0] ?? ([28.6129, 77.2295] as [number, number]);
 
   return (
-    <section className="relative h-64 overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-highest md:h-80">
+    <div className="itinerary-map-wrap -mx-0">
       <MapContainer
+        key={mapKey}
         center={center}
-        zoom={13}
-        scrollWheelZoom={false}
-        className="h-full w-full"
-        aria-label="Itinerary map"
+        zoom={14}
+        scrollWheelZoom
+        className="itinerary-leaflet-map"
+        aria-label="Itinerary map with your stop locations"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          eventHandlers={{ tileerror: () => setMapFailed(true) }}
+          eventHandlers={{
+            tileerror: () => setTileErrors((n) => n + 1),
+          }}
         />
         <FitBounds positions={stopPositions} />
         {data.meta.start_point ? (
           <Marker
             position={[data.meta.start_point.lat, data.meta.start_point.lon]}
             icon={L.divIcon({
-              className: "aitp-start",
-              html: `<span style="font-size:10px;color:#5dd9d0;font-weight:600;">Start</span>`,
-              iconAnchor: [20, 10],
+              className: "aitp-marker",
+              html: `<span class="aitp-marker-start">Start</span>`,
+              iconAnchor: [24, 12],
             })}
           >
             <Popup>{data.meta.start_point.label}</Popup>
           </Marker>
         ) : null}
-        {data.stops.map((stop, index) => (
+        {data.stops.map((stop) => (
           <Marker
             key={stop.poi_id}
             position={[stop.lat, stop.lon]}
-            icon={numberedIcon(stop.order, index % 2 === 1 ? "secondary" : "primary")}
+            icon={numberedIcon(stop.order)}
           >
             <Popup>
-              <strong>{stop.name}</strong>
+              <strong>
+                {stop.order}. {stop.name}
+              </strong>
               <br />
               {stop.arrive_at}–{stop.depart_at}
+              <br />
+              {stop.category}
             </Popup>
           </Marker>
         ))}
         {routePositions.length > 1 ? (
           <Polyline
             positions={routePositions}
-            pathOptions={{ color: "#5dd9d0", weight: 3, opacity: 0.75, dashArray: "8 10" }}
+            pathOptions={{
+              color: "#a078ff",
+              weight: 4,
+              opacity: 0.9,
+              dashArray: "10 8",
+            }}
           />
         ) : null}
       </MapContainer>
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-    </section>
+      <p className="itinerary-map-legend">
+        {data.summary.total_stops} stops · OpenStreetMap · zoom/pan to explore your route
+      </p>
+    </div>
   );
 }

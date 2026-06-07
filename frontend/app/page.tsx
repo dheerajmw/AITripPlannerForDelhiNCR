@@ -1,19 +1,15 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   Car,
   History,
-  BarChart3,
   MapPin,
   Sparkles,
   Theater,
   UtensilsCrossed,
+  Wallet,
 } from "lucide-react";
 
 import { DEFAULT_CITY } from "@/lib/constants";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=1600&auto=format&fit=crop";
 
 const BENTO = [
   {
@@ -22,7 +18,6 @@ const BENTO = [
     text: "AI identified lower wait times for window seats at Varq tonight.",
     span: "md:col-span-8",
     tall: true,
-    accent: "secondary",
   },
   {
     title: "Live Insights",
@@ -33,27 +28,21 @@ const BENTO = [
   },
   {
     title: "Premium Transit",
-    tag: "local_taxi",
-    text: "Coordinate arrivals with your AI-generated itinerary for zero-wait travel.",
+    text: "Zero-wait travel coordinated with your AI itinerary.",
     span: "md:col-span-4",
     icon: Car,
-    accent: "primary",
   },
   {
     title: "Historical Walk",
-    tag: "history",
-    text: "New AI audio guide available for Lodhi Gardens at your own pace.",
+    text: "AI audio guide for Lodhi Gardens at your pace.",
     span: "md:col-span-4",
     icon: History,
-    accent: "secondary",
   },
   {
     title: "Late Night Arts",
-    tag: "nightlife",
-    text: "Immersive theater at Mandi House — AI recommends tickets.",
+    text: "Immersive theater — AI recommends tickets.",
     span: "md:col-span-4",
     icon: Theater,
-    accent: "tertiary",
   },
 ] as const;
 
@@ -61,158 +50,155 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="relative flex h-[min(520px,70vh)] flex-col items-center justify-center px-6 text-center">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={HERO_IMAGE}
-            alt="Delhi nightscape"
-            fill
-            className="object-cover opacity-40 mix-blend-screen"
-            priority
-            unoptimized
-          />
-          <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-background/20 to-background" />
+      <section className="mb-xl flex flex-col items-center text-center">
+        <div className="relative mb-lg">
+          <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary orb-glow">
+            <Sparkles className="h-12 w-12 text-on-primary" aria-hidden />
+          </div>
+          <div className="absolute inset-0 scale-150 rounded-full bg-primary/30 blur-3xl" />
         </div>
-        <div
-          className="ai-orbit left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 opacity-20"
-          aria-hidden
-        />
-        <div
-          className="ai-orbit left-1/2 top-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 opacity-10"
-          style={{ animationDirection: "reverse", animationDuration: "35s" }}
-          aria-hidden
-        />
-        <div className="relative z-20 max-w-4xl">
-          <h1 className="text-display-lg font-bold text-white drop-shadow-2xl">
-            Explore {DEFAULT_CITY}
-            <br />
-            <span className="italic text-primary">with AI</span>
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-body-lg text-on-surface-variant opacity-90">
-            Your luxury digital concierge. Craft a personalized expedition across the National
-            Capital Region using real OSM data and optional Groq tips.
-          </p>
-          <Link href="/plan" className="btn-primary mt-10 inline-flex">
-            <Sparkles className="h-5 w-5" aria-hidden />
-            Generate My Trip
-          </Link>
-        </div>
+
+        <h1 className="max-w-3xl text-display-lg-mobile font-extrabold md:text-display-lg">
+          Explore{" "}
+          <span className="aurora-text">{DEFAULT_CITY}</span>
+          <br />
+          with AI
+        </h1>
+        <p className="mt-md max-w-2xl text-body-lg text-on-surface-variant">
+          Experience the fusion of historic majesty and futuristic convenience. Our AI crafts
+          seamless itineraries tailored to your unique pace and passions.
+        </p>
       </section>
 
-      {/* Quick planning card */}
-      <section className="relative z-30 -mt-16 px-6 pb-12 md:px-10">
-        <div className="glass-panel relative mx-auto max-w-5xl overflow-hidden rounded-2xl p-8 shadow-2xl md:p-10">
-          <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-            <div className="space-y-3">
-              <span className="section-label flex items-center gap-2 text-xs">
-                <MapPin className="h-4 w-4" aria-hidden />
-                Destination
-              </span>
-              <p className="rounded-lg bg-surface-container-lowest/50 p-3 text-on-surface">
-                India Gate, Delhi
-              </p>
-            </div>
-            <div className="space-y-3">
-              <span className="section-label flex items-center gap-2 text-xs">
-                Duration
-              </span>
-              <p className="rounded-lg bg-surface-container-lowest/50 p-3 text-on-surface">
-                Half day · Full day
-              </p>
-            </div>
-            <div className="space-y-3">
-              <span className="section-label flex items-center gap-2 text-xs">
-                <UtensilsCrossed className="h-4 w-4" aria-hidden />
-                Interests
-              </span>
-              <div className="flex flex-wrap gap-2">
-                {["Food", "History", "Nature"].map((tag) => (
-                  <span
-                    key={tag}
-                    className="interest-chip border-primary/20 bg-primary/10 text-primary"
-                  >
-                    {tag}
-                  </span>
-                ))}
+      {/* Quick plan preview — chips only, not inputs; full form is on /plan */}
+      <section className="mx-auto max-w-4xl">
+        <div className="glass-panel rounded-4xl p-6 shadow-2xl shadow-primary/5 md:p-10">
+          <p className="mb-md text-center text-caption text-on-surface-variant">
+            Example trip preferences · customize on the next step
+          </p>
+          <div className="grid grid-cols-1 gap-lg sm:grid-cols-2">
+            <div className="space-y-md">
+              <div>
+                <span className="section-label mb-xs flex items-center gap-2">
+                  <MapPin className="h-4 w-4" aria-hidden />
+                  Destination
+                </span>
+                <span className="preview-chip preview-chip-active inline-flex items-center gap-2">
+                  <MapPin className="h-3.5 w-3.5" aria-hidden />
+                  {DEFAULT_CITY}
+                </span>
+              </div>
+              <div>
+                <span className="section-label mb-xs block">Duration</span>
+                <div className="flex flex-wrap gap-2">
+                  {(["4h", "8h", "1 day"] as const).map((d) => (
+                    <span
+                      key={d}
+                      className={`preview-chip ${d === "8h" ? "preview-chip-active" : "preview-chip-muted"}`}
+                    >
+                      {d}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="flex items-end">
-              <Link href="/plan" className="btn-primary w-full rounded-xl py-4">
-                Customize
-              </Link>
+
+            <div className="space-y-md">
+              <div>
+                <span className="section-label mb-xs flex items-center gap-2">
+                  <UtensilsCrossed className="h-4 w-4" aria-hidden />
+                  Interests
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {["Food", "History", "Nature"].map((tag) => (
+                    <span key={tag} className="preview-chip preview-chip-active">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <span className="section-label mb-xs flex items-center gap-2">
+                  <Wallet className="h-4 w-4" aria-hidden />
+                  Budget
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {(["Low", "Medium", "High"] as const).map((tier) => (
+                    <span
+                      key={tier}
+                      className={`preview-chip ${tier === "Medium" ? "preview-chip-active" : "preview-chip-muted"}`}
+                    >
+                      {tier}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
+
+          <Link href="/plan" className="btn-primary mt-lg w-full rounded-2xl py-5">
+            <Sparkles className="h-5 w-5" aria-hidden />
+            Generate AI Itinerary
+          </Link>
         </div>
 
-        {/* Bento grid */}
-        <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-12">
-          {BENTO.map((card) => (
-            <div
-              key={card.title}
-              className={`glass-panel glass-card-hover group cursor-pointer rounded-2xl p-6 ${card.span} ${
-                "tall" in card && card.tall ? "min-h-[280px]" : "min-h-[220px]"
-              } flex flex-col ${"stats" in card && card.stats ? "justify-between border-primary/20" : "justify-end"}`}
-            >
-              {"stats" in card && card.stats ? (
-                <>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20">
-                    <BarChart3 className="h-6 w-6 text-primary" aria-hidden />
-                  </div>
-                  <div>
-                    <h4 className="text-headline-md font-semibold text-white">{card.title}</h4>
-                    <div className="mt-4 space-y-3 text-sm">
-                      <div className="flex justify-between text-on-surface-variant">
-                        <span>Crowd: GK-II</span>
-                        <span className="text-secondary">Low</span>
-                      </div>
-                      <div className="h-1 overflow-hidden rounded-full bg-white/5">
-                        <div className="h-full w-[30%] bg-secondary shadow-[0_0_8px_#4fdbc8]" />
-                      </div>
-                      <div className="flex justify-between text-on-surface-variant">
-                        <span>Traffic: Cyber Hub</span>
-                        <span className="text-error">High</span>
-                      </div>
-                      <div className="h-1 overflow-hidden rounded-full bg-white/5">
-                        <div className="h-full w-[85%] bg-error shadow-[0_0_8px_#ffb4ab]" />
-                      </div>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {"icon" in card && card.icon ? (
-                    <card.icon
-                      className={`mb-4 h-8 w-8 transition-transform group-hover:scale-110 ${
-                        card.accent === "primary"
-                          ? "text-primary"
-                          : card.accent === "secondary"
-                            ? "text-secondary"
-                            : "text-tertiary"
-                      }`}
-                      aria-hidden
-                    />
-                  ) : null}
-                  <div>
-                    {"tag" in card && !("stats" in card) ? (
-                      <span className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-secondary">
-                        {card.tag}
-                      </span>
-                    ) : null}
-                    <h3 className="text-xl font-bold text-white">{card.title}</h3>
-                    {"text" in card && card.text ? (
-                      <p className="mt-2 text-sm text-on-surface-variant">{card.text}</p>
-                    ) : null}
-                  </div>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <p className="mt-12 text-center text-[10px] uppercase tracking-[0.2em] text-on-surface-variant/50">
+        <p className="mt-lg text-center text-caption text-on-surface-variant">
           Estimates only · MVP · No bookings or tickets
         </p>
+      </section>
+
+      {/* Bento grid */}
+      <section className="mt-xl grid grid-cols-1 gap-md md:grid-cols-12">
+        {BENTO.map((card) => (
+          <div
+            key={card.title}
+            className={`glass-card glass-card-hover rounded-2xl p-6 ${card.span} ${
+              "tall" in card && card.tall ? "min-h-[240px]" : "min-h-[200px]"
+            } flex flex-col ${"stats" in card && card.stats ? "justify-between" : "justify-end"}`}
+          >
+            {"stats" in card && card.stats ? (
+              <>
+                <Sparkles className="h-8 w-8 text-primary" aria-hidden />
+                <div>
+                  <h4 className="text-headline-md font-semibold text-on-surface">{card.title}</h4>
+                  <div className="mt-4 space-y-3 text-sm">
+                    <div className="flex justify-between text-on-surface-variant">
+                      <span>Crowd: GK-II</span>
+                      <span className="text-secondary">Low</span>
+                    </div>
+                    <div className="h-1 overflow-hidden rounded-full bg-white/5">
+                      <div className="h-full w-[30%] bg-secondary shadow-[0_0_8px_#ddb7ff]" />
+                    </div>
+                    <div className="flex justify-between text-on-surface-variant">
+                      <span>Traffic: Cyber Hub</span>
+                      <span className="text-error">High</span>
+                    </div>
+                    <div className="h-1 overflow-hidden rounded-full bg-white/5">
+                      <div className="h-full w-[85%] bg-error shadow-[0_0_8px_#ffb4ab]" />
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {"icon" in card && card.icon ? (
+                  <card.icon className="mb-3 h-8 w-8 text-primary" aria-hidden />
+                ) : null}
+                <div>
+                  {"tag" in card ? (
+                    <span className="mb-2 block text-caption font-bold uppercase tracking-widest text-secondary">
+                      {card.tag}
+                    </span>
+                  ) : null}
+                  <h3 className="text-headline-md font-semibold text-on-surface">{card.title}</h3>
+                  {"text" in card && card.text ? (
+                    <p className="mt-2 text-body-sm text-on-surface-variant">{card.text}</p>
+                  ) : null}
+                </div>
+              </>
+            )}
+          </div>
+        ))}
       </section>
     </>
   );

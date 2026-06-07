@@ -117,6 +117,29 @@ class POIRepository:
         items = [_record_to_response(r) for r in rows if in_ncr_bounds(r.lat, r.lon)]
         return items, total
 
+    def search_by_name(self, query: str, *, limit: int = 10) -> List[POIRecord]:
+        """Case-insensitive name search within Delhi NCR bounds."""
+        q = query.strip()
+        if len(q) < 2:
+            return []
+
+        limit = min(max(1, limit), POI_LIST_MAX_LIMIT)
+        pattern = f"%{q}%"
+        stmt = (
+            select(POIRecord)
+            .where(
+                POIRecord.name.ilike(pattern),
+                POIRecord.lat >= NCR_BOUNDS["min_lat"],
+                POIRecord.lat <= NCR_BOUNDS["max_lat"],
+                POIRecord.lon >= NCR_BOUNDS["min_lon"],
+                POIRecord.lon <= NCR_BOUNDS["max_lon"],
+            )
+            .order_by(POIRecord.name)
+            .limit(limit)
+        )
+        rows = self._session.execute(stmt).scalars().all()
+        return [r for r in rows if in_ncr_bounds(r.lat, r.lon)]
+
 
 def _record_to_response(record: POIRecord) -> POIResponse:
     return POIResponse(

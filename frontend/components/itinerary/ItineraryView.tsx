@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, RefreshCw, Sparkles } from "lucide-react";
+import { Clock, IndianRupee, Plus, RefreshCw, Route, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
@@ -13,7 +13,6 @@ import { CostDisclaimer } from "./CostDisclaimer";
 import { EmptyItineraryError } from "./EmptyItineraryError";
 import { ItineraryMap } from "./ItineraryMap";
 import { ItineraryTimeline } from "./ItineraryTimeline";
-import { TripSummaryBar } from "./TripSummaryBar";
 import { WarningsBanner } from "./WarningsBanner";
 
 export function ItineraryView() {
@@ -38,7 +37,8 @@ export function ItineraryView() {
       return;
     }
     setError(null);
-    const { useAi, ...body } = form;
+    const { useAi, startLocation, ...body } = form;
+    void startLocation;
     startTransition(async () => {
       try {
         const result = await generateItinerary(body, useAi ? "ai" : "rule");
@@ -64,53 +64,87 @@ export function ItineraryView() {
 
   const isAi = data.meta.planner_mode === "ai";
   const cost = data.summary.total_cost_inr;
+  const hours = Math.round(data.meta.duration_minutes / 60);
 
   return (
     <div className="flex flex-col">
-      <TripSummaryBar data={data} />
-
-      <div className="grid grid-cols-1 gap-gutter lg:grid-cols-12">
-        {/* Timeline column */}
-        <section className="col-span-12 space-y-6 lg:col-span-7">
-          <div>
-            <h1 className="text-display-lg text-on-surface">Your expedition</h1>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="rounded-full border border-secondary/20 bg-secondary/10 px-3 py-1 text-xs font-semibold text-secondary">
-                {Math.round(data.meta.duration_minutes / 60)}h
-              </span>
-              <span className="rounded-full border border-tertiary/20 bg-tertiary/10 px-3 py-1 text-xs font-semibold text-tertiary">
-                {data.meta.budget_tier} budget
-              </span>
-              {isAi ? (
-                <span className="flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
-                  AI enhanced
-                </span>
-              ) : null}
-            </div>
-            <p className="mt-2 text-body-sm text-on-surface-variant">
-              {data.summary.total_travel_min} min walking · {data.summary.total_stops} stops
-            </p>
-          </div>
-
-          <WarningsBanner
-            warnings={data.meta.warnings}
-            aiStatus={data.meta.ai_status}
-            fallbackReason={data.meta.fallback_reason}
-          />
-
-          {error ? (
-            <p className="text-sm text-error" role="alert">
-              {error}
-            </p>
+      <header className="mb-xl text-center">
+        <h1 className="text-display-lg-mobile font-extrabold md:text-display-lg aurora-text">
+          Your expedition
+        </h1>
+        <p className="mx-auto mt-md max-w-2xl text-body-lg text-on-surface-variant">
+          {hours}h · {data.meta.budget_tier} budget · {data.summary.total_stops} stops ·{" "}
+          {data.summary.total_travel_min} min walking
+        </p>
+        <div className="mt-md flex flex-wrap justify-center gap-2">
+          {isAi ? (
+            <span className="flex items-center gap-1 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="h-3.5 w-3.5" aria-hidden />
+              AI enhanced
+            </span>
           ) : null}
+          <span className="rounded-full border border-secondary/30 bg-secondary/10 px-3 py-1 text-xs font-semibold text-secondary">
+            {data.meta.city}
+          </span>
+        </div>
+      </header>
 
+      <div className="mb-xl grid grid-cols-2 gap-md md:grid-cols-4">
+        {[
+          {
+            icon: IndianRupee,
+            label: "Est. cost",
+            value: `₹${cost.low}–${cost.high}`,
+          },
+          {
+            icon: Route,
+            label: "Travel time",
+            value: `${data.summary.total_travel_min} min`,
+          },
+          {
+            icon: Clock,
+            label: "Duration",
+            value: `${hours}h`,
+          },
+          {
+            icon: Sparkles,
+            label: "Stops",
+            value: String(data.summary.total_stops),
+          },
+        ].map(({ icon: Icon, label, value }) => (
+          <div
+            key={label}
+            className="glass-card glass-card-hover flex flex-col items-center rounded-xl p-md text-center"
+          >
+            <Icon className="mb-2 h-8 w-8 text-primary" aria-hidden />
+            <span className="text-caption font-semibold uppercase tracking-wider text-on-surface-variant">
+              {label}
+            </span>
+            <span className="mt-1 text-headline-md font-bold text-on-surface">{value}</span>
+          </div>
+        ))}
+      </div>
+
+      <WarningsBanner
+        warnings={data.meta.warnings}
+        aiStatus={data.meta.ai_status}
+        fallbackReason={data.meta.fallback_reason}
+      />
+
+      {error ? (
+        <p className="mb-4 text-sm text-error" role="alert">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="grid grid-cols-1 gap-xl lg:grid-cols-12">
+        <section className="relative lg:col-span-7">
+          <div className="absolute bottom-8 left-6 top-8 hidden timeline-line md:block" aria-hidden />
           <ItineraryTimeline stops={data.stops} />
         </section>
 
-        {/* Map + stats column */}
-        <section className="col-span-12 flex flex-col gap-6 lg:col-span-5">
-          <div className="glass-panel overflow-hidden rounded-2xl">
+        <section className="flex flex-col gap-md lg:col-span-5">
+          <div className="glass-card overflow-hidden rounded-2xl">
             <div className="border-b border-white/5 px-4 py-3">
               <span className="text-xs font-bold uppercase tracking-widest text-primary">
                 Live Route
@@ -122,50 +156,23 @@ export function ItineraryView() {
             />
           </div>
 
-          <div className="glass-panel relative overflow-hidden rounded-2xl p-6">
+          <div className="glass-card relative overflow-hidden rounded-2xl p-6">
             <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
-            <h3 className="text-headline-md font-semibold text-on-surface">Expedition stats</h3>
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <div className="rounded-xl border border-white/5 bg-surface-container-low/50 p-4">
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                  Travel
-                </p>
-                <p className="text-2xl font-bold text-on-surface">
-                  {data.summary.total_travel_min}
-                  <span className="text-sm font-normal text-on-surface-variant"> min</span>
-                </p>
-              </div>
-              <div className="rounded-xl border border-white/5 bg-surface-container-low/50 p-4">
-                <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-                  Est. cost
-                </p>
-                <p className="text-2xl font-bold text-on-surface">
-                  ₹{cost.low}–{cost.high}
-                </p>
-              </div>
-              <div className="col-span-2 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                <div className="flex items-start gap-3">
-                  <Sparkles className="h-5 w-5 shrink-0 text-primary" aria-hidden />
-                  <div>
-                    <h5 className="mb-1 text-sm font-bold text-primary">Pilot intelligence</h5>
-                    <p className="text-xs leading-relaxed text-on-surface-variant">
-                      Routing via {data.meta.routing_source ?? "planner"}. Costs are rough
-                      estimates for planning — not bookings or tickets.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <h3 className="text-headline-md font-semibold text-on-surface">Pilot intelligence</h3>
+            <p className="mt-3 text-body-sm leading-relaxed text-on-surface-variant">
+              Routing via {data.meta.routing_source ?? "planner"}. Costs are rough estimates for
+              planning — not bookings or tickets.
+            </p>
           </div>
         </section>
       </div>
 
-      <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+      <div className="mt-xl flex flex-col gap-4 sm:flex-row">
         <button
           type="button"
           onClick={regenerate}
           disabled={pending}
-          className="btn-primary flex-1 rounded-xl py-4 disabled:opacity-50"
+          className="btn-primary flex-1 rounded-2xl py-4 disabled:opacity-50"
         >
           <RefreshCw className={`h-5 w-5 ${pending ? "animate-spin" : ""}`} aria-hidden />
           {pending ? "Regenerating…" : "Regenerate"}

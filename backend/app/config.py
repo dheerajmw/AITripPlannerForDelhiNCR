@@ -18,6 +18,26 @@ DEFAULT_START = {
     "label": "India Gate",
 }
 
+# Curated start points — all inside NCR_BOUNDS (used for location search + validation)
+NCR_START_LOCATIONS: Tuple[Dict[str, object], ...] = (
+    {"id": "landmark:india-gate", "label": "India Gate", "lat": 28.6129, "lon": 77.2295},
+    {"id": "landmark:connaught-place", "label": "Connaught Place", "lat": 28.6315, "lon": 77.2167},
+    {"id": "landmark:red-fort", "label": "Red Fort", "lat": 28.6562, "lon": 77.2410},
+    {"id": "landmark:qutub-minar", "label": "Qutub Minar", "lat": 28.5244, "lon": 77.1855},
+    {"id": "landmark:lodhi-gardens", "label": "Lodhi Gardens", "lat": 28.5931, "lon": 77.2197},
+    {"id": "landmark:hauz-khas", "label": "Hauz Khas Village", "lat": 28.5494, "lon": 77.2001},
+    {"id": "landmark:akshardham", "label": "Akshardham Temple", "lat": 28.6127, "lon": 77.2773},
+    {"id": "landmark:khan-market", "label": "Khan Market", "lat": 28.6003, "lon": 77.2269},
+    {"id": "landmark:nizamuddin", "label": "Nizamuddin", "lat": 28.5911, "lon": 77.2420},
+    {"id": "landmark:cyber-hub", "label": "Cyber Hub, Gurgaon", "lat": 28.4950, "lon": 77.0890},
+    {"id": "landmark:select-citywalk", "label": "Select Citywalk", "lat": 28.5286, "lon": 77.2189},
+    {"id": "landmark:dwarka", "label": "Dwarka Sector 21", "lat": 28.5522, "lon": 77.0590},
+)
+
+LOCATION_SEARCH_MIN_QUERY_LEN = 2
+LOCATION_SEARCH_DEFAULT_LIMIT = 10
+LOCATION_SEARCH_MAX_LIMIT = 20
+
 DURATIONS_MINUTES: Dict[str, int] = {
     "4h": 240,
     "8h": 480,

@@ -1,4 +1,5 @@
-import type { ItineraryResponse, SavedPlanForm } from "@/types/itinerary";
+import { DEFAULT_START_LOCATION } from "@/lib/locations";
+import type { ItineraryResponse, SavedPlanForm, TripLocation } from "@/types/itinerary";
 
 export const STORAGE_KEYS = {
   itinerary: "aitp_itinerary",
@@ -37,4 +38,25 @@ export function loadPlanForm(): SavedPlanForm | null {
   } catch {
     return null;
   }
+}
+
+/** Restore start location from saved form (handles older sessions without startLocation). */
+export function resolveStartLocation(saved: SavedPlanForm | null): TripLocation {
+  if (saved?.startLocation?.id) {
+    return saved.startLocation;
+  }
+  if (
+    saved?.start_lat != null &&
+    saved.start_lon != null &&
+    saved.start_label?.trim()
+  ) {
+    return {
+      id: `legacy:${saved.start_label}`,
+      label: saved.start_label,
+      lat: saved.start_lat,
+      lon: saved.start_lon,
+      source: "landmark",
+    };
+  }
+  return DEFAULT_START_LOCATION;
 }

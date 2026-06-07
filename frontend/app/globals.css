@@ -4,15 +4,16 @@
 
 :root {
   color-scheme: dark;
-  --background: #0e1416;
-  --on-surface: #dee3e6;
-  --on-surface-variant: #bcc9cd;
-  --outline-variant: #3d494c;
-  --surface-container: #1b2122;
-  --surface-container-low: #171d1e;
-  --primary: #4cd7f6;
-  --primary-container: #06b6d4;
-  --on-primary-container: #00424f;
+  --background: #0f131d;
+  --on-surface: #dfe2f0;
+  --on-surface-variant: #cbc3d7;
+  --outline-variant: #494454;
+  --surface-container: #1b2029;
+  --surface-container-low: #171c25;
+  --primary: #d0bcff;
+  --primary-container: #a078ff;
+  --on-primary-container: #340080;
+  --secondary: #ddb7ff;
 }
 
 html {
@@ -24,37 +25,63 @@ body {
   color: var(--on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #0e1416;
+  background: #070b14;
   min-height: 100dvh;
 }
 
 @layer components {
   .glass-panel {
-    background: rgba(14, 20, 22, 0.72);
+    background: rgba(15, 19, 29, 0.55);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(148, 163, 184, 0.12);
+    border: 1px solid rgba(203, 195, 215, 0.1);
+    border-top-color: rgba(255, 255, 255, 0.15);
   }
 
   .glass-card {
+    position: relative;
+    overflow: hidden;
     border-radius: 1rem;
-    border: 1px solid var(--outline-variant);
-    background-color: var(--surface-container);
-    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
-      transform 0.2s ease;
+    background: rgba(15, 19, 29, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(203, 195, 215, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.2s ease;
+  }
+
+  .glass-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
   }
 
   .glass-card-hover:hover {
-    background-color: var(--surface-container-low);
-    border-color: rgba(76, 215, 246, 0.35);
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
-    transform: translateY(-2px);
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(208, 188, 255, 0.12);
+    border-color: rgba(208, 188, 255, 0.2);
+  }
+
+  .aurora-text {
+    background: linear-gradient(to right, #d0bcff, #ddb7ff, #a078ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .section-label {
     font-size: 14px;
     line-height: 20px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     font-weight: 600;
     text-transform: uppercase;
     color: var(--primary);
@@ -65,20 +92,18 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border-radius: 0.75rem;
-    background-color: var(--primary);
+    border-radius: 1rem;
+    background: linear-gradient(to right, #8b5cf6, #a855f7);
     padding: 1rem 2rem;
     font-weight: 700;
-    color: var(--on-primary-container);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.875rem;
-    box-shadow: 0 0 20px rgba(76, 215, 246, 0.4);
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 0 20px rgba(160, 120, 255, 0.35);
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   }
 
   .btn-primary:hover {
-    box-shadow: 0 0 35px rgba(76, 215, 246, 0.6);
+    box-shadow: 0 0 30px rgba(160, 120, 255, 0.5);
     filter: brightness(1.08);
     transform: translateY(-1px);
   }
@@ -98,51 +123,44 @@ body {
     justify-content: center;
     gap: 0.5rem;
     border-radius: 0.75rem;
-    border: 1px solid var(--outline-variant);
+    border: 1px solid rgba(208, 188, 255, 0.3);
     background: transparent;
     padding: 1rem 1.5rem;
     font-weight: 600;
     color: var(--on-surface);
+    backdrop-filter: blur(8px);
     transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 
   .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(76, 215, 246, 0.35);
+    background: rgba(208, 188, 255, 0.08);
+    border-color: var(--primary);
     color: var(--primary);
   }
 
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.5rem;
-    font-size: 1rem;
+  .nav-link {
+    font-size: 16px;
     color: var(--on-surface-variant);
-    transition: all 0.3s ease;
+    transition: color 0.2s ease;
   }
 
-  .nav-item:hover {
+  .nav-link:hover {
     color: var(--on-surface);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 0 15px rgba(173, 198, 255, 0.12);
   }
 
-  .nav-item-active {
-    background: rgba(6, 182, 212, 0.2);
+  .nav-link-active {
     color: var(--primary);
-    border: 1px solid rgba(76, 215, 246, 0.3);
-    box-shadow: 0 0 10px rgba(173, 198, 255, 0.2);
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 2px;
   }
 
   .interest-chip {
-    padding: 0.35rem 0.75rem;
+    padding: 0.35rem 0.85rem;
     border-radius: 9999px;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     border: 1px solid;
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
@@ -152,30 +170,58 @@ body {
     transform: translateY(-1px);
   }
 
+  /* Read-only preference preview on Explore — pills, not input boxes */
+  .preview-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: default;
+    user-select: none;
+  }
+
+  .preview-chip-active {
+    border-color: rgba(208, 188, 255, 0.35);
+    background: rgba(208, 188, 255, 0.15);
+    color: var(--primary);
+  }
+
+  .preview-chip-muted {
+    border-color: rgba(73, 68, 84, 0.5);
+    background: rgba(49, 53, 63, 0.45);
+    color: var(--on-surface-variant);
+    opacity: 0.75;
+  }
+
+  .orb-glow {
+    box-shadow: 0 0 80px 20px rgba(160, 120, 255, 0.4);
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  .timeline-line {
+    background: linear-gradient(to bottom, transparent, #a078ff, #a078ff, transparent);
+    width: 2px;
+  }
+
   .travel-line-dashed {
     position: absolute;
     left: 1rem;
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(to bottom, #4cd7f6 0%, transparent 100%);
-    opacity: 0.35;
+    background: linear-gradient(to bottom, #a078ff 0%, transparent 100%);
+    opacity: 0.45;
   }
 
-  .ai-orbit {
-    position: absolute;
-    border-radius: 50%;
-    border: 1px solid rgba(76, 215, 246, 0.3);
-    animation: orbit-spin 20s linear infinite;
-    pointer-events: none;
+  .glow-purple {
+    box-shadow: 0 0 15px rgba(208, 188, 255, 0.25);
   }
 
-  .glow-cyan {
-    box-shadow: 0 0 15px rgba(76, 215, 246, 0.25);
-  }
-
-  .glow-cyan:hover {
-    box-shadow: 0 0 25px rgba(76, 215, 246, 0.45);
+  .glow-purple:hover {
+    box-shadow: 0 0 25px rgba(208, 188, 255, 0.45);
   }
 
   .pulsing-dot {
@@ -184,7 +230,19 @@ body {
 
   .ai-pulse {
     animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    box-shadow: 0 0 15px rgba(76, 215, 246, 0.25);
+    box-shadow: 0 0 15px rgba(208, 188, 255, 0.3);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
   }
 }
 
@@ -200,27 +258,78 @@ body {
   }
 }
 
-@keyframes orbit-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Itinerary map — OSM tiles + numbered stop pins */
+.itinerary-map-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.itinerary-leaflet-map,
+.itinerary-google-map {
+  height: 320px;
+  width: 100%;
+  z-index: 1;
+  border-radius: 0 0 1rem 1rem;
+}
+
+.itinerary-google-map {
+  overflow: hidden;
+}
+
+.itinerary-map-legend {
+  margin: 0;
+  padding: 0.5rem 1rem 0.75rem;
+  font-size: 11px;
+  color: var(--on-surface-variant);
+  text-align: center;
+  border-top: 1px solid rgba(203, 195, 215, 0.08);
+}
+
+.aitp-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.aitp-marker-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a078ff, #d0bcff);
+  color: #340080;
+  font-weight: 800;
+  font-size: 14px;
+  border: 2px solid #0f131d;
+  box-shadow: 0 0 16px rgba(160, 120, 255, 0.55);
+}
+
+.aitp-marker-start {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: rgba(79, 219, 200, 0.9);
+  color: #003731;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .leaflet-container {
-  background: #090f11 !important;
+  background: #0a0e17 !important;
   border-radius: 1rem;
   font-family: inherit;
 }
 
 .leaflet-popup-content-wrapper {
-  background: #1b2122;
-  color: #dee3e6;
+  background: #1b2029;
+  color: #dfe2f0;
   border-radius: 0.5rem;
 }
 
 .leaflet-popup-tip {
-  background: #1b2122;
+  background: #1b2029;
 }

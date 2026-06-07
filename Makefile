@@ -1,4 +1,4 @@
-.PHONY: dev dev-backend dev-frontend streamlit test test-backend test-frontend install ingest
+.PHONY: dev dev-backend dev-frontend fix-frontend streamlit test test-backend test-frontend install ingest
 
 # Run backend + frontend together
 dev:
@@ -12,7 +12,11 @@ dev-backend:
 	cd backend && $(BACKEND_PY) -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 dev-frontend:
-	cd frontend && npm run dev
+	cd frontend && npm run dev:clean
+
+# Recover from unstyled UI (CSS/JS 404 after build ran alongside dev)
+fix-frontend:
+	cd frontend && npm run recover
 
 streamlit:
 	streamlit run streamlit_app.py

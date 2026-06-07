@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   Calendar,
   Diamond,
@@ -12,7 +11,6 @@ import {
   UtensilsCrossed,
   Wallet,
   WifiOff,
-  Zap,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -20,44 +18,28 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { AiProcessingView } from "@/components/plan/AiProcessingView";
+import { LocationPicker } from "@/components/plan/LocationPicker";
 import { ApiError, generateItinerary } from "@/lib/api";
-import { loadPlanForm, saveItinerary, savePlanForm } from "@/lib/storage";
+import { DEFAULT_CITY } from "@/lib/constants";
+import { DEFAULT_START_LOCATION } from "@/lib/locations";
+import {
+  loadPlanForm,
+  resolveStartLocation,
+  saveItinerary,
+  savePlanForm,
+} from "@/lib/storage";
 import { validatePlanForm } from "@/lib/validation";
-import type { BudgetTier, DurationKey, Interest } from "@/types/itinerary";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1587474260584-136574528ed5?q=80&w=1600&auto=format&fit=crop";
+import type { BudgetTier, DurationKey, Interest, TripLocation } from "@/types/itinerary";
 
 const INTERESTS: {
   id: Interest;
   label: string;
   icon: LucideIcon;
-  chipClass: string;
 }[] = [
-  {
-    id: "food",
-    label: "Food",
-    icon: UtensilsCrossed,
-    chipClass: "border-secondary/20 bg-secondary/10 text-secondary",
-  },
-  {
-    id: "history",
-    label: "History",
-    icon: History,
-    chipClass: "border-primary/20 bg-primary/10 text-primary",
-  },
-  {
-    id: "nature",
-    label: "Nature",
-    icon: Footprints,
-    chipClass: "border-secondary/20 bg-secondary/10 text-secondary",
-  },
-  {
-    id: "nightlife",
-    label: "Nightlife",
-    icon: Moon,
-    chipClass: "border-tertiary/20 bg-tertiary/10 text-tertiary",
-  },
+  { id: "food", label: "Food", icon: UtensilsCrossed },
+  { id: "history", label: "History", icon: History },
+  { id: "nature", label: "Nature", icon: Footprints },
+  { id: "nightlife", label: "Nightlife", icon: Moon },
 ];
 
 const BUDGETS: { id: BudgetTier; label: string; icon: LucideIcon }[] = [
@@ -69,7 +51,7 @@ const BUDGETS: { id: BudgetTier; label: string; icon: LucideIcon }[] = [
 const DURATIONS: { id: DurationKey; label: string }[] = [
   { id: "4h", label: "4h" },
   { id: "8h", label: "8h" },
-  { id: "1d", label: "1d" },
+  { id: "1d", label: "1 day" },
 ];
 
 export function PlanForm() {
@@ -84,6 +66,8 @@ export function PlanForm() {
   const [duration, setDuration] = useState<DurationKey>("8h");
   const [selected, setSelected] = useState<Interest[]>(["history", "nature"]);
   const [useAi, setUseAi] = useState(false);
+  const [startLocation, setStartLocation] = useState<TripLocation>(DEFAULT_START_LOCATION);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = loadPlanForm();
@@ -92,6 +76,7 @@ export function PlanForm() {
       setDuration(saved.duration);
       setSelected(saved.interests);
       setUseAi(saved.useAi);
+      setStartLocation(resolveStartLocation(saved));
     }
   }, []);
 
@@ -130,14 +115,21 @@ export function PlanForm() {
     }
     if (submitLock.current) return;
 
-    const validation = validatePlanForm({ budget, interests: selected, duration });
+    const validation = validatePlanForm({
+      budget,
+      interests: selected,
+      duration,
+      location: startLocation,
+    });
     if (!validation.ok) {
+      setLocationError(validation.message);
       setError(validation.message);
       return;
     }
+    setLocationError(null);
 
     const body = validation.value;
-    const savedForm = { ...body, useAi };
+    const savedForm = { ...body, useAi, startLocation };
     submitLock.current = true;
 
     startTransition(async () => {
@@ -167,82 +159,70 @@ export function PlanForm() {
   }
 
   return (
-    <div>
-      <section className="relative flex h-[240px] w-full items-end overflow-hidden px-6 pb-8 md:px-10">
-        <Image
-          src={HERO_IMAGE}
-          alt="India Gate at dusk"
-          fill
-          className="object-cover brightness-50 grayscale"
-          priority
-          unoptimized
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        <div className="relative z-10 max-w-3xl">
-          <h1 className="text-headline-lg font-bold text-on-surface">Generate Your Expedition</h1>
-          <p className="mt-2 max-w-xl text-body-md text-on-surface-variant">
-            Tailor your Delhi experience with AI-driven precision. Every route is optimized for
-            walking times and your interests.
-          </p>
-        </div>
-      </section>
-
-      <section className="relative z-10 -mt-8 px-6 pb-16 md:px-10">
-        {offline ? (
-          <div className="mb-6 flex items-center gap-2 rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
-            <WifiOff className="h-4 w-4 shrink-0" aria-hidden />
-            Internet required to generate a plan.
+    <div className="mx-auto max-w-4xl">
+      <header className="mb-xl text-center">
+        <div className="relative mx-auto mb-lg w-fit">
+          <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary orb-glow">
+            <Sparkles className="h-10 w-10 text-on-primary" aria-hidden />
           </div>
-        ) : null}
+          <div className="absolute inset-0 scale-150 rounded-full bg-primary/30 blur-3xl" />
+        </div>
+        <h1 className="text-display-lg-mobile font-extrabold md:text-display-lg">
+          Generate Your <span className="aurora-text">Expedition</span>
+        </h1>
+        <p className="mx-auto mt-md max-w-2xl text-body-lg text-on-surface-variant">
+          Tailor your {DEFAULT_CITY} experience with AI-driven precision. Every route is optimized
+          for walking times and your interests.
+        </p>
+      </header>
 
-        <form
-          onSubmit={onSubmit}
-          className="glass-panel relative mx-auto max-w-4xl overflow-hidden rounded-2xl p-8 shadow-2xl md:p-10"
-        >
-          <div className="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+      {offline ? (
+        <div className="mb-6 flex items-center gap-2 rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container">
+          <WifiOff className="h-4 w-4 shrink-0" aria-hidden />
+          Internet required to generate a plan.
+        </div>
+      ) : null}
 
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-            {/* Budget */}
-            <div className="space-y-4">
-              <span className="section-label flex items-center gap-2">
-                <Wallet className="h-4 w-4" aria-hidden />
-                Estimated Budget
+      <form
+        onSubmit={onSubmit}
+        className="glass-panel rounded-4xl p-6 shadow-2xl shadow-primary/5 md:p-10"
+      >
+        <div className="grid grid-cols-1 gap-lg md:grid-cols-2">
+          <div className="space-y-md">
+            <div>
+              <span className="section-label mb-xs flex items-center gap-2">
+                <MapPin className="h-4 w-4" aria-hidden />
+                Region
               </span>
-              <div className="grid grid-cols-3 gap-3">
-                {BUDGETS.map(({ id, label, icon: Icon }) => (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => setBudget(id)}
-                    className={`flex flex-col items-center justify-center rounded-xl border py-4 text-sm transition-all active:scale-95 ${
-                      budget === id
-                        ? "border-primary bg-primary/15 text-primary shadow-glow"
-                        : "border-outline-variant text-on-surface-variant hover:border-primary/30 hover:bg-white/5"
-                    }`}
-                  >
-                    <Icon className="mb-1 h-5 w-5" aria-hidden />
-                    {label}
-                  </button>
-                ))}
-              </div>
+              <p className="rounded-xl bg-surface-container-highest/40 px-4 py-3 text-on-surface">
+                {DEFAULT_CITY}
+              </p>
             </div>
 
-            {/* Duration */}
-            <div className="space-y-4">
-              <span className="section-label flex items-center gap-2">
+            <LocationPicker
+              value={startLocation}
+              onChange={(loc) => {
+                setStartLocation(loc);
+                setLocationError(null);
+              }}
+              error={locationError}
+            />
+
+            <div>
+              <span className="section-label mb-xs flex items-center gap-2">
                 <Calendar className="h-4 w-4" aria-hidden />
                 Travel Duration
               </span>
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 {DURATIONS.map(({ id, label }) => (
                   <button
                     key={id}
                     type="button"
                     onClick={() => setDuration(id)}
-                    className={`flex-1 rounded-xl border py-3 text-center text-sm transition-all active:scale-95 ${
+                    className={`flex-1 rounded-xl py-3 text-center text-sm font-semibold transition-all active:scale-95 ${
                       duration === id
-                        ? "border-primary bg-primary text-on-primary-container shadow-glow"
-                        : "border-outline-variant text-on-surface-variant hover:border-primary/30 hover:bg-white/5"
+                        ? "bg-primary-container text-on-primary-container shadow-glow"
+                        : "bg-surface-container-highest/40 text-on-surface-variant hover:bg-surface-container-high"
                     }`}
                   >
                     {label}
@@ -252,88 +232,111 @@ export function PlanForm() {
             </div>
           </div>
 
-          {/* Interests */}
-          <div className="mt-10 space-y-4">
-            <span className="section-label flex items-center gap-2">
-              <MapPin className="h-4 w-4" aria-hidden />
-              Primary Interests
-            </span>
-            <div className="flex flex-wrap gap-3">
-              {INTERESTS.map(({ id, label, icon: Icon, chipClass }) => {
-                const on = selected.includes(id);
-                return (
+          <div className="space-y-md">
+            <div>
+              <span className="section-label mb-xs flex items-center gap-2">
+                <Wallet className="h-4 w-4" aria-hidden />
+                Estimated Budget
+              </span>
+              <div className="grid grid-cols-3 gap-2">
+                {BUDGETS.map(({ id, label, icon: Icon }) => (
                   <button
                     key={id}
                     type="button"
-                    onClick={() => toggleInterest(id)}
-                    className={`interest-chip flex items-center gap-2 px-4 py-2 text-xs ${
-                      on ? chipClass : "border-outline-variant bg-surface-container-low text-on-surface-variant hover:bg-white/5"
+                    onClick={() => setBudget(id)}
+                    className={`flex flex-col items-center justify-center rounded-xl border py-3 text-sm transition-all active:scale-95 ${
+                      budget === id
+                        ? "border-primary/40 bg-primary/20 text-primary shadow-glow"
+                        : "border-outline-variant/30 bg-surface-container-highest/40 text-on-surface-variant hover:border-primary/30"
                     }`}
                   >
-                    <Icon className="h-3.5 w-3.5" aria-hidden />
+                    <Icon className="mb-1 h-4 w-4" aria-hidden />
                     {label}
                   </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* AI toggle */}
-          <div className="ai-toggle-box mt-10 flex items-center justify-between rounded-xl border border-outline-variant/30 bg-surface-container-low p-4 transition-colors hover:border-primary/30">
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-primary/20 p-2">
-                <Sparkles className="h-5 w-5 text-primary" aria-hidden />
-              </div>
-              <div>
-                <p className="font-bold text-body-md">Enhance with AI (Groq)</p>
-                <p className="text-sm text-on-surface-variant">
-                  Real-time tips &amp; hidden gems per stop
-                </p>
+                ))}
               </div>
             </div>
-            <label className="relative inline-flex cursor-pointer items-center">
-              <input
-                type="checkbox"
-                checked={useAi}
-                onChange={(e) => setUseAi(e.target.checked)}
-                className="peer sr-only"
-              />
-              <div className="peer h-6 w-11 rounded-full bg-surface-container-highest after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-primary peer-checked:after:translate-x-full" />
-            </label>
-          </div>
 
-          {error ? (
-            <div
-              className="mt-6 rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container"
-              role="alert"
-            >
-              {error}
-              <button type="submit" className="mt-2 block text-primary underline" disabled={pending}>
-                Retry
-              </button>
+            <div>
+              <span className="section-label mb-xs block">Interests</span>
+              <div className="flex flex-wrap gap-2">
+                {INTERESTS.map(({ id, label, icon: Icon }) => {
+                  const on = selected.includes(id);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => toggleInterest(id)}
+                      className={`interest-chip flex items-center gap-2 ${
+                        on
+                          ? "border-primary/30 bg-primary/20 text-primary"
+                          : "border-outline-variant/30 bg-surface-container-highest/60 text-on-surface-variant hover:border-primary/40"
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5" aria-hidden />
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          ) : null}
+          </div>
+        </div>
 
-          {slowHint ? (
-            <p className="mt-4 text-sm text-on-surface-variant">Still working… this can take a moment.</p>
-          ) : null}
+        <div className="mt-lg flex items-center justify-between rounded-xl border border-outline-variant/20 bg-surface-container-highest/40 p-4 transition-colors hover:border-primary/30">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-primary/20 p-2">
+              <Sparkles className="h-5 w-5 text-primary" aria-hidden />
+            </div>
+            <div>
+              <p className="font-bold text-body-md">Enhance with AI (Groq)</p>
+              <p className="text-sm text-on-surface-variant">
+                Real-time tips &amp; hidden gems per stop
+              </p>
+            </div>
+          </div>
+          <label className="relative inline-flex cursor-pointer items-center">
+            <input
+              type="checkbox"
+              checked={useAi}
+              onChange={(e) => setUseAi(e.target.checked)}
+              className="peer sr-only"
+            />
+            <div className="peer h-6 w-11 rounded-full bg-surface-container-highest after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-primary-container peer-checked:after:translate-x-full" />
+          </label>
+        </div>
 
-          <button
-            type="submit"
-            disabled={offline}
-            className="btn-primary mt-8 w-full rounded-xl py-5"
+        {error ? (
+          <div
+            className="mt-6 rounded-xl border border-error-container/40 bg-error-container/20 px-4 py-3 text-sm text-on-error-container"
+            role="alert"
           >
-            Generate My Trip
-            <Zap className="h-5 w-5" aria-hidden />
-          </button>
-        </form>
+            {error}
+            <button type="submit" className="mt-2 block text-primary underline" disabled={pending}>
+              Retry
+            </button>
+          </div>
+        ) : null}
 
-        <p className="mt-8 text-center text-sm text-on-surface-variant">
-          <Link href="/" className="text-primary transition-colors hover:text-secondary">
-            ← Back to dashboard
-          </Link>
-        </p>
-      </section>
+        {slowHint ? (
+          <p className="mt-4 text-sm text-on-surface-variant">Still working… this can take a moment.</p>
+        ) : null}
+
+        <button
+          type="submit"
+          disabled={offline}
+          className="btn-primary mt-lg w-full rounded-2xl py-5"
+        >
+          <Sparkles className={`h-5 w-5 ${pending ? "animate-spin" : ""}`} aria-hidden />
+          Generate AI Itinerary
+        </button>
+      </form>
+
+      <p className="mt-8 text-center text-sm text-on-surface-variant">
+        <Link href="/" className="text-primary transition-colors hover:text-secondary">
+          ← Back to explore
+        </Link>
+      </p>
     </div>
   );
 }

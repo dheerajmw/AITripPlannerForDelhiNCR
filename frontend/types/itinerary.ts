@@ -16,6 +16,14 @@ export type StartPoint = {
   label: string;
 };
 
+export type TripLocation = {
+  id: string;
+  label: string;
+  lat: number;
+  lon: number;
+  source: "landmark" | "poi";
+};
+
 export type ItineraryGenerateBody = {
   budget: BudgetTier;
   interests: Interest[];
@@ -27,6 +35,7 @@ export type ItineraryGenerateBody = {
 
 export type SavedPlanForm = ItineraryGenerateBody & {
   useAi: boolean;
+  startLocation?: TripLocation;
 };
 
 export type ItineraryMeta = {

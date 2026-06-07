@@ -10,6 +10,7 @@ from app.config import (
     SUPPORTED_DURATIONS,
     SUPPORTED_INTERESTS,
 )
+from app.utils.geo import in_ncr_bounds, is_delhi_area_coordinate, is_valid_coordinate
 
 
 class CostRangeInr(BaseModel):
@@ -59,6 +60,21 @@ class ItineraryGenerateRequest(BaseModel):
     def validate_duration(cls, v: str) -> str:
         if v not in SUPPORTED_DURATIONS:
             raise ValueError(f"Unsupported duration: {v}")
+        return v
+
+    @field_validator("start_lon")
+    @classmethod
+    def validate_start_pair(cls, v: Optional[float], info) -> Optional[float]:
+        start_lat = info.data.get("start_lat")
+        if (start_lat is None) ^ (v is None):
+            raise ValueError("start_lat and start_lon must both be set or both omitted")
+        if start_lat is not None and v is not None:
+            if not is_valid_coordinate(start_lat, v):
+                raise ValueError("Invalid start coordinates")
+            if not is_delhi_area_coordinate(start_lat, v):
+                raise ValueError("Start location must be within Delhi NCR")
+            if not in_ncr_bounds(start_lat, v):
+                raise ValueError("Start location must be within Delhi NCR bounds")
         return v
 
     @property
