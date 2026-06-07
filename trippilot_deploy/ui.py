@@ -11,8 +11,13 @@ from trippilot_deploy.theme import HERO_IMAGE
 
 
 def _html(fragment: str) -> str:
-    """Strip indentation so Streamlit markdown does not treat HTML as a code block."""
-    return dedent(fragment).strip()
+    """Prepare HTML for st.markdown(unsafe_allow_html=True).
+
+    Streamlit stops parsing HTML at blank lines and renders the rest as a code
+    block, so strip indentation and drop empty lines.
+    """
+    text = dedent(fragment).strip()
+    return "\n".join(line for line in text.splitlines() if line.strip())
 
 def aurora_background_html(*, show_map: bool = True) -> str:
     map_div = ""
@@ -235,14 +240,13 @@ def expedition_hero_html(meta: dict, summary: dict) -> str:
     ai_pill = ""
     if meta.get("planner_mode") == "ai":
         status = "AI enhanced" if meta.get("ai_status") == "success" else "AI fallback"
-        ai_pill = f'<span class="expedition-ai-pill">✨ {status}</span>'
+        ai_pill = f' <span class="expedition-ai-pill">✨ {status}</span>'
 
     return _html(f"""
     <div class="itinerary-shell">
       <div class="expedition-hero glass-panel">
         <div class="expedition-hero-top">
-          <span class="expedition-location-pill">📍 {start_label}</span>
-          {ai_pill}
+          <span class="expedition-location-pill">📍 {start_label}</span>{ai_pill}
         </div>
         <h1 class="expedition-title">Your expedition</h1>
         <div class="expedition-metrics">
