@@ -164,7 +164,7 @@ export function PlanForm() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="page-narrow">
       <header className="mb-xl text-center">
         <div className="relative mx-auto mb-lg w-fit">
           <div className="relative z-10 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary orb-glow">

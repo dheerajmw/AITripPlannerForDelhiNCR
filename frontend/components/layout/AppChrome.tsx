@@ -31,8 +31,8 @@ export function AppChrome({ children }: Props) {
     <div className="relative min-h-screen">
       <AuroraBackground showMap={showAerialBackdrop} />
       <TopNav />
-      <main className="relative z-10 mx-auto max-w-7xl px-gutter pb-28 pt-[7.5rem] md:pb-16">
-        {children}
+      <main className="relative z-10 mx-auto w-full max-w-7xl px-gutter pb-28 pt-[7.5rem] md:pb-16">
+        <div className="page-shell">{children}</div>
       </main>
       <MobileBottomNav />
     </div>

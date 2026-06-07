@@ -9,8 +9,8 @@ export function EmptyItineraryError({
   message = "Generate a plan to see your saved expedition.",
 }: Props) {
   return (
-    <div className="flex flex-col items-center gap-6 py-16 text-center">
-      <div className="glass-panel rounded-2xl p-12">
+    <div className="page-narrow flex flex-col items-center gap-6 py-16 text-center">
+      <div className="glass-panel w-full rounded-2xl p-12">
         <MapPinOff className="mx-auto h-12 w-12 text-on-surface-variant" aria-hidden />
         <h1 className="mt-4 text-headline-md font-bold text-on-surface">No saved trips yet</h1>
         <p className="mx-auto mt-2 max-w-sm text-on-surface-variant">{message}</p>

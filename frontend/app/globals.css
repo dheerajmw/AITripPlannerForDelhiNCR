@@ -30,6 +30,14 @@ body {
 }
 
 @layer components {
+  .page-shell {
+    @apply mx-auto w-full max-w-6xl;
+  }
+
+  .page-narrow {
+    @apply mx-auto w-full max-w-4xl;
+  }
+
   .glass-panel {
     background: rgba(15, 19, 29, 0.55);
     backdrop-filter: blur(16px);

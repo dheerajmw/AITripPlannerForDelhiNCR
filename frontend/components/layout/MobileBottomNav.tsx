@@ -14,7 +14,8 @@ export function MobileBottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex h-16 items-center justify-around border-t border-on-surface-variant/10 bg-surface/80 px-4 backdrop-blur-xl md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-on-surface-variant/10 bg-surface/80 backdrop-blur-xl md:hidden">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-around px-gutter">
       {ITEMS.map(({ href, label, icon: Icon }) => {
         const active = pathname === href;
         return (
@@ -33,6 +34,7 @@ export function MobileBottomNav() {
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }

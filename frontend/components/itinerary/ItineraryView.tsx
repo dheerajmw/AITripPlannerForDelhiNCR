@@ -73,7 +73,7 @@ export function ItineraryView() {
   const hours = Math.round(data.meta.duration_minutes / 60);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col">
       <header className="mb-xl text-center">
         <h1 className="text-display-lg-mobile font-extrabold md:text-display-lg aurora-text">
           Your expedition
@@ -143,7 +143,7 @@ export function ItineraryView() {
         </p>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-xl lg:grid-cols-12">
+      <div className="grid grid-cols-1 items-start gap-xl lg:grid-cols-12">
         <section className="relative lg:col-span-7">
           <div className="absolute bottom-8 left-6 top-8 hidden timeline-line md:block" aria-hidden />
           <ItineraryTimeline stops={data.stops} />
@@ -173,7 +173,7 @@ export function ItineraryView() {
         </section>
       </div>
 
-      <div className="mt-xl flex flex-col gap-4 sm:flex-row">
+      <div className="mt-xl flex w-full flex-col gap-4 sm:flex-row sm:items-stretch">
         <button
           type="button"
           onClick={regenerate}

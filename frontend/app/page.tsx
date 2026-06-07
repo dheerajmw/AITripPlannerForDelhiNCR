@@ -71,7 +71,7 @@ export default function Home() {
       </section>
 
       {/* Quick plan preview — chips only, not inputs; full form is on /plan */}
-      <section className="mx-auto max-w-4xl">
+      <section className="page-narrow">
         <div className="glass-panel rounded-4xl p-6 shadow-2xl shadow-primary/5 md:p-10">
           <p className="mb-md text-center text-caption text-on-surface-variant">
             Example trip preferences · customize on the next step

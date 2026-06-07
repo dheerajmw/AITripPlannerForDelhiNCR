@@ -14,17 +14,22 @@ from trippilot_deploy.bootstrap import configure_import_path, init_backend
 configure_import_path()
 
 from app.config import DEFAULT_START, NCR_START_LOCATIONS
-from trippilot_deploy.theme import inject_plan_form_styles, inject_theme
+from trippilot_deploy.theme import (
+    inject_itinerary_layout_styles,
+    inject_plan_form_styles,
+    inject_theme,
+)
 from trippilot_deploy.ui import (
     aurora_background_html,
     empty_itinerary_html,
-    expedition_header_html,
     google_maps_route_url,
     hero_plan,
     home_page_html,
+    itinerary_header_block,
+    map_shell_close,
+    map_shell_open,
     stats_panel_html,
     stop_card_html,
-    summary_bar_html,
     top_nav_html,
 )
 
@@ -93,7 +98,10 @@ def render_plan(poi_count: int) -> None:
     from app.db.session import get_session_factory
 
     inject_plan_form_styles()
-    st.markdown(hero_plan(), unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="tp-page-narrow">{hero_plan()}</div>',
+        unsafe_allow_html=True,
+    )
 
     default_label = st.session_state.get("start_label", _default_start_label())
     if default_label not in _START_LABELS:
@@ -104,15 +112,17 @@ def render_plan(poi_count: int) -> None:
         col_left, col_right = st.columns(2, gap="large")
 
         with col_left:
-            st.markdown('<span class="section-label">Region</span>', unsafe_allow_html=True)
             st.markdown(
+                '<div class="form-field-block">'
+                '<span class="section-label">Region</span>'
                 '<div class="region-chip-row"><span class="preview-chip preview-chip-active">'
-                "📍 Delhi NCR</span></div>",
+                "📍 Delhi NCR</span></div></div>",
                 unsafe_allow_html=True,
             )
 
             st.markdown(
-                '<span class="section-label">Starting location</span>',
+                '<div class="form-field-block">'
+                '<span class="section-label">Starting location</span></div>',
                 unsafe_allow_html=True,
             )
             start_label = st.selectbox(
@@ -192,42 +202,43 @@ def render_plan(poi_count: int) -> None:
 
 
 def render_itinerary() -> None:
+    inject_itinerary_layout_styles()
+
     data = st.session_state.get("itinerary")
     if not data:
-        st.markdown(empty_itinerary_html(), unsafe_allow_html=True)
-        if st.button("✨ Generate AI Itinerary", type="primary"):
-            _go("plan")
+        st.markdown(
+            f'<div class="tp-page-narrow">{empty_itinerary_html()}</div>',
+            unsafe_allow_html=True,
+        )
+        _, center, _ = st.columns([1, 2, 1])
+        with center:
+            if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
+                _go("plan")
         return
 
     meta = data["meta"]
     summary = data["summary"]
     stops = data["stops"]
 
-    st.markdown(summary_bar_html(meta, summary), unsafe_allow_html=True)
-    st.markdown(expedition_header_html(meta, summary), unsafe_allow_html=True)
+    st.markdown(itinerary_header_block(meta, summary), unsafe_allow_html=True)
 
     for warning in meta.get("warnings") or []:
         st.warning(warning)
     if meta.get("fallback_reason"):
         st.info(f"AI fallback: {meta['fallback_reason']}")
 
-    col_timeline, col_side = st.columns([3, 2])
+    col_timeline, col_side = st.columns([3, 2], gap="large")
 
     with col_timeline:
-        st.markdown('<div class="itinerary-body">', unsafe_allow_html=True)
         st.markdown('<span class="section-label">Timeline</span>', unsafe_allow_html=True)
         for stop in stops:
             st.markdown(stop_card_html(stop), unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
 
     with col_side:
         if stops:
             import pandas as pd
 
-            st.markdown(
-                '<div class="map-frame"><div class="map-label">Live Route</div>',
-                unsafe_allow_html=True,
-            )
+            st.markdown(map_shell_open(), unsafe_allow_html=True)
             map_df = pd.DataFrame(
                 {"lat": [s["lat"] for s in stops], "lon": [s["lon"] for s in stops]}
             )
@@ -239,11 +250,12 @@ def render_itinerary() -> None:
                     f'rel="noopener">📍 Open full route in Google Maps</a>',
                     unsafe_allow_html=True,
                 )
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown(map_shell_close(), unsafe_allow_html=True)
 
         st.markdown(stats_panel_html(meta, summary), unsafe_allow_html=True)
 
-    c1, c2 = st.columns(2)
+    st.markdown('<div class="itinerary-actions-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
+    c1, c2 = st.columns(2, gap="medium")
     with c1:
         if st.button("↻ Regenerate", type="primary", use_container_width=True):
             _regenerate_itinerary()

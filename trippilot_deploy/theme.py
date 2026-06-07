@@ -48,7 +48,40 @@ html, body, [class*="css"] {
 
 section.main > div.block-container {
     max-width: 80rem !important;
-    padding: 6.5rem 1.5rem 5rem !important;
+    padding: 6.5rem 1.25rem 5rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Global page alignment */
+.tp-page-shell {
+    max-width: 72rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+.tp-page-narrow {
+    max-width: 56rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+section.main [data-testid="column"] {
+    align-self: flex-start !important;
+}
+section.main [data-testid="column"] > div {
+    width: 100%;
+}
+section.main [data-testid="stVerticalBlock"] > [data-testid="stHorizontalBlock"] {
+    align-items: flex-start !important;
+    gap: 1.5rem !important;
+}
+section.main .stButton {
+    margin-top: 0.25rem;
+}
+section.main [data-testid="stCaptionContainer"] {
+    text-align: center;
+    margin-top: 0.25rem;
 }
 
 [data-testid="stMarkdownContainer"],
@@ -108,11 +141,14 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     position: fixed;
     left: 0; right: 0; top: 0;
     z-index: 100;
-    padding: 0.5rem 1.5rem;
+    padding: 0.5rem 1.25rem;
 }
-.tp-topnav {
+.tp-topnav-inner {
     max-width: 80rem;
     margin: 0 auto;
+}
+.tp-topnav {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -155,6 +191,12 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     width: 8px; height: 8px;
     border-radius: 50%;
     background: #ffb0cd;
+}
+.tp-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
 }
 .tp-avatar {
     width: 2.5rem; height: 2.5rem;
@@ -417,18 +459,24 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     margin-bottom: 1.25rem;
 }
 
+.itinerary-shell {
+    max-width: 72rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
 .summary-bar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.75rem 1.5rem;
-    border-bottom: 1px solid rgba(73, 68, 84, 0.3);
+    padding: 0.85rem 1.25rem;
+    border: 1px solid rgba(73, 68, 84, 0.35);
     background: rgba(27, 32, 41, 0.92);
     backdrop-filter: blur(8px);
-    margin-bottom: 1.5rem;
-    border-radius: 1rem 1rem 0 0;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
     position: relative;
     z-index: 1;
 }
@@ -443,7 +491,13 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 .summary-stats { display: flex; gap: 1rem; font-size: 0.8rem; color: #cbc3d7 !important; }
 .ai-badge { color: #d0bcff !important; font-size: 0.8rem; }
 
-.expedition-header { padding: 0 0 1rem; position: relative; z-index: 1; }
+.expedition-header {
+    padding: 0 0 1.25rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
 .expedition-header h1 {
     font-size: 2rem;
     font-weight: 800;
@@ -453,7 +507,13 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    justify-content: center;
+}
 .badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
@@ -515,7 +575,7 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 .stat-tip-title { font-size: 0.85rem; font-weight: 700; color: #d0bcff !important; margin: 0 0 0.25rem; }
 .stat-tip { font-size: 0.75rem; color: #cbc3d7 !important; margin: 0; line-height: 1.5; }
 
-.map-frame {
+.map-shell {
     margin-bottom: 1rem;
     border-radius: 1rem;
     border: 1px solid rgba(73, 68, 84, 0.4);
@@ -523,13 +583,27 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     overflow: hidden;
 }
 .map-label {
-    padding: 0.5rem 1rem;
+    padding: 0.65rem 1rem;
     border-bottom: 1px solid rgba(255,255,255,0.05);
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: #d0bcff;
+    margin: 0;
+}
+.map-shell [data-testid="stDeckGlJsonChart"] {
+    margin: 0 !important;
+}
+.form-field-block {
+    margin-bottom: 1rem;
+}
+.region-chip-row {
+    margin-bottom: 0.75rem;
+}
+.itinerary-actions {
+    max-width: 72rem;
+    margin: 1.5rem auto 0;
 }
 .gmaps-link {
     display: block;
@@ -550,7 +624,6 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 .empty-state h2 { color: #dfe2f0 !important; margin: 1rem 0 0.5rem; }
 .empty-state p { color: #cbc3d7 !important; }
 
-.itinerary-body { padding-bottom: 2rem; position: relative; z-index: 1; }
 .section-label {
     display: block;
     font-size: 0.75rem;
@@ -603,6 +676,24 @@ def inject_theme() -> None:
     st.markdown(f"<style>{DESIGN_CSS}</style>", unsafe_allow_html=True)
 
 
+ITINERARY_LAYOUT_CSS = """
+section.main .itinerary-shell ~ [data-testid="stHorizontalBlock"] {
+    max-width: 72rem;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100%;
+    align-items: flex-start !important;
+}
+section.main .itinerary-shell ~ [data-testid="stHorizontalBlock"] [data-testid="column"] {
+    align-self: stretch !important;
+}
+section.main .itinerary-actions-marker ~ [data-testid="stHorizontalBlock"] {
+    max-width: 72rem;
+    margin: 1.5rem auto 0;
+    width: 100%;
+}
+"""
+
 PLAN_FORM_CSS = """
 section.main [data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(15, 19, 29, 0.72) !important;
@@ -641,8 +732,24 @@ section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stToggle
     border-top: 1px solid rgba(73, 68, 84, 0.35);
     margin-top: 0.5rem;
 }
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"],
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] {
+    margin-bottom: 1rem;
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stCaptionContainer"] {
+    text-align: left;
+}
 """
 
 
 def inject_plan_form_styles() -> None:
     st.markdown(f"<style>{PLAN_FORM_CSS}</style>", unsafe_allow_html=True)
+
+
+def inject_itinerary_layout_styles() -> None:
+    st.markdown(f"<style>{ITINERARY_LAYOUT_CSS}</style>", unsafe_allow_html=True)

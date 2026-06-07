@@ -53,32 +53,36 @@ def top_nav_html(active: str, poi_count: int | None = None) -> str:
 
     return f"""
     <div class="tp-topnav-wrap">
-      <div class="tp-topnav">
-        <a class="tp-brand" href="?page=home">✈ Trip Pilot</a>
-        <div class="tp-nav-links">{nav}</div>
-        <div style="display:flex;align-items:center;gap:0.75rem;">
-          {badge}
-          <div class="tp-avatar">TP</div>
+      <div class="tp-topnav-inner">
+        <div class="tp-topnav">
+          <a class="tp-brand" href="?page=home">✈ Trip Pilot</a>
+          <div class="tp-nav-links">{nav}</div>
+          <div class="tp-nav-actions">
+            {badge}
+            <div class="tp-avatar">TP</div>
+          </div>
         </div>
+        {mobile_nav}
       </div>
-      {mobile_nav}
     </div>
     """
 
 
 def home_page_html(city: str = "Delhi NCR") -> str:
     return f"""
-    <div class="hero-center">
-      <div class="hero-orb"><span class="hero-orb-glow"></span>✨</div>
-      <h1>Explore <span class="aurora-text">{html.escape(city)}</span><br/>with AI</h1>
-      <p>Experience the fusion of historic majesty and futuristic convenience. Our AI crafts
-      seamless itineraries tailored to your unique pace and passions.</p>
+    <div class="tp-page-shell">
+      <div class="hero-center">
+        <div class="hero-orb"><span class="hero-orb-glow"></span>✨</div>
+        <h1>Explore <span class="aurora-text">{html.escape(city)}</span><br/>with AI</h1>
+        <p>Experience the fusion of historic majesty and futuristic convenience. Our AI crafts
+        seamless itineraries tailored to your unique pace and passions.</p>
+      </div>
+      <div class="tp-page-narrow">
+        {quick_plan_card()}
+      </div>
+      {bento_grid_html()}
+      <p class="footer-note">Estimates only · MVP · No bookings or tickets</p>
     </div>
-    <div style="padding:0 0.5rem;">
-      {quick_plan_card()}
-    </div>
-    {bento_grid_html()}
-    <p class="footer-note">Estimates only · MVP · No bookings or tickets</p>
     """
 
 
@@ -195,6 +199,24 @@ def google_maps_route_url(data: dict[str, Any]) -> str | None:
     if middle:
         params["waypoints"] = "|".join(f"{lat},{lon}" for lat, lon in middle)
     return f"https://www.google.com/maps/dir/?{urlencode(params)}"
+
+
+def itinerary_header_block(meta: dict, summary: dict) -> str:
+    """Single markdown block — avoids split open/close divs across Streamlit widgets."""
+    return f"""
+    <div class="itinerary-shell">
+      {summary_bar_html(meta, summary)}
+      {expedition_header_html(meta, summary)}
+    </div>
+    """
+
+
+def map_shell_open() -> str:
+    return '<div class="map-shell"><p class="map-label">Live Route</p>'
+
+
+def map_shell_close() -> str:
+    return "</div>"
 
 
 def summary_bar_html(meta: dict, summary: dict) -> str:
