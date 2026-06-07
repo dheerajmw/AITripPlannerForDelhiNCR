@@ -64,19 +64,21 @@ def _go(page: str) -> None:
 
 
 def render_tab_bar(active: str) -> None:
-    """Unified segmented control — switches sections in-place."""
+    """Segmented tabs — embedded in nav on desktop, row below on mobile."""
     inject_tab_bar_styles()
     st.markdown('<div class="tp-tab-bar-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
     cols = st.columns(3, gap="small")
-    labels = [
-        ("home", "Explore", "✨"),
-        ("plan", "Generate Trip", "🗺️"),
-        ("itinerary", "Saved Trips", "📍"),
-    ]
-    for col, (page_id, label, icon) in zip(cols, labels):
+    for col, (page_id, label) in zip(
+        cols,
+        [
+            ("home", "Explore"),
+            ("plan", "Generate Trip"),
+            ("itinerary", "Saved Trips"),
+        ],
+    ):
         with col:
             if st.button(
-                f"{icon} {label}",
+                label,
                 key=f"nav_tab_{page_id}",
                 use_container_width=True,
                 type="primary" if active == page_id else "secondary",
@@ -97,10 +99,10 @@ def _poi_count() -> int:
         return POIService(db).count()
 
 
-def _shell_start(page: str, poi_count: int | None) -> None:
+def _shell_start(page: str, poi_count: int | None, *, api_ready: bool = True) -> None:
     show_map = page == "home"
     st.markdown(aurora_background_html(show_map=show_map), unsafe_allow_html=True)
-    st.markdown(top_nav_html(poi_count), unsafe_allow_html=True)
+    st.markdown(top_nav_html(poi_count, api_ready=api_ready), unsafe_allow_html=True)
     render_tab_bar(page)
 
 
@@ -355,7 +357,7 @@ def main() -> None:
         except Exception:
             poi_count = None
 
-    _shell_start(page, poi_count if ok else None)
+    _shell_start(page, poi_count if ok else None, api_ready=ok)
 
     if not ok:
         st.error("Cannot start planner")

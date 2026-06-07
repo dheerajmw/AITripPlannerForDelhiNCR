@@ -23,21 +23,32 @@ def aurora_background_html(*, show_map: bool = True) -> str:
     """
 
 
-def top_nav_html(poi_count: int | None = None) -> str:
+def top_nav_html(poi_count: int | None = None, *, api_ready: bool = True) -> str:
     badge = ""
-    if poi_count is not None and poi_count > 0:
+    if api_ready and poi_count is not None and poi_count > 0:
         badge = (
             f'<span class="tp-nav-badge"><span class="dot"></span>'
-            f'{poi_count:,} POIs</span>'
+            f'API ready · {poi_count:,} places</span>'
+        )
+    elif not api_ready:
+        badge = (
+            '<span class="tp-nav-badge tp-nav-badge-warn">'
+            '<span class="dot"></span>API offline</span>'
         )
 
     return f"""
     <div class="tp-header-fixed" aria-hidden="false">
       <div class="tp-header-inner">
-        <div class="tp-topnav">
-          <span class="tp-brand">✈ Trip Pilot</span>
+        <div class="tp-nav-bar tp-topnav">
+          <div class="tp-nav-brand">
+            <span class="tp-brand-icon-wrap" aria-hidden="true">
+              <span class="tp-brand-icon">✈</span>
+            </span>
+            <span class="tp-brand-text">Trip Pilot</span>
+          </div>
           <div class="tp-nav-actions">
             {badge}
+            <span class="tp-nav-bell" aria-hidden="true">🔔</span>
             <div class="tp-avatar">TP</div>
           </div>
         </div>
