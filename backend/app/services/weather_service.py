@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from datetime import date, timedelta
+
+from app.services.weather_client import planning_today
 from typing import List, Optional, Sequence, Tuple
 
 from app.config import (
@@ -34,7 +36,10 @@ class WeatherService:
             return None, warnings
 
         if not self._client.is_configured():
-            warnings.append("Weather-aware planning skipped (OpenWeatherMap API key not configured).")
+            warnings.append(
+                "Weather-aware planning skipped — add OPENWEATHER_API_KEY to Streamlit secrets "
+                "or backend/.env."
+            )
             return None, warnings
 
         try:
@@ -43,7 +48,7 @@ class WeatherService:
             warnings.append("Invalid plan date; weather adjustments skipped.")
             return None, warnings
 
-        today = date.today()
+        today = planning_today()
         if target < today:
             warnings.append("Plan date is in the past; weather adjustments skipped.")
             return None, warnings
@@ -57,7 +62,14 @@ class WeatherService:
 
         forecast = self._client.fetch_forecast(lat=lat, lon=lon, plan_date=plan_date)
         if forecast is None:
-            warnings.append("Weather forecast unavailable; using standard POI ranking.")
+            detail = self._client.last_error or "using standard POI ranking"
+            if "invalid OpenWeatherMap API key" in detail:
+                warnings.append(
+                    "OpenWeatherMap API key is invalid — update OPENWEATHER_API_KEY in "
+                    "Streamlit secrets."
+                )
+            else:
+                warnings.append(f"Weather forecast unavailable ({detail}).")
             return None, warnings
 
         summary = WeatherSummary(

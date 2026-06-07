@@ -1,11 +1,11 @@
 """Weather bias and forecast parsing tests."""
 
-from datetime import date
+from datetime import date, datetime, timezone
 
 from app.db.models import POIRecord
 from app.models.itinerary import ItineraryGenerateRequest
 from app.models.weather import WeatherSummary
-from app.services.weather_client import WeatherClient, _summarize_day
+from app.services.weather_client import WeatherClient, _entries_for_date, _summarize_day
 from app.services.weather_service import WeatherService
 
 
@@ -19,6 +19,26 @@ def _poi(poi_id: str, category: str) -> POIRecord:
         estimated_visit_minutes=60,
         source="test",
     )
+
+
+def test_entries_for_date_matches_delhi_local_calendar_day() -> None:
+    """UTC forecast timestamps must map to Asia/Kolkata trip dates."""
+    entries = [
+        {
+            "dt": int(datetime(2026, 6, 6, 18, 30, tzinfo=timezone.utc).timestamp()),
+            "dt_txt": "2026-06-06 18:30:00",
+            "weather": [{"main": "Clear", "description": "clear sky"}],
+            "main": {"temp": 30.0},
+        }
+    ]
+    matched = _entries_for_date(entries, date(2026, 6, 7))
+    assert len(matched) == 1
+
+
+def test_weather_client_rejects_placeholder_api_key() -> None:
+    client = WeatherClient()
+    client._resolve_api_key = lambda: "your_openweather_key"  # type: ignore[method-assign]
+    assert not client.is_configured()
 
 
 def test_summarize_day_rain_bias() -> None:

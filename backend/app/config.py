@@ -147,6 +147,7 @@ INDOOR_POI_CATEGORIES: FrozenSet[str] = frozenset(
         "pub",
     }
 )
+WEATHER_PLANNING_TZ = "Asia/Kolkata"
 WEATHER_RAIN_CONDITIONS: FrozenSet[str] = frozenset({"Rain", "Drizzle", "Thunderstorm"})
 WEATHER_HEAT_THRESHOLD_C = 40.0
 WEATHER_OUTDOOR_VISIT_FACTOR = 0.75
