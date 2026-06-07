@@ -1,31 +1,29 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 
 import { AuroraBackground } from "@/components/layout/AuroraBackground";
-import { pathnameToPage, trackEvent } from "@/lib/analytics";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { TopNav } from "@/components/layout/TopNav";
+import { useAppTab } from "@/components/navigation/useAppTab";
+import { trackEvent } from "@/lib/analytics";
+import { type AppTab, tabToAnalyticsPage } from "@/lib/navigation";
 
 type Props = {
   children: React.ReactNode;
 };
 
-/** Purple Aurora shell: cosmic backdrop + floating top nav. */
-export function AppChrome({ children }: Props) {
-  const pathname = usePathname();
-  const lastTracked = useRef<string | null>(null);
+function AppChromeInner({ children }: Props) {
+  const { tab } = useAppTab();
+  const lastTracked = useRef<AppTab | null>(null);
 
   useEffect(() => {
-    const page = pathnameToPage(pathname);
-    if (!page || lastTracked.current === pathname) return;
-    lastTracked.current = pathname;
-    trackEvent({ event: "page_view", page });
-  }, [pathname]);
+    if (lastTracked.current === tab) return;
+    lastTracked.current = tab;
+    trackEvent({ event: "page_view", page: tabToAnalyticsPage(tab) });
+  }, [tab]);
 
-  // Aerial Delhi backdrop is decorative only — hide on itinerary so the real OSM map is clear.
-  const showAerialBackdrop = pathname !== "/itinerary";
+  const showAerialBackdrop = tab !== "itinerary";
 
   return (
     <div className="relative min-h-screen">
@@ -36,5 +34,14 @@ export function AppChrome({ children }: Props) {
       </main>
       <MobileBottomNav />
     </div>
+  );
+}
+
+/** Purple Aurora shell: cosmic backdrop + floating top nav. */
+export function AppChrome({ children }: Props) {
+  return (
+    <Suspense fallback={null}>
+      <AppChromeInner>{children}</AppChromeInner>
+    </Suspense>
   );
 }

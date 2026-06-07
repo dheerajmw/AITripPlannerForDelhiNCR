@@ -1,5 +1,6 @@
-import { ItineraryView } from "@/components/itinerary/ItineraryView";
+import { redirect } from "next/navigation";
 
+/** Legacy route — all sections live on the home page. */
 export default function ItineraryPage() {
-  return <ItineraryView />;
+  redirect("/?tab=itinerary");
 }

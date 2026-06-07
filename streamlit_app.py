@@ -17,6 +17,7 @@ from app.config import DEFAULT_START, NCR_START_LOCATIONS
 from trippilot_deploy.theme import (
     inject_itinerary_layout_styles,
     inject_plan_form_styles,
+    inject_tab_bar_styles,
     inject_theme,
 )
 from trippilot_deploy.ui import (
@@ -53,14 +54,34 @@ def _default_start_label() -> str:
 
 
 def _current_page() -> str:
-    raw = st.query_params.get("page", "home")
-    page = raw[0] if isinstance(raw, list) else raw
+    page = st.session_state.get("page", "home")
     return page if page in PAGES else "home"
 
 
 def _go(page: str) -> None:
-    st.query_params["page"] = page
+    st.session_state["page"] = page
     st.rerun()
+
+
+def render_tab_bar(active: str) -> None:
+    """Switch sections in-place — no separate page URLs."""
+    inject_tab_bar_styles()
+    st.markdown('<div class="tp-tab-bar-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
+    cols = st.columns(3, gap="small")
+    labels = [
+        ("home", "Explore"),
+        ("plan", "Generate Trip"),
+        ("itinerary", "Saved Trips"),
+    ]
+    for col, (page_id, label) in zip(cols, labels):
+        with col:
+            if st.button(
+                label,
+                key=f"nav_tab_{page_id}",
+                use_container_width=True,
+                type="primary" if active == page_id else "secondary",
+            ):
+                _go(page_id)
 
 
 @st.cache_resource(show_spinner="Starting Trip Pilot…")
@@ -79,7 +100,8 @@ def _poi_count() -> int:
 def _shell_start(page: str, poi_count: int | None) -> None:
     show_map = page == "home"
     st.markdown(aurora_background_html(show_map=show_map), unsafe_allow_html=True)
-    st.markdown(top_nav_html(page, poi_count), unsafe_allow_html=True)
+    st.markdown(top_nav_html(poi_count), unsafe_allow_html=True)
+    render_tab_bar(page)
 
 
 def _resolve_start(label: str) -> dict:
@@ -88,6 +110,10 @@ def _resolve_start(label: str) -> dict:
 
 def render_home() -> None:
     st.markdown(home_page_html(), unsafe_allow_html=True)
+    _, center, _ = st.columns([1, 2, 1])
+    with center:
+        if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
+            _go("plan")
 
 
 def render_plan(poi_count: int) -> None:

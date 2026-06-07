@@ -13,12 +13,11 @@ import {
   WifiOff,
   type LucideIcon,
 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 
 import { AiProcessingView } from "@/components/plan/AiProcessingView";
 import { LocationPicker } from "@/components/plan/LocationPicker";
+import { useAppTab } from "@/components/navigation/useAppTab";
 import { trackEvent } from "@/lib/analytics";
 import { ApiError, generateItinerary } from "@/lib/api";
 import { DEFAULT_CITY } from "@/lib/constants";
@@ -56,7 +55,7 @@ const DURATIONS: { id: DurationKey; label: string }[] = [
 ];
 
 export function PlanForm() {
-  const router = useRouter();
+  const { setTab } = useAppTab();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [slowHint, setSlowHint] = useState(false);
@@ -146,7 +145,7 @@ export function PlanForm() {
           event: "itinerary_generated",
           properties: { mode: useAi ? "ai" : "rule" },
         });
-        router.push("/itinerary");
+        setTab("itinerary");
       } catch (err) {
         setError(
           err instanceof ApiError
@@ -338,9 +337,13 @@ export function PlanForm() {
       </form>
 
       <p className="mt-8 text-center text-sm text-on-surface-variant">
-        <Link href="/" className="text-primary transition-colors hover:text-secondary">
+        <button
+          type="button"
+          onClick={() => setTab("explore")}
+          className="text-primary transition-colors hover:text-secondary"
+        >
           ← Back to explore
-        </Link>
+        </button>
       </p>
     </div>
   );

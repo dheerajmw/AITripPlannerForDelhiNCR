@@ -86,6 +86,44 @@ body {
     -webkit-text-fill-color: transparent;
   }
 
+  .expedition-hero {
+    box-shadow: 0 25px 50px rgba(160, 120, 255, 0.08);
+  }
+
+  .expedition-title {
+    background: linear-gradient(to right, #d0bcff, #ddb7ff, #a078ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .expedition-location-pill {
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(221, 183, 255, 0.3);
+    background: rgba(221, 183, 255, 0.1);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--secondary);
+  }
+
+  .expedition-ai-pill {
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(208, 188, 255, 0.35);
+    background: rgba(208, 188, 255, 0.12);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .expedition-metric {
+    padding: 1rem 0.75rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(73, 68, 84, 0.35);
+    background: rgba(27, 32, 41, 0.55);
+  }
+
   .section-label {
     font-size: 14px;
     line-height: 20px;
@@ -150,6 +188,10 @@ body {
     font-size: 16px;
     color: var(--on-surface-variant);
     transition: color 0.2s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
   }
 
   .nav-link:hover {

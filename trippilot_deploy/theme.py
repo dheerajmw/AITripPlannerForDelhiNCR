@@ -164,7 +164,6 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     font-size: 1.25rem;
     font-weight: 700;
     color: #d0bcff !important;
-    text-decoration: none !important;
 }
 .tp-nav-links { display: none; gap: 2rem; }
 @media (min-width: 768px) { .tp-nav-links { display: flex; } }
@@ -465,65 +464,101 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     position: relative;
     z-index: 1;
 }
-.summary-bar {
+.expedition-hero {
+    padding: 1.5rem 1.75rem 1.75rem;
+    margin-bottom: 1.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px rgba(160, 120, 255, 0.08);
+    position: relative;
+    z-index: 1;
+}
+.expedition-hero-top {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    padding: 0.85rem 1.25rem;
-    border: 1px solid rgba(73, 68, 84, 0.35);
-    background: rgba(27, 32, 41, 0.92);
-    backdrop-filter: blur(8px);
-    margin-bottom: 1rem;
-    border-radius: 1rem;
-    position: relative;
-    z-index: 1;
 }
-.summary-pill {
-    padding: 0.25rem 0.75rem;
+.expedition-location-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.9rem;
     border-radius: 9999px;
     border: 1px solid rgba(221, 183, 255, 0.3);
     background: rgba(221, 183, 255, 0.1);
-    font-size: 0.7rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: #ddb7ff !important;
 }
-.summary-stats { display: flex; gap: 1rem; font-size: 0.8rem; color: #cbc3d7 !important; }
-.ai-badge { color: #d0bcff !important; font-size: 0.8rem; }
-
-.expedition-header {
-    padding: 0 0 1.25rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    position: relative;
-    z-index: 1;
+.expedition-ai-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(208, 188, 255, 0.35);
+    background: rgba(208, 188, 255, 0.12);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #d0bcff !important;
 }
-.expedition-header h1 {
-    font-size: 2rem;
+.expedition-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 800;
-    margin: 0;
+    margin: 1.25rem 0 0;
+    text-align: center;
     background: linear-gradient(to right, #d0bcff, #ddb7ff, #a078ff);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.badge-row {
+.expedition-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+@media (min-width: 640px) {
+    .expedition-metrics { grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+}
+.expedition-metric {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0.75rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(73, 68, 84, 0.35);
+    background: rgba(27, 32, 41, 0.55);
 }
-.badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
+.expedition-metric-icon {
+    font-size: 1.1rem;
+    margin-bottom: 0.35rem;
+    line-height: 1;
+}
+.expedition-metric-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #dfe2f0 !important;
+    margin: 0;
+    line-height: 1.2;
+}
+.expedition-metric-label {
+    font-size: 0.65rem;
     font-weight: 600;
-    border: 1px solid;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #cbc3d7 !important;
+    margin-top: 0.25rem;
 }
-.badge-primary { border-color: rgba(208,188,255,0.3); background: rgba(208,188,255,0.15); color: #d0bcff; }
-.badge-secondary { border-color: rgba(221,183,255,0.3); background: rgba(221,183,255,0.1); color: #ddb7ff; }
-.expedition-sub { color: #cbc3d7 !important; font-size: 0.9rem; margin-top: 0.5rem; }
+.expedition-meta {
+    text-align: center;
+    color: #cbc3d7 !important;
+    font-size: 0.9rem;
+    margin: 1.25rem 0 0;
+    text-transform: capitalize;
+}
 
 .stop-card {
     border: 1px solid rgba(73, 68, 84, 0.4);
@@ -753,3 +788,43 @@ def inject_plan_form_styles() -> None:
 
 def inject_itinerary_layout_styles() -> None:
     st.markdown(f"<style>{ITINERARY_LAYOUT_CSS}</style>", unsafe_allow_html=True)
+
+
+TAB_BAR_CSS = """
+section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] {
+    max-width: 56rem;
+    margin: 0 auto 1.5rem !important;
+    width: 100%;
+    gap: 0.5rem !important;
+    align-items: stretch !important;
+}
+section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button {
+    width: 100%;
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    padding: 0.65rem 1rem !important;
+    border: 1px solid rgba(73, 68, 84, 0.4) !important;
+    background: rgba(49, 53, 63, 0.6) !important;
+    color: #cbc3d7 !important;
+}
+section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="primary"] {
+    background: rgba(208, 188, 255, 0.2) !important;
+    border-color: rgba(208, 188, 255, 0.35) !important;
+    color: #d0bcff !important;
+    box-shadow: 0 0 12px rgba(160, 120, 255, 0.15) !important;
+}
+section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="secondary"]:hover {
+    border-color: rgba(208, 188, 255, 0.3) !important;
+    color: #d0bcff !important;
+}
+@media (max-width: 767px) {
+    section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button {
+        font-size: 0.8rem !important;
+        padding: 0.55rem 0.5rem !important;
+    }
+}
+"""
+
+
+def inject_tab_bar_styles() -> None:
+    st.markdown(f"<style>{TAB_BAR_CSS}</style>", unsafe_allow_html=True)

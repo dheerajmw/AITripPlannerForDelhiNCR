@@ -8,13 +8,6 @@ from urllib.parse import urlencode
 
 from trippilot_deploy.theme import HERO_IMAGE
 
-NAV_ITEMS = [
-    ("home", "Explore"),
-    ("plan", "Generate Trip"),
-    ("itinerary", "Saved Trips"),
-]
-
-
 def aurora_background_html(*, show_map: bool = True) -> str:
     map_div = ""
     if show_map:
@@ -30,20 +23,7 @@ def aurora_background_html(*, show_map: bool = True) -> str:
     """
 
 
-def top_nav_html(active: str, poi_count: int | None = None) -> str:
-    links = []
-    for page, label in NAV_ITEMS:
-        cls = "tp-nav-link-active" if active == page else "tp-nav-link"
-        links.append(f'<a class="{cls}" href="?page={page}">{html.escape(label)}</a>')
-    nav = "".join(links)
-
-    mobile = []
-    for page, label in NAV_ITEMS:
-        short = label.split()[0]
-        cls = "active" if active == page else ""
-        mobile.append(f'<a class="{cls}" href="?page={page}">{html.escape(short)}</a>')
-    mobile_nav = '<div class="tp-mobile-nav">' + "".join(mobile) + "</div>"
-
+def top_nav_html(poi_count: int | None = None) -> str:
     badge = ""
     if poi_count is not None and poi_count > 0:
         badge = (
@@ -55,14 +35,12 @@ def top_nav_html(active: str, poi_count: int | None = None) -> str:
     <div class="tp-topnav-wrap">
       <div class="tp-topnav-inner">
         <div class="tp-topnav">
-          <a class="tp-brand" href="?page=home">✈ Trip Pilot</a>
-          <div class="tp-nav-links">{nav}</div>
+          <span class="tp-brand">✈ Trip Pilot</span>
           <div class="tp-nav-actions">
             {badge}
             <div class="tp-avatar">TP</div>
           </div>
         </div>
-        {mobile_nav}
       </div>
     </div>
     """
@@ -131,9 +109,6 @@ def quick_plan_card() -> str:
           </div>
         </div>
       </div>
-      <div style="margin-top:1.5rem;">
-        <a class="btn-primary-cta" href="?page=plan">✨ Generate AI Itinerary</a>
-      </div>
     </div>
     """
 
@@ -201,14 +176,60 @@ def google_maps_route_url(data: dict[str, Any]) -> str | None:
     return f"https://www.google.com/maps/dir/?{urlencode(params)}"
 
 
-def itinerary_header_block(meta: dict, summary: dict) -> str:
-    """Single markdown block — avoids split open/close divs across Streamlit widgets."""
+def expedition_hero_html(meta: dict, summary: dict) -> str:
+    hours = round(meta.get("duration_minutes", 0) / 60 * 10) / 10
+    cost = summary.get("total_cost_inr", {})
+    low = cost.get("low", 0)
+    high = cost.get("high", 0)
+    budget = html.escape(str(meta.get("budget_tier", "medium")))
+    city = html.escape(str(meta.get("city", "Delhi NCR")))
+    start = meta.get("start_point", {})
+    start_label = html.escape(str(start.get("label", meta.get("city", "Delhi NCR"))))
+
+    ai_pill = ""
+    if meta.get("planner_mode") == "ai":
+        status = "AI enhanced" if meta.get("ai_status") == "success" else "AI fallback"
+        ai_pill = f'<span class="expedition-ai-pill">✨ {status}</span>'
+
     return f"""
     <div class="itinerary-shell">
-      {summary_bar_html(meta, summary)}
-      {expedition_header_html(meta, summary)}
+      <div class="expedition-hero glass-panel">
+        <div class="expedition-hero-top">
+          <span class="expedition-location-pill">📍 {start_label}</span>
+          {ai_pill}
+        </div>
+        <h1 class="expedition-title">Your expedition</h1>
+        <div class="expedition-metrics">
+          <div class="expedition-metric">
+            <span class="expedition-metric-icon">🕐</span>
+            <span class="expedition-metric-value">{hours}h</span>
+            <span class="expedition-metric-label">Duration</span>
+          </div>
+          <div class="expedition-metric">
+            <span class="expedition-metric-icon">₹</span>
+            <span class="expedition-metric-value">₹{low:,}–₹{high:,}</span>
+            <span class="expedition-metric-label">Est. cost</span>
+          </div>
+          <div class="expedition-metric">
+            <span class="expedition-metric-icon">✨</span>
+            <span class="expedition-metric-value">{summary.get("total_stops", 0)}</span>
+            <span class="expedition-metric-label">Stops</span>
+          </div>
+          <div class="expedition-metric">
+            <span class="expedition-metric-icon">🚶</span>
+            <span class="expedition-metric-value">{summary.get("total_travel_min", 0)} min</span>
+            <span class="expedition-metric-label">Walking</span>
+          </div>
+        </div>
+        <p class="expedition-meta">{budget} budget · {city}</p>
+      </div>
     </div>
     """
+
+
+def itinerary_header_block(meta: dict, summary: dict) -> str:
+    """Unified expedition hero — single markdown block for Streamlit."""
+    return expedition_hero_html(meta, summary)
 
 
 def map_shell_open() -> str:
@@ -217,52 +238,6 @@ def map_shell_open() -> str:
 
 def map_shell_close() -> str:
     return "</div>"
-
-
-def summary_bar_html(meta: dict, summary: dict) -> str:
-    hours = round(meta.get("duration_minutes", 0) / 60 * 10) / 10
-    cost = summary.get("total_cost_inr", {})
-    low = cost.get("low", 0)
-    high = cost.get("high", 0)
-    ai = ""
-    if meta.get("planner_mode") == "ai":
-        status = "AI enhanced" if meta.get("ai_status") == "success" else "AI fallback"
-        ai = f'<span class="ai-badge">✨ {status}</span>'
-    start = meta.get("start_point", {})
-    start_label = start.get("label", meta.get("city", "Delhi NCR"))
-    return f"""
-    <div class="summary-bar">
-      <span class="summary-pill">📍 {html.escape(str(start_label))}</span>
-      <span class="summary-stats">
-        <span>🕐 {hours}h</span>
-        <span>₹{low:,}–₹{high:,}</span>
-        <span>{summary.get("total_stops", 0)} stops</span>
-      </span>
-      {ai}
-    </div>
-    """
-
-
-def expedition_header_html(meta: dict, summary: dict) -> str:
-    budget = meta.get("budget_tier", "medium")
-    hours = round(meta.get("duration_minutes", 0) / 60)
-    ai_badge = ""
-    if meta.get("planner_mode") == "ai":
-        ai_badge = "<span class='badge badge-primary'>✨ AI enhanced</span>"
-    return f"""
-    <div class="expedition-header">
-      <h1>Your expedition</h1>
-      <div class="badge-row">
-        <span class="badge badge-secondary">{hours}h</span>
-        <span class="badge badge-primary">{html.escape(budget)} budget</span>
-        <span class="badge badge-secondary">{summary.get("total_stops", 0)} stops</span>
-        {ai_badge}
-      </div>
-      <p class="expedition-sub">
-        {summary.get("total_travel_min", 0)} min walking · {html.escape(meta.get("city", "Delhi NCR"))}
-      </p>
-    </div>
-    """
 
 
 def stats_panel_html(meta: dict, summary: dict) -> str:
