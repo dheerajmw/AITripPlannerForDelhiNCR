@@ -43,12 +43,13 @@ class ContextBuilder:
 
         allowed_ids = sorted(draft_ids | {p.id for p in capped})
 
-        return {
+        payload: Dict[str, Any] = {
             "preferences": {
                 "budget": request.budget,
                 "interests": list(request.interests),
                 "duration": request.duration,
                 "duration_minutes": request.duration_minutes,
+                "plan_date": request.plan_date,
             },
             "allowed_poi_ids": allowed_ids,
             "candidate_pois": [
@@ -77,3 +78,6 @@ class ContextBuilder:
                 ]
             },
         }
+        if draft.meta.weather:
+            payload["weather"] = draft.meta.weather.model_dump()
+        return payload

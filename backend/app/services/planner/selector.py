@@ -18,7 +18,7 @@ class CandidateSelector:
             return []
 
         by_category: Dict[str, List[POIRecord]] = defaultdict(list)
-        for poi in sorted(candidates, key=lambda p: (p.category, p.id)):
+        for poi in candidates:
             by_category[poi.category].append(poi)
 
         categories = sorted(by_category.keys())

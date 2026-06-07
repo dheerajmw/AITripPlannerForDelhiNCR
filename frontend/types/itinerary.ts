@@ -24,6 +24,15 @@ export type TripLocation = {
   source: "landmark" | "poi";
 };
 
+export type WeatherSummary = {
+  plan_date: string;
+  condition: string;
+  description: string;
+  temp_c: number;
+  bias: "rain" | "heat" | "clear";
+  applied: boolean;
+};
+
 export type ItineraryGenerateBody = {
   budget: BudgetTier;
   interests: Interest[];
@@ -31,6 +40,7 @@ export type ItineraryGenerateBody = {
   start_lat?: number;
   start_lon?: number;
   start_label?: string;
+  plan_date?: string;
 };
 
 export type SavedPlanForm = ItineraryGenerateBody & {
@@ -49,6 +59,8 @@ export type ItineraryMeta = {
   routing_source?: string | null;
   ai_status?: string | null;
   fallback_reason?: string | null;
+  plan_date?: string | null;
+  weather?: WeatherSummary | null;
 };
 
 export type ItineraryStop = {

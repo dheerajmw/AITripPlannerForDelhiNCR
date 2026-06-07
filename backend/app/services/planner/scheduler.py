@@ -9,11 +9,14 @@ from app.config import (
     DEFAULT_SCHEDULE_START_MINUTE,
     NIGHTLIFE_CATEGORIES,
     NIGHTLIFE_EARLIEST_HOUR,
+    OUTDOOR_POI_CATEGORIES,
     SCHEDULE_BUFFER_MINUTES,
 )
 from app.db.models import POIRecord
 from app.models.itinerary import ItineraryStop
+from app.models.weather import WeatherSummary
 from app.services.planner.cost import CostEstimator
+from app.services.weather_service import WeatherService
 
 
 class ScheduleBuilder:
@@ -27,6 +30,7 @@ class ScheduleBuilder:
         leg_travel_minutes: Sequence[int],
         budget_tier: str,
         warnings: Optional[List[str]] = None,
+        weather: Optional[WeatherSummary] = None,
     ) -> Tuple[List[ItineraryStop], List[str]]:
         local_warnings: List[str] = list(warnings or [])
         stops: List[ItineraryStop] = []
@@ -50,6 +54,13 @@ class ScheduleBuilder:
                 local_warnings.append(closed_msg)
 
             visit = poi.estimated_visit_minutes
+            if poi.category in OUTDOOR_POI_CATEGORIES and weather:
+                adjusted = WeatherService.outdoor_visit_minutes(visit, weather)
+                if adjusted < visit:
+                    local_warnings.append(
+                        f"Shortened outdoor visit at {poi.name} due to heat forecast."
+                    )
+                    visit = adjusted
             depart = arrive + timedelta(minutes=visit)
             current = depart
 

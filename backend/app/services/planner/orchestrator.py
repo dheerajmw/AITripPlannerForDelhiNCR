@@ -25,6 +25,7 @@ from app.services.planner.filter import PreferenceFilter
 from app.services.planner.scheduler import ScheduleBuilder
 from app.services.planner.selector import CandidateSelector
 from app.services.route_service import RouteService
+from app.services.weather_service import WeatherService
 from app.utils.geo import in_ncr_bounds, is_delhi_area_coordinate, is_valid_coordinate
 
 
@@ -36,12 +37,17 @@ class PlannerOrchestrator:
         self._selector = CandidateSelector()
         self._scheduler = ScheduleBuilder()
         self._cost = CostEstimator()
+        self._weather = WeatherService()
 
     def generate(self, request: ItineraryGenerateRequest) -> ItineraryResponse:
         start = request.resolved_start()
         self._validate_start(start)
 
         warnings: List[str] = []
+        weather_summary, weather_warnings = self._weather.resolve(
+            request, lat=start.lat, lon=start.lon
+        )
+        warnings.extend(weather_warnings)
         candidates = self._repo.find_by_interests(request.interests, limit=500)
         if not candidates:
             raise UnprocessablePlanError(
@@ -58,6 +64,13 @@ class PlannerOrchestrator:
                 details={"budget": request.budget, "interests": list(request.interests)},
             )
 
+        if weather_summary and weather_summary.applied:
+            filtered = self._weather.rank_candidates(filtered, weather_summary)
+            if not any(p.category in {"park", "nature"} for p in filtered) and weather_summary.bias == "rain":
+                warnings.append(
+                    "Few outdoor options matched your interests during rain; itinerary uses best available stops."
+                )
+
         shortlist = self._selector.select(filtered)
         ordered_pois, route_warnings, routing_source, leg_minutes = self._fit_route(
             shortlist,
@@ -71,6 +84,7 @@ class PlannerOrchestrator:
             leg_travel_minutes=leg_minutes,
             budget_tier=request.budget,
             warnings=warnings,
+            weather=weather_summary,
         )
         warnings = schedule_warnings
 
@@ -92,6 +106,8 @@ class PlannerOrchestrator:
                 warnings=warnings,
                 planner_mode="rule",
                 routing_source=routing_source,
+                plan_date=request.plan_date,
+                weather=weather_summary,
             ),
             stops=stops,
             summary=summary,

@@ -58,6 +58,15 @@ class Settings(BaseSettings):
         description="OSRM API base (Phase 2). Use http:// for the public demo on macOS LibreSSL.",
     )
 
+    openweather_api_key: Optional[str] = Field(
+        default=None,
+        description="OpenWeatherMap API key for weather-aware POI ranking (optional)",
+    )
+    openweather_base_url: str = Field(
+        default="https://api.openweathermap.org/data/2.5",
+        description="OpenWeatherMap API base URL",
+    )
+
     @property
     def data_dir(self) -> Path:
         return _REPO_ROOT / "data"

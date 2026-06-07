@@ -1,4 +1,4 @@
-import { Clock, Footprints, IndianRupee, MapPin, Sparkles } from "lucide-react";
+import { Clock, CloudSun, Footprints, IndianRupee, MapPin, Sparkles } from "lucide-react";
 
 import type { ItineraryResponse } from "@/types/itinerary";
 
@@ -53,7 +53,16 @@ export function ExpeditionHero({ data }: Props) {
 
       <p className="expedition-meta mt-5 text-center text-body-sm text-on-surface-variant">
         <span className="capitalize">{meta.budget_tier}</span> budget · {meta.city}
+        {meta.plan_date ? ` · ${meta.plan_date}` : ""}
       </p>
+
+      {meta.weather ? (
+        <p className="mt-3 flex items-center justify-center gap-2 text-center text-body-sm text-on-surface-variant">
+          <CloudSun className="h-4 w-4 shrink-0 text-secondary" aria-hidden />
+          {meta.weather.description} (~{Math.round(meta.weather.temp_c)}°C)
+          {meta.weather.applied ? " · weather-adjusted plan" : ""}
+        </p>
+      ) : null}
     </section>
   );
 }

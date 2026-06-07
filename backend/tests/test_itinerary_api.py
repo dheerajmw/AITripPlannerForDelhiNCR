@@ -1,6 +1,9 @@
 """Itinerary generate API tests."""
 
+from datetime import date
 from unittest.mock import patch
+
+from app.services.weather_client import WeatherForecast
 
 
 def _mock_matrix(coordinates):
@@ -61,6 +64,35 @@ def test_generate_is_deterministic(mock_matrix, api_client, sample_pois) -> None
     ids1 = [s["poi_id"] for s in r1["stops"]]
     ids2 = [s["poi_id"] for s in r2["stops"]]
     assert ids1 == ids2
+
+
+@patch(
+    "app.services.route_service.build_matrix_chunked",
+    side_effect=lambda client, coords, chunk: _mock_matrix(coords),
+)
+@patch("app.services.weather_service.WeatherClient")
+def test_generate_with_weather_plan_date(mock_client_cls, mock_matrix, api_client, sample_pois) -> None:
+    mock_client = mock_client_cls.return_value
+    mock_client.is_configured.return_value = True
+    mock_client.fetch_forecast.return_value = WeatherForecast(
+        plan_date=date.today().isoformat(),
+        condition="Rain",
+        description="light rain",
+        temp_c=27.0,
+        bias="rain",
+    )
+    body = {
+        "budget": "medium",
+        "interests": ["history", "nature"],
+        "duration": "8h",
+        "plan_date": date.today().isoformat(),
+    }
+    response = api_client.post("/api/v1/itinerary/generate?mode=rule", json=body)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["meta"]["weather"] is not None
+    assert data["meta"]["weather"]["bias"] == "rain"
+    assert any("Rain expected" in w for w in data["meta"]["warnings"])
 
 
 def test_invalid_interest_returns_400(api_client, sample_pois) -> None:

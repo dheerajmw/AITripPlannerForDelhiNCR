@@ -10,6 +10,7 @@ from app.config import (
     SUPPORTED_DURATIONS,
     SUPPORTED_INTERESTS,
 )
+from app.models.weather import WeatherSummary
 from app.utils.geo import in_ncr_bounds, is_delhi_area_coordinate, is_valid_coordinate
 
 
@@ -39,6 +40,26 @@ class ItineraryGenerateRequest(BaseModel):
     start_lat: Optional[float] = None
     start_lon: Optional[float] = None
     start_label: Optional[str] = None
+    plan_date: Optional[str] = Field(
+        default=None,
+        description="Trip date (YYYY-MM-DD) for weather-aware POI ranking",
+    )
+
+    @field_validator("plan_date")
+    @classmethod
+    def validate_plan_date(cls, v: Optional[str]) -> Optional[str]:
+        if v is None:
+            return None
+        text = str(v).strip()
+        if not text:
+            return None
+        from datetime import date
+
+        try:
+            date.fromisoformat(text)
+        except ValueError as exc:
+            raise ValueError("plan_date must be YYYY-MM-DD") from exc
+        return text
 
     @field_validator("interests")
     @classmethod
@@ -123,6 +144,8 @@ class ItineraryMeta(BaseModel):
     routing_source: Optional[str] = None
     ai_status: Optional[str] = None
     fallback_reason: Optional[str] = None
+    plan_date: Optional[str] = None
+    weather: Optional[WeatherSummary] = None
 
 
 class ItinerarySummary(BaseModel):

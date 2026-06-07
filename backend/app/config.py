@@ -1,6 +1,6 @@
 """Delhi NCR geographic contract and app constants — single source of truth."""
 
-from typing import Dict, Literal, Tuple
+from typing import Dict, FrozenSet, Literal, Tuple
 
 # Delhi NCR bounding box (refine with GeoJSON in Phase 1)
 NCR_BOUNDS = {
@@ -132,6 +132,28 @@ DEFAULT_SCHEDULE_START_HOUR = 9
 DEFAULT_SCHEDULE_START_MINUTE = 0
 NIGHTLIFE_CATEGORIES = ("bar", "pub")
 NIGHTLIFE_EARLIEST_HOUR = 17
+
+# Weather-aware planning (Phase 6)
+OUTDOOR_POI_CATEGORIES: FrozenSet[str] = frozenset({"park", "nature"})
+INDOOR_POI_CATEGORIES: FrozenSet[str] = frozenset(
+    {
+        "cafe",
+        "restaurant",
+        "monument",
+        "museum",
+        "attraction",
+        "historic",
+        "bar",
+        "pub",
+    }
+)
+WEATHER_RAIN_CONDITIONS: FrozenSet[str] = frozenset({"Rain", "Drizzle", "Thunderstorm"})
+WEATHER_HEAT_THRESHOLD_C = 40.0
+WEATHER_OUTDOOR_VISIT_FACTOR = 0.75
+WEATHER_MIN_OUTDOOR_VISIT_MINUTES = 20
+WEATHER_FORECAST_MAX_DAYS = 5
+WEATHER_CACHE_TTL_SEC = 3 * 60 * 60
+WEATHER_DISCLAIMER = "Weather forecasts are approximate; conditions may differ on the day."
 
 BUDGET_ALLOWED_CATEGORIES: Dict[str, Tuple[str, ...]] = {
     "low": ("park", "nature", "historic", "monument", "attraction", "museum", "cafe"),

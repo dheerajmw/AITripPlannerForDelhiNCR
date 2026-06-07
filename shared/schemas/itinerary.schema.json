@@ -28,7 +28,19 @@
         "planner_mode": { "type": "string" },
         "routing_source": { "type": "string" },
         "ai_status": { "type": "string" },
-        "fallback_reason": { "type": "string" }
+        "fallback_reason": { "type": "string" },
+        "plan_date": { "type": "string" },
+        "weather": {
+          "type": "object",
+          "properties": {
+            "plan_date": { "type": "string" },
+            "condition": { "type": "string" },
+            "description": { "type": "string" },
+            "temp_c": { "type": "number" },
+            "bias": { "enum": ["rain", "heat", "clear"] },
+            "applied": { "type": "boolean" }
+          }
+        }
       }
     },
     "stops": {

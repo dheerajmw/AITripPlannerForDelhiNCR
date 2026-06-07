@@ -2,6 +2,7 @@
 
 import {
   Calendar,
+  CloudSun,
   Diamond,
   Footprints,
   History,
@@ -54,6 +55,10 @@ const DURATIONS: { id: DurationKey; label: string }[] = [
   { id: "1d", label: "1 day" },
 ];
 
+function todayIsoDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 export function PlanForm() {
   const { setTab } = useAppTab();
   const [pending, startTransition] = useTransition();
@@ -67,6 +72,7 @@ export function PlanForm() {
   const [selected, setSelected] = useState<Interest[]>(["history", "nature"]);
   const [useAi, setUseAi] = useState(false);
   const [startLocation, setStartLocation] = useState<TripLocation>(DEFAULT_START_LOCATION);
+  const [planDate, setPlanDate] = useState(todayIsoDate());
   const [locationError, setLocationError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -77,6 +83,7 @@ export function PlanForm() {
       setSelected(saved.interests);
       setUseAi(saved.useAi);
       setStartLocation(resolveStartLocation(saved));
+      if (saved.plan_date) setPlanDate(saved.plan_date);
     }
   }, []);
 
@@ -120,6 +127,7 @@ export function PlanForm() {
       interests: selected,
       duration,
       location: startLocation,
+      planDate,
     });
     if (!validation.ok) {
       setLocationError(validation.message);
@@ -211,6 +219,22 @@ export function PlanForm() {
               }}
               error={locationError}
             />
+
+            <div>
+              <span className="section-label mb-xs flex items-center gap-2">
+                <CloudSun className="h-4 w-4" aria-hidden />
+                Trip date
+              </span>
+              <input
+                type="date"
+                value={planDate}
+                onChange={(e) => setPlanDate(e.target.value)}
+                className="w-full rounded-xl border border-outline-variant/30 bg-surface-container-highest/40 px-4 py-3 text-on-surface"
+              />
+              <p className="mt-1 text-xs text-on-surface-variant">
+                Weather-aware stops when forecast is available (next 5 days).
+              </p>
+            </div>
 
             <div>
               <span className="section-label mb-xs flex items-center gap-2">

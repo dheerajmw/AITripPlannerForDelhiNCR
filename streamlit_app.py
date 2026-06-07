@@ -194,6 +194,14 @@ def render_plan(poi_count: int) -> None:
                 help="Route begins at a landmark within Delhi NCR only.",
             )
 
+            from datetime import date as date_cls
+
+            plan_date = st.date_input(
+                "Trip date (weather-aware)",
+                value=date_cls.today(),
+                help="Forecast adjusts indoor/outdoor stops for the next 5 days.",
+            )
+
             duration = st.pills(
                 "Travel Duration",
                 ["4h", "8h", "1d"],
@@ -237,6 +245,7 @@ def render_plan(poi_count: int) -> None:
                         start_lat=float(start["lat"]),
                         start_lon=float(start["lon"]),
                         start_label=str(start["label"]),
+                        plan_date=plan_date.isoformat() if plan_date else None,
                     )
                 except ValueError as exc:
                     st.error(str(exc))
@@ -351,6 +360,7 @@ def _regenerate_itinerary() -> None:
         start_lat=float(start.get("lat", sp["lat"] if sp else DEFAULT_START["lat"])),
         start_lon=float(start.get("lon", sp["lon"] if sp else DEFAULT_START["lon"])),
         start_label=str(start.get("label", sp.get("label") if sp else DEFAULT_START["label"])),
+        plan_date=meta.get("plan_date"),
     )
     use_ai = st.session_state.get("use_ai", False)
 

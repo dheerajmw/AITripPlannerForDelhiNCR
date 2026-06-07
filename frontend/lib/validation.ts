@@ -15,11 +15,19 @@ export type PlanFormValidationResult =
   | { ok: true; value: ItineraryGenerateBody }
   | { ok: false; message: string };
 
+function isValidPlanDate(value: string | undefined): boolean {
+  if (!value?.trim()) return true;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T12:00:00`);
+  return !Number.isNaN(parsed.getTime());
+}
+
 export function validatePlanForm(input: {
   budget: string;
   interests: string[];
   duration: string;
   location: TripLocation | null;
+  planDate?: string;
 }): PlanFormValidationResult {
   if (!BUDGETS.includes(input.budget as BudgetTier)) {
     return { ok: false, message: "Please select a valid budget." };
@@ -53,15 +61,22 @@ export function validatePlanForm(input: {
     };
   }
 
-  return {
-    ok: true,
-    value: {
-      budget: input.budget as BudgetTier,
-      interests: unique,
-      duration: input.duration as DurationKey,
-      start_lat: loc.lat,
-      start_lon: loc.lon,
-      start_label: loc.label,
-    },
+  const planDate = input.planDate?.trim();
+  if (planDate && !isValidPlanDate(planDate)) {
+    return { ok: false, message: "Please enter a valid trip date (YYYY-MM-DD)." };
+  }
+
+  const body: ItineraryGenerateBody = {
+    budget: input.budget as BudgetTier,
+    interests: unique,
+    duration: input.duration as DurationKey,
+    start_lat: loc.lat,
+    start_lon: loc.lon,
+    start_label: loc.label,
   };
+  if (planDate) {
+    body.plan_date = planDate;
+  }
+
+  return { ok: true, value: body };
 }
