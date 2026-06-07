@@ -732,6 +732,64 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     border-radius: 1rem !important;
 }
 [data-testid="stSelectbox"] label { color: #d0bcff !important; font-weight: 600 !important; }
+
+.home-cta-row {
+    max-width: 36rem;
+    margin: -0.5rem auto 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+.home-cta-row .stButton > button {
+    min-height: 3.25rem !important;
+    font-size: 1rem !important;
+}
+
+.tp-warnings-banner {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    max-width: 72rem;
+    margin: 0 auto 1.25rem;
+    padding: 1rem 1.15rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 180, 171, 0.35);
+    background: rgba(255, 180, 171, 0.12);
+    position: relative;
+    z-index: 1;
+}
+.tp-warnings-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+    color: #ffb4ab;
+    flex-shrink: 0;
+}
+.tp-warnings-title {
+    margin: 0 0 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffb4ab !important;
+}
+.tp-warnings-list {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: #dfe2f0 !important;
+    font-size: 0.85rem;
+    line-height: 1.45;
+}
+.expedition-weather {
+    text-align: center;
+    color: #cbc3d7 !important;
+    font-size: 0.88rem;
+    margin: 0.75rem 0 0;
+}
+
+.tp-app-header-marker,
+.tp-plan-form-marker {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 """
 
 
@@ -758,7 +816,7 @@ section.main .itinerary-actions-marker ~ [data-testid="stHorizontalBlock"] {
 """
 
 PLAN_FORM_CSS = """
-section.main [data-testid="stVerticalBlockBorderWrapper"] {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(15, 19, 29, 0.72) !important;
     backdrop-filter: blur(16px);
     border: 1px solid rgba(203, 195, 215, 0.12) !important;
@@ -768,43 +826,45 @@ section.main [data-testid="stVerticalBlockBorderWrapper"] {
     margin: 0 auto 2rem !important;
     box-shadow: 0 25px 50px rgba(160, 120, 255, 0.08);
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stWidgetLabel"] p {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stWidgetLabel"] p {
     font-size: 0.75rem !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
     color: #d0bcff !important;
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"] > div > div {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"] > div > div,
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stDateInput"] > div > div {
     background: rgba(49, 53, 63, 0.6) !important;
     border-color: rgba(73, 68, 84, 0.5) !important;
     border-radius: 0.75rem !important;
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button {
     min-height: 2.5rem;
     border-radius: 0.75rem !important;
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button[aria-pressed="true"] {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button[aria-pressed="true"] {
     background: rgba(160, 120, 255, 0.25) !important;
     border-color: rgba(208, 188, 255, 0.45) !important;
     color: #d0bcff !important;
     box-shadow: 0 0 12px rgba(160, 120, 255, 0.2);
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stToggle"] {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stToggle"] {
     padding-top: 0.75rem;
     border-top: 1px solid rgba(73, 68, 84, 0.35);
     margin-top: 0.5rem;
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"],
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"],
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stDateInput"],
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] {
     margin-bottom: 1rem;
 }
-section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stCaptionContainer"] {
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stCaptionContainer"] {
     text-align: left;
 }
 """
@@ -819,8 +879,7 @@ def inject_itinerary_layout_styles() -> None:
 
 
 HEADER_SHELL_CSS = """
-/* First bordered container = sticky app header */
-section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type {
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] {
     position: sticky !important;
     top: 0.5rem;
     z-index: 100;
@@ -831,22 +890,27 @@ section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"
     backdrop-filter: blur(16px);
     box-shadow: 0 0 20px rgba(208, 188, 255, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
     padding: 0.45rem 0.85rem 0.55rem !important;
+    max-width: 100% !important;
 }
-section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="column"] {
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
-section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] {
-    margin: 0 !important;
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"] {
+    align-items: center !important;
 }
-section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] > div {
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSegmentedControl"] {
+    margin: 0 !important;
+    width: 100%;
+}
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSegmentedControl"] > div {
     background: transparent !important;
     border: none !important;
     gap: 0.3rem !important;
     width: 100%;
 }
-section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] button {
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSegmentedControl"] button {
     flex: 1 1 0 !important;
     min-height: 2.25rem !important;
     border-radius: 9999px !important;
@@ -856,17 +920,20 @@ section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"
     background: rgba(255, 255, 255, 0.03) !important;
     color: #cbc3d7 !important;
 }
-section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] button[aria-checked="true"] {
+section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSegmentedControl"] button[aria-checked="true"] {
     background: linear-gradient(135deg, #8b5cf6, #a855f7) !important;
     border-color: transparent !important;
     color: #fff !important;
     box-shadow: 0 0 16px rgba(160, 120, 255, 0.35) !important;
 }
 @media (max-width: 900px) {
-    section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stHorizontalBlock"] {
+    section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] .tp-nav-badge {
+        display: none !important;
+    }
+    section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"] {
         flex-wrap: wrap !important;
     }
-    section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] button {
+    section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSegmentedControl"] button {
         font-size: 0.68rem !important;
         padding: 0.4rem 0.25rem !important;
     }

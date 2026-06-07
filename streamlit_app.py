@@ -37,6 +37,7 @@ from trippilot_deploy.ui import (
     nav_brand_html,
     stats_panel_html,
     stop_card_html,
+    warnings_banner_html,
 )
 
 st.set_page_config(
@@ -85,6 +86,7 @@ def render_app_header(active: str, poi_count: int | None, *, api_ready: bool = T
     """Sticky header — native Streamlit widgets (CSS sibling hacks do not work)."""
     inject_header_styles()
 
+    st.markdown('<div class="tp-app-header-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
     with st.container(border=True):
         brand_col, nav_col, actions_col = st.columns([1.15, 2.1, 1.15], gap="small")
 
@@ -94,13 +96,23 @@ def render_app_header(active: str, poi_count: int | None, *, api_ready: bool = T
         with nav_col:
             _sync_nav_segment(active)
             if hasattr(st, "segmented_control"):
-                st.segmented_control(
-                    "Section",
-                    list(NAV_LABELS),
-                    key="main_nav_segment",
-                    on_change=_on_main_nav_change,
-                    label_visibility="collapsed",
-                )
+                try:
+                    st.segmented_control(
+                        "Section",
+                        list(NAV_LABELS),
+                        key="main_nav_segment",
+                        on_change=_on_main_nav_change,
+                        label_visibility="collapsed",
+                        width="stretch",
+                    )
+                except TypeError:
+                    st.segmented_control(
+                        "Section",
+                        list(NAV_LABELS),
+                        key="main_nav_segment",
+                        on_change=_on_main_nav_change,
+                        label_visibility="collapsed",
+                    )
             else:
                 tab_cols = st.columns(3, gap="small")
                 for col, (page_id, label) in zip(tab_cols, zip(NAV_PAGES, NAV_LABELS)):
@@ -145,10 +157,12 @@ def _resolve_start(label: str) -> dict:
 
 def render_home() -> None:
     st.markdown(home_page_html(), unsafe_allow_html=True)
-    _, center, _ = st.columns([1, 2, 1])
+    st.markdown('<div class="home-cta-row">', unsafe_allow_html=True)
+    _, center, _ = st.columns([1, 1.4, 1])
     with center:
         if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
             _go("plan")
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_plan(poi_count: int) -> None:
@@ -169,6 +183,7 @@ def render_plan(poi_count: int) -> None:
         default_label = _default_start_label()
     default_idx = _START_LABELS.index(default_label)
 
+    st.markdown('<div class="tp-plan-form-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
     with st.container(border=True):
         col_left, col_right = st.columns(2, gap="large")
 
@@ -196,27 +211,57 @@ def render_plan(poi_count: int) -> None:
 
             from datetime import date as date_cls
 
-            plan_date = st.date_input(
-                "Trip date (weather-aware)",
-                value=date_cls.today(),
-                help="Forecast adjusts indoor/outdoor stops for the next 5 days.",
+            st.markdown(
+                '<div class="form-field-block">'
+                '<span class="section-label">Trip date</span></div>',
+                unsafe_allow_html=True,
             )
+            use_weather = st.toggle(
+                "Use weather-aware recommendations",
+                value=st.session_state.get("use_weather", True),
+                help="Requires OPENWEATHER_API_KEY on the server.",
+            )
+            plan_date = None
+            if use_weather:
+                plan_date = st.date_input(
+                    "Trip date",
+                    value=date_cls.today(),
+                    label_visibility="collapsed",
+                    help="Forecast adjusts indoor/outdoor stops for the next 5 days.",
+                )
 
+            st.markdown(
+                '<div class="form-field-block">'
+                '<span class="section-label">Travel duration</span></div>',
+                unsafe_allow_html=True,
+            )
             duration = st.pills(
-                "Travel Duration",
+                "Travel duration",
                 ["4h", "8h", "1d"],
                 default="8h",
                 selection_mode="single",
                 key="pill_duration",
+                label_visibility="collapsed",
             )
 
         with col_right:
+            st.markdown(
+                '<div class="form-field-block">'
+                '<span class="section-label">Estimated budget</span></div>',
+                unsafe_allow_html=True,
+            )
             budget = st.pills(
-                "Estimated Budget",
+                "Estimated budget",
                 ["low", "medium", "high"],
                 default="medium",
                 selection_mode="single",
                 key="pill_budget",
+                label_visibility="collapsed",
+            )
+            st.markdown(
+                '<div class="form-field-block">'
+                '<span class="section-label">Interests</span></div>',
+                unsafe_allow_html=True,
             )
             interests = st.pills(
                 "Interests",
@@ -224,6 +269,7 @@ def render_plan(poi_count: int) -> None:
                 default=["history", "nature"],
                 selection_mode="multi",
                 key="pill_interests",
+                label_visibility="collapsed",
             )
 
         use_ai = st.toggle(
@@ -266,6 +312,7 @@ def render_plan(poi_count: int) -> None:
                         else:
                             st.session_state["itinerary"] = result.model_dump()
                             st.session_state["use_ai"] = use_ai
+                            st.session_state["use_weather"] = use_weather
                             st.session_state["last_interests"] = list(interests)
                             st.session_state["start_label"] = start_label
                             _go("itinerary")
@@ -292,10 +339,12 @@ def render_itinerary() -> None:
 
     st.markdown(itinerary_header_block(meta, summary), unsafe_allow_html=True)
 
-    for warning in meta.get("warnings") or []:
-        st.warning(warning)
-    if meta.get("fallback_reason"):
-        st.info(f"AI fallback: {meta['fallback_reason']}")
+    warnings_html = warnings_banner_html(
+        meta.get("warnings") or [],
+        fallback_reason=meta.get("fallback_reason"),
+    )
+    if warnings_html:
+        st.markdown(warnings_html, unsafe_allow_html=True)
 
     col_timeline, col_side = st.columns([3, 2], gap="large")
 

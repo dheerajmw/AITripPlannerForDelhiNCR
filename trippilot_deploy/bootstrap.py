@@ -39,6 +39,7 @@ def apply_secrets_to_env() -> None:
         "OSRM_BASE_URL": "OSRM_BASE_URL",
         "POI_DB_DOWNLOAD_URL": "POI_DB_DOWNLOAD_URL",
         "DATABASE_URL": "DATABASE_URL",
+        "OPENWEATHER_API_KEY": "OPENWEATHER_API_KEY",
     }
     for secret_key, env_key in mapping.items():
         if secret_key in st.secrets:

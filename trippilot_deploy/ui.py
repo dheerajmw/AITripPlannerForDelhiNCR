@@ -101,6 +101,10 @@ def quick_plan_card() -> str:
           <span class="preview-chip preview-chip-active">Delhi NCR</span>
         </div>
         <div>
+          <span class="field-label">Trip date</span>
+          <span class="preview-chip preview-chip-active">Today · weather-aware</span>
+        </div>
+        <div>
           <span class="field-label">Duration</span>
           <div class="chip-row">
             <span class="preview-chip preview-chip-muted">4h</span>
@@ -192,6 +196,24 @@ def google_maps_route_url(data: dict[str, Any]) -> str | None:
     return f"https://www.google.com/maps/dir/?{urlencode(params)}"
 
 
+def warnings_banner_html(warnings: list[str], *, fallback_reason: str | None = None) -> str:
+    items = [html.escape(w) for w in warnings if w]
+    if fallback_reason and not any("standard plan" in w.lower() for w in warnings):
+        items.append(html.escape(f"AI fallback: {fallback_reason.replace('_', ' ')}"))
+    if not items:
+        return ""
+    lis = "".join(f"<li>{item}</li>" for item in items)
+    return f"""
+    <div class="tp-warnings-banner" role="status">
+      <span class="tp-warnings-icon" aria-hidden="true">⚠</span>
+      <div>
+        <p class="tp-warnings-title">Heads up</p>
+        <ul class="tp-warnings-list">{lis}</ul>
+      </div>
+    </div>
+    """
+
+
 def expedition_hero_html(meta: dict, summary: dict) -> str:
     hours = round(meta.get("duration_minutes", 0) / 60 * 10) / 10
     cost = summary.get("total_cost_inr", {})
@@ -237,10 +259,29 @@ def expedition_hero_html(meta: dict, summary: dict) -> str:
             <span class="expedition-metric-label">Walking</span>
           </div>
         </div>
-        <p class="expedition-meta">{budget} budget · {city}</p>
+        <p class="expedition-meta">{budget} budget · {city}{_plan_date_suffix(meta)}</p>
+        {_weather_line_html(meta)}
       </div>
     </div>
     """
+
+
+def _plan_date_suffix(meta: dict) -> str:
+    plan_date = meta.get("plan_date")
+    if not plan_date:
+        return ""
+    return f" · {html.escape(str(plan_date))}"
+
+
+def _weather_line_html(meta: dict) -> str:
+    weather = meta.get("weather")
+    if not weather:
+        return ""
+    desc = html.escape(str(weather.get("description", "")))
+    temp = weather.get("temp_c")
+    temp_txt = f" (~{round(float(temp))}°C)" if temp is not None else ""
+    applied = " · weather-adjusted plan" if weather.get("applied") else ""
+    return f'<p class="expedition-weather">☁️ {desc}{temp_txt}{applied}</p>'
 
 
 def itinerary_header_block(meta: dict, summary: dict) -> str:
@@ -259,6 +300,17 @@ def map_shell_close() -> str:
 def stats_panel_html(meta: dict, summary: dict) -> str:
     cost = summary.get("total_cost_inr", {})
     routing = meta.get("routing_source") or "planner"
+    weather_tip = ""
+    weather = meta.get("weather")
+    if weather:
+        temp = round(float(weather.get("temp_c", 0)))
+        suffix = " · adjusted plan" if weather.get("applied") else ""
+        weather_tip = (
+            f'<div class="stat-box stat-wide">'
+            f'<p class="stat-tip-title">☁️ Weather</p>'
+            f'<p class="stat-tip">{html.escape(str(weather.get("description", "")))} '
+            f"(~{temp}°C){suffix}</p></div>"
+        )
     return f"""
     <div class="glass-panel stats-panel">
       <h3>Pilot intelligence</h3>
@@ -271,6 +323,7 @@ def stats_panel_html(meta: dict, summary: dict) -> str:
           <p class="stat-label">Est. cost</p>
           <p class="stat-value">₹{cost.get("low", 0):,}–{cost.get("high", 0):,}</p>
         </div>
+        {weather_tip}
         <div class="stat-box stat-wide">
           <p class="stat-tip-title">✨ Routing</p>
           <p class="stat-tip">Via {html.escape(routing)}. Costs are rough estimates —
