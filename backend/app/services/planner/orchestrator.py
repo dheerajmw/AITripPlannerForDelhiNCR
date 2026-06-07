@@ -87,9 +87,10 @@ class PlannerOrchestrator:
         warnings.extend(shortlist_warnings)
         if len(shortlist) < MIN_ITINERARY_STOPS:
             raise UnprocessablePlanError(
-                "Not enough Google Maps–verified stops for this trip. "
-                "Try different interests or a longer duration.",
-                details={"verified_stops": len(shortlist)},
+                "Not enough named places on Google Maps for this trip. "
+                "Try more interests (e.g. history + food + nature), medium budget, "
+                "or a longer duration.",
+                details={"stops": len(shortlist), "interests": list(request.interests)},
             )
 
         ordered_pois, route_warnings, routing_source, leg_minutes = self._fit_route(

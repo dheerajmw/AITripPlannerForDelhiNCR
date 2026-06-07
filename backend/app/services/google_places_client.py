@@ -24,6 +24,7 @@ _CACHE_TTL_SEC = 7 * 24 * 60 * 60
 class GooglePlacesClient:
     def __init__(self) -> None:
         self.last_error: Optional[str] = None
+        self._verification_disabled = False
 
     def _resolve_api_key(self) -> str:
         settings = get_settings()
@@ -41,6 +42,9 @@ class GooglePlacesClient:
     def verify_poi(self, poi: POIRecord) -> bool:
         """Return True if Google Places finds this name near the POI coordinates."""
         self.last_error = None
+        if self._verification_disabled:
+            return True
+
         api_key = self._resolve_api_key()
         if not api_key or api_key.lower() in _PLACEHOLDER_KEYS:
             return True
@@ -55,9 +59,16 @@ class GooglePlacesClient:
         return ok
 
     def _lookup_place(self, *, api_key: str, name: str, lat: float, lon: float) -> bool:
+        if self._lookup_place_query(api_key=api_key, query=f"{name}, Delhi NCR, India", lat=lat, lon=lon):
+            return True
+        return self._lookup_place_query(api_key=api_key, query=name, lat=lat, lon=lon)
+
+    def _lookup_place_query(
+        self, *, api_key: str, query: str, lat: float, lon: float
+    ) -> bool:
         url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
         params = {
-            "input": name,
+            "input": query,
             "inputtype": "textquery",
             "fields": "place_id,name,geometry",
             "locationbias": f"circle:{MAPS_VERIFY_MAX_DISTANCE_M}@{lat},{lon}",
@@ -82,6 +93,8 @@ class GooglePlacesClient:
         if status not in {"OK", "ZERO_RESULTS"}:
             self.last_error = str(status)
             logger.warning("Google Places status %s for %s", status, name)
+            if status in {"REQUEST_DENIED", "INVALID_REQUEST", "OVER_QUERY_LIMIT"}:
+                self._verification_disabled = True
             return False
 
         candidates = payload.get("candidates") or []

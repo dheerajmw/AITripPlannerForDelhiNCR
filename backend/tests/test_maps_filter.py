@@ -40,6 +40,28 @@ class _StubPlaces:
         return poi.name == "India Gate"
 
 
+class _RejectAllPlaces:
+    def is_configured(self) -> bool:
+        return True
+
+    last_error = "ZERO_RESULTS"
+
+    def verify_poi(self, poi: POIRecord) -> bool:
+        return False
+
+
+def test_ensure_shortlist_falls_back_to_named_when_api_rejects_all() -> None:
+    pool = [
+        _poi("India Gate", "a"),
+        _poi("Red Fort", "b"),
+    ]
+    chosen, warnings = MapsEligibilityFilter(places_client=_RejectAllPlaces()).ensure_shortlist(
+        pool, pool, max_stops=2
+    )
+    assert len(chosen) == 2
+    assert any("named landmarks" in w for w in warnings)
+
+
 def test_ensure_shortlist_replaces_unverified_from_pool() -> None:
     pool = [
         _poi("India Gate", "a"),

@@ -47,7 +47,6 @@ class MapsEligibilityFilter:
         if not self._places.is_configured():
             return list(shortlist), warnings
 
-        pool_by_id = {p.id: p for p in pool if is_named_maps_poi(p)}
         chosen: List[POIRecord] = []
         seen: set[str] = set()
 
@@ -71,8 +70,39 @@ class MapsEligibilityFilter:
             if len(chosen) >= max_stops:
                 break
 
-        if len(chosen) < len(shortlist):
+        if len(chosen) >= MIN_ITINERARY_STOPS:
+            if len(chosen) < len(shortlist):
+                warnings.append(
+                    "Replaced some stops with Google Maps–verified places near your route."
+                )
+            return chosen[:max_stops], warnings
+
+        # Places API often misses OSM names — fall back to named landmarks (lat/lon still
+        # open correctly in Google Maps).
+        named_shortlist = [p for p in shortlist if is_named_maps_poi(p)]
+        if len(named_shortlist) >= MIN_ITINERARY_STOPS:
+            detail = self._places.last_error or "limited Places API matches"
             warnings.append(
-                "Replaced some stops with Google Maps–verified places near your route."
+                f"Google Places verified only {len(chosen)} stop(s) ({detail}); "
+                "using named landmarks that open on Google Maps via coordinates."
             )
+            return named_shortlist[:max_stops], warnings
+
+        named_pool: List[POIRecord] = []
+        seen_pool: set[str] = set()
+        for poi in list(shortlist) + list(pool):
+            if poi.id in seen_pool or not is_named_maps_poi(poi):
+                continue
+            named_pool.append(poi)
+            seen_pool.add(poi.id)
+            if len(named_pool) >= max_stops:
+                break
+
+        if len(named_pool) >= MIN_ITINERARY_STOPS:
+            warnings.append(
+                "Google Places verification unavailable for most stops; "
+                "using named places from the Delhi NCR database."
+            )
+            return named_pool[:max_stops], warnings
+
         return chosen, warnings
