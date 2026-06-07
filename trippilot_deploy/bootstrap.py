@@ -31,6 +31,11 @@ def apply_secrets_to_env() -> None:
     if not hasattr(st, "secrets"):
         return
 
+    try:
+        secrets = st.secrets
+    except Exception:
+        return
+
     mapping = {
         "GROQ_API_KEY": "GROQ_API_KEY",
         "GROQ_MODEL": "GROQ_MODEL",
@@ -42,8 +47,8 @@ def apply_secrets_to_env() -> None:
         "OPENWEATHER_API_KEY": "OPENWEATHER_API_KEY",
     }
     for secret_key, env_key in mapping.items():
-        if secret_key in st.secrets:
-            os.environ[env_key] = str(st.secrets[secret_key])
+        if secret_key in secrets:
+            os.environ[env_key] = str(secrets[secret_key])
 
 
 def ensure_poi_database() -> tuple[bool, str]:

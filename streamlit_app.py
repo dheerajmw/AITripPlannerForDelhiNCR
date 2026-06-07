@@ -66,9 +66,8 @@ def _current_page() -> str:
 
 
 def _go(page: str) -> None:
+    """Switch section. Do not set main_nav_segment here — widget may already exist this run."""
     st.session_state["page"] = page
-    if page in NAV_PAGE_TO_LABEL:
-        st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL[page]
     st.rerun()
 
 
@@ -80,8 +79,13 @@ def _on_main_nav_change() -> None:
 
 
 def _sync_nav_segment(active: str) -> None:
-    """Align tab widget with `page` when navigation came from elsewhere (not the segment)."""
-    if NAV_LABEL_TO_PAGE.get(st.session_state.get("main_nav_segment")) != active:
+    """Align tab widget with `page` before segmented_control renders."""
+    label = st.session_state.get("main_nav_segment")
+    # Legacy sessions may still have the old "Saved Trips" label.
+    if label not in NAV_LABEL_TO_PAGE:
+        st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL.get(active, "Explore")
+        return
+    if NAV_LABEL_TO_PAGE.get(label) != active:
         st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL.get(active, "Explore")
 
 
@@ -108,7 +112,7 @@ def render_app_header(active: str, poi_count: int | None, *, api_ready: bool = T
                         label_visibility="collapsed",
                         width="stretch",
                     )
-                except TypeError:
+                except Exception:
                     st.segmented_control(
                         "Section",
                         list(NAV_LABELS),
