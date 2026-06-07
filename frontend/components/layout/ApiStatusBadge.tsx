@@ -47,12 +47,12 @@ export function ApiStatusBadge({ compact = false }: Props) {
   if (compact) {
     return (
       <div
-        className="hidden items-center gap-2 rounded-full border border-white/10 bg-surface-container-highest/80 px-3 py-1.5 sm:inline-flex"
+        className="hidden h-9 items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 sm:inline-flex"
         role="status"
         aria-live="polite"
       >
-        <span className={`h-2 w-2 shrink-0 rounded-full ${dotClass}`} aria-hidden />
-        <span className="font-mono text-xs text-on-surface-variant">
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotClass}`} aria-hidden />
+        <span className="text-[0.7rem] font-medium leading-none text-on-surface-variant">
           {status === "loading" && "Checking…"}
           {status === "connected" &&
             `API ready · ${health!.poi_count!.toLocaleString()} places`}

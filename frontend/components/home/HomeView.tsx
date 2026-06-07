@@ -55,10 +55,10 @@ export function HomeView() {
     <>
       <section className="mb-xl flex flex-col items-center text-center">
         <div className="relative mb-lg">
-          <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary orb-glow">
-            <Sparkles className="h-12 w-12 text-on-primary" aria-hidden />
+          <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary ring-4 ring-primary/20 orb-glow">
+            <Sparkles className="h-11 w-11 text-on-primary" aria-hidden />
           </div>
-          <div className="absolute inset-0 scale-150 rounded-full bg-primary/30 blur-3xl" />
+          <div className="absolute inset-0 scale-[1.6] rounded-full bg-primary/25 blur-3xl" />
         </div>
 
         <h1 className="max-w-3xl text-display-lg-mobile font-extrabold md:text-display-lg">

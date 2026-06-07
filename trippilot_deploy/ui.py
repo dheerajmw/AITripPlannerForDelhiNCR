@@ -32,8 +32,8 @@ def top_nav_html(poi_count: int | None = None) -> str:
         )
 
     return f"""
-    <div class="tp-topnav-wrap">
-      <div class="tp-topnav-inner">
+    <div class="tp-header-fixed" aria-hidden="false">
+      <div class="tp-header-inner">
         <div class="tp-topnav">
           <span class="tp-brand">✈ Trip Pilot</span>
           <div class="tp-nav-actions">

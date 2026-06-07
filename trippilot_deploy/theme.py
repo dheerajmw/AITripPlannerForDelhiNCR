@@ -48,7 +48,7 @@ html, body, [class*="css"] {
 
 section.main > div.block-container {
     max-width: 80rem !important;
-    padding: 6.5rem 1.25rem 5rem !important;
+    padding: 8.75rem 1.25rem 5rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
 }
@@ -136,34 +136,40 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     50% { transform: scale(1.1); opacity: 1; }
 }
 
-/* Top nav pill */
-.tp-topnav-wrap {
+/* Fixed header shell (brand bar + segmented tabs below) */
+.tp-header-fixed {
     position: fixed;
-    left: 0; right: 0; top: 0;
+    left: 0;
+    right: 0;
+    top: 0;
     z-index: 100;
-    padding: 0.5rem 1.25rem;
+    padding: 0.5rem 1.25rem 0;
+    pointer-events: none;
 }
-.tp-topnav-inner {
+.tp-header-inner {
     max-width: 80rem;
     margin: 0 auto;
 }
 .tp-topnav {
     width: 100%;
+    min-height: 3.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.75rem 1.5rem;
+    padding: 0.65rem 1.35rem;
     border-radius: 9999px;
-    border: 1px solid rgba(203, 195, 215, 0.1);
-    background: rgba(15, 19, 29, 0.4);
+    border: 1px solid rgba(203, 195, 215, 0.12);
+    background: rgba(15, 19, 29, 0.72);
     backdrop-filter: blur(16px);
     box-shadow: 0 0 20px rgba(208, 188, 255, 0.1);
+    pointer-events: auto;
 }
 .tp-brand {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #d0bcff !important;
+    letter-spacing: -0.01em;
 }
 .tp-nav-links { display: none; gap: 2rem; }
 @media (min-width: 768px) { .tp-nav-links { display: flex; } }
@@ -178,18 +184,24 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 .tp-nav-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.75rem;
+    gap: 0.4rem;
+    height: 2.5rem;
+    padding: 0 0.85rem;
     border-radius: 9999px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(49, 53, 63, 0.8);
-    font-size: 0.7rem;
-    color: #cbc3d7 !important;
+    border: 1px solid rgba(208, 188, 255, 0.22);
+    background: rgba(208, 188, 255, 0.08);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #d0bcff !important;
+    white-space: nowrap;
 }
 .tp-nav-badge .dot {
-    width: 8px; height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: #ffb0cd;
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.75);
+    flex-shrink: 0;
 }
 .tp-nav-actions {
     display: flex;
@@ -791,36 +803,70 @@ def inject_itinerary_layout_styles() -> None:
 
 
 TAB_BAR_CSS = """
+section.main .tp-tab-bar-marker {
+    display: none;
+}
 section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] {
-    max-width: 56rem;
-    margin: 0 auto 1.5rem !important;
-    width: 100%;
-    gap: 0.5rem !important;
+    position: fixed;
+    top: 4.15rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+    width: calc(100% - 2.5rem);
+    max-width: 80rem;
+    margin: 0 !important;
+    padding: 0.3rem;
+    gap: 0.25rem !important;
     align-items: stretch !important;
+    border-radius: 9999px;
+    border: 1px solid rgba(203, 195, 215, 0.12);
+    background: rgba(15, 19, 29, 0.72);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 24px rgba(7, 11, 20, 0.45);
+    pointer-events: auto;
+}
+section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] [data-testid="column"] {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+}
+section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton {
+    margin: 0 !important;
 }
 section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button {
     width: 100%;
+    min-height: 2.375rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     border-radius: 9999px !important;
     font-weight: 600 !important;
-    padding: 0.65rem 1rem !important;
-    border: 1px solid rgba(73, 68, 84, 0.4) !important;
-    background: rgba(49, 53, 63, 0.6) !important;
+    font-size: 0.82rem !important;
+    line-height: 1.2 !important;
+    padding: 0.5rem 0.65rem !important;
+    border: none !important;
+    background: transparent !important;
     color: #cbc3d7 !important;
+    transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease !important;
 }
 section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="primary"] {
-    background: rgba(208, 188, 255, 0.2) !important;
-    border-color: rgba(208, 188, 255, 0.35) !important;
-    color: #d0bcff !important;
-    box-shadow: 0 0 12px rgba(160, 120, 255, 0.15) !important;
+    background: linear-gradient(to right, #8b5cf6, #a855f7) !important;
+    color: #fff !important;
+    box-shadow: 0 0 18px rgba(160, 120, 255, 0.4) !important;
 }
 section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="secondary"]:hover {
-    border-color: rgba(208, 188, 255, 0.3) !important;
+    background: rgba(208, 188, 255, 0.1) !important;
     color: #d0bcff !important;
 }
 @media (max-width: 767px) {
+    section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] {
+        top: 3.85rem;
+        width: calc(100% - 1.5rem);
+        padding: 0.25rem;
+    }
     section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button {
-        font-size: 0.8rem !important;
-        padding: 0.55rem 0.5rem !important;
+        font-size: 0.72rem !important;
+        padding: 0.55rem 0.35rem !important;
     }
 }
 """

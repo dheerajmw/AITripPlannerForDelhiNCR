@@ -64,19 +64,19 @@ def _go(page: str) -> None:
 
 
 def render_tab_bar(active: str) -> None:
-    """Switch sections in-place — no separate page URLs."""
+    """Unified segmented control — switches sections in-place."""
     inject_tab_bar_styles()
     st.markdown('<div class="tp-tab-bar-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
     cols = st.columns(3, gap="small")
     labels = [
-        ("home", "Explore"),
-        ("plan", "Generate Trip"),
-        ("itinerary", "Saved Trips"),
+        ("home", "Explore", "✨"),
+        ("plan", "Generate Trip", "🗺️"),
+        ("itinerary", "Saved Trips", "📍"),
     ]
-    for col, (page_id, label) in zip(cols, labels):
+    for col, (page_id, label, icon) in zip(cols, labels):
         with col:
             if st.button(
-                label,
+                f"{icon} {label}",
                 key=f"nav_tab_{page_id}",
                 use_container_width=True,
                 type="primary" if active == page_id else "secondary",

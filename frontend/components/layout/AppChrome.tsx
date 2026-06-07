@@ -3,7 +3,6 @@
 import { Suspense, useEffect, useRef } from "react";
 
 import { AuroraBackground } from "@/components/layout/AuroraBackground";
-import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { TopNav } from "@/components/layout/TopNav";
 import { useAppTab } from "@/components/navigation/useAppTab";
 import { trackEvent } from "@/lib/analytics";
@@ -29,10 +28,9 @@ function AppChromeInner({ children }: Props) {
     <div className="relative min-h-screen">
       <AuroraBackground showMap={showAerialBackdrop} />
       <TopNav />
-      <main className="relative z-10 mx-auto w-full max-w-7xl px-gutter pb-28 pt-[7.5rem] md:pb-16">
+      <main className="relative z-10 mx-auto w-full max-w-7xl px-gutter pb-16 pt-[9.25rem] lg:pt-[5.25rem]">
         <div className="page-shell">{children}</div>
       </main>
-      <MobileBottomNav />
     </div>
   );
 }
