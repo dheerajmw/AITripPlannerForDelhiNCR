@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#ddb7ff",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#d0bcff",
+                    "inverse-surface": "#dfe2f0",
+                    "primary-container": "#a078ff",
+                    "on-primary-container": "#340080",
+                    "on-primary": "#3c0091",
+                    "primary": "#d0bcff",
+                    "on-secondary": "#490080",
+                    "on-surface-variant": "#cbc3d7",
+                    "on-secondary-fixed-variant": "#6900b3",
+                    "on-tertiary": "#640039",
+                    "on-secondary-container": "#d6a9ff",
+                    "surface-container-low": "#171c25",
+                    "on-secondary-fixed": "#2c0051",
+                    "surface-container-lowest": "#0a0e17",
+                    "error": "#ffb4ab",
+                    "error-container": "#93000a",
+                    "on-surface": "#dfe2f0",
+                    "secondary": "#ddb7ff",
+                    "tertiary-container": "#f751a1",
+                    "on-tertiary-fixed-variant": "#8c0053",
+                    "on-tertiary-container": "#570032",
+                    "secondary-container": "#6f00be",
+                    "outline": "#958ea0",
+                    "surface-dim": "#0f131d",
+                    "primary-fixed": "#e9ddff",
+                    "secondary-fixed": "#f0dbff",
+                    "surface-container": "#1b2029",
+                    "on-background": "#dfe2f0",
+                    "inverse-on-surface": "#2c303b",
+                    "surface": "#0f131d",
+                    "inverse-primary": "#6d3bd7",
+                    "background": "#0f131d",
+                    "surface-container-high": "#262a34",
+                    "on-tertiary-fixed": "#3e0022",
+                    "surface-bright": "#353944",
+                    "tertiary-fixed": "#ffd9e4",
+                    "outline-variant": "#494454",
+                    "on-primary-fixed": "#23005c",
+                    "tertiary": "#ffb0cd",
+                    "surface-tint": "#d0bcff",
+                    "tertiary-fixed-dim": "#ffb0cd",
+                    "on-primary-fixed-variant": "#5516be",
+                    "on-error-container": "#ffdad6",
+                    "surface-container-highest": "#31353f",
+                    "surface-variant": "#31353f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xl": "64px",
+                    "sm": "16px",
+                    "gutter": "24px",
+                    "md": "24px",
+                    "xs": "8px",
+                    "base": "4px",
+                    "lg": "40px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "caption": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "headline-md": ["Inter"]
+            },
+            "fontSize": {
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #070B14;
+            overflow-x: hidden;
+        }
+        .aurora-blur {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 100%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.05) 50%, transparent 100%);
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+        }
+        .glass-card {
+            background: rgba(15, 19, 29, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border: 1px solid rgba(208, 188, 255, 0.3);
+            box-shadow: 0 0 30px rgba(160, 120, 255, 0.15);
+            transform: translateY(-8px) scale(1.02);
+        }
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+        .carousel-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(208, 188, 255, 0.5);
+        }
+        .specular-highlight {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+    </style>
+</head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- Aurora Background Effects -->
+<div class="aurora-blur top-[-10%] left-[-10%]"></div>
+<div class="aurora-blur bottom-[-20%] right-[-10%]" style="background: radial-gradient(circle, rgba(247, 81, 161, 0.1) 0%, transparent 100%);"></div>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-lg py-sm max-w-7xl mx-auto rounded-full mt-xs mx-auto max-w-7xl bg-surface/40 backdrop-blur-xl border border-on-surface-variant/10 shadow-[0_0_20px_rgba(208,188,255,0.1)]">
+<div class="flex items-center gap-xs">
+<span class="font-headline-md text-headline-md font-bold text-primary neon-glow">Trip Pilot</span>
+</div>
+<nav class="hidden md:flex items-center gap-lg">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Explore</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md text-body-md" href="#">Generate Trip</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md" href="#">Saved Trips</a>
+</nav>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary/30 p-[2px] cursor-pointer hover:border-primary transition-all">
+<img alt="User profile with purple aurora glow" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNTKfDgusf-7MP2cyQ8-BB7vYZFPq-wXEiXJlS0PE-xNFKXYcsiDD_vjux5kkBqD6ZeLQfg26HefVEcAoemAT3vFnoQCSeQ53Qmtnr61ZP9wsZSuIPACtdMLf3Kr2IaW5Rccdbc0XA-mAtSOKNGokB9RHa-fsK2eYsAIb6Mf60NIinhHRT8-A7QZqHJLhi81JNnDZCKF93X3defsSSpJRJ0QYdi7IjYOWEc8WYVGeT8Gb9Xc2_YvdNIccxeblBTLh7rQCBtXf_sP98"/>
+</div>
+</div>
+</header>
+<main class="pt-[120px] pb-xl px-md max-w-full overflow-hidden">
+<!-- Header Section -->
+<section class="max-w-7xl mx-auto mb-lg flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div class="space-y-base">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight">Your Saved <span class="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Journeys</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Revisit your curated travel masterpieces. Personalized AI-generated itineraries designed for cinematic exploration.</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-surface-container-high hover:bg-surface-bright text-on-surface px-md py-sm rounded-xl font-label-md text-label-md flex items-center gap-xs transition-all">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+                    Filter
+                </button>
+<button class="bg-primary hover:scale-105 text-on-primary-container px-lg py-sm rounded-xl font-label-md text-label-md shadow-[0_0_20px_rgba(160,120,255,0.4)] transition-all">
+                    New Trip
+                </button>
+</div>
+</section>
+<!-- Premium Carousel Section -->
+<div class="relative group">
+<!-- Navigation Arrows -->
+<button class="absolute left-4 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-surface-container/60 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all shadow-xl hidden md:flex" onclick="scrollCarousel(-1)">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 z-40 w-14 h-14 rounded-full bg-surface-container/60 backdrop-blur-md border border-white/10 flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all shadow-xl hidden md:flex" onclick="scrollCarousel(1)">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<!-- Scrollable Content -->
+<div class="carousel-container flex overflow-x-auto gap-lg px-md pb-xl pt-md snap-x snap-mandatory" id="trip-carousel">
+<!-- Card 1: Old Delhi -->
+<div class="min-w-[320px] md:min-w-[420px] snap-center glass-card rounded-3xl overflow-hidden relative group/card">
+<div class="h-[280px] w-full relative">
+<img class="w-full h-full object-cover" data-alt="A cinematic, low-angle shot of the narrow vibrant streets of Old Delhi at dusk. The scene is illuminated by warm, hanging lanterns and the soft purple glow of the twilight sky, creating a high-contrast luxury aesthetic. Rich textures of ancient architecture and steam rising from street food stalls are visible, with a dreamy bokeh effect in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgKSxlCFBvytBtGQ4OBnClrEQff6JC2BPw_Hv1173giVQysLZX0wcjQCRDkA0ZXVwzXQE6ijwAX5sS8Zs8xDy8gWGt5E-Z87M7lRuT-LbFECiJZzD9KTPqF-L90XJN3EHm3WNjRnkXe9tYSiBd713NzGW7tJ5yVG1ZIU8wl_V5Xn-0kJiZiuZn5h89ulsEuvuNakX5pmMPgNGL54-RAMYsnGukXkPxePOT-qukQ8inbro_N5uPAF0lXiFxP9xYjcJ5Mik8KzjMS0fe"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim via-transparent to-transparent"></div>
+<div class="absolute top-md right-md flex gap-xs">
+<div class="bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full border border-white/10">
+<span class="font-label-md text-label-md text-primary">Foodie</span>
+</div>
+</div>
+</div>
+<div class="p-lg space-y-md relative">
+<div class="specular-highlight absolute top-0 left-0 right-0 h-[1px]"></div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Old Delhi Food Walk</h3>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    Saved Mar 12, 2024
+                                </p>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:scale-125 transition-transform" data-weight="fill">bookmark</span>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Duration</p>
+<p class="font-label-md text-label-md text-on-surface">6 Hours</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Pace</p>
+<p class="font-label-md text-label-md text-on-surface">Immersive</p>
+</div>
+</div>
+<button class="w-full py-sm rounded-xl border border-primary/30 text-primary hover:bg-primary/10 transition-all font-label-md text-label-md">View Full Plan</button>
+</div>
+</div>
+<!-- Card 2: Lotus Temple -->
+<div class="min-w-[320px] md:min-w-[420px] snap-center glass-card rounded-3xl overflow-hidden relative group/card">
+<div class="h-[280px] w-full relative">
+<img class="w-full h-full object-cover" data-alt="An ultra-modern, symmetrical architectural shot of the Lotus Temple in New Delhi, captured under a brilliant starry night sky with a subtle purple nebula effect. The white marble is softly lit from below by cool-toned spotlights, emphasizing its geometric perfection. The atmosphere is serene, high-tech, and futuristic, following a glassmorphic luxury aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAoEXYHquw7Sbv_zGhloMHtP-87ETo9vZ_uprxFF4BNpuGsWlzxbsWt_HivzE8w2iujOZ7M3lwSC2Cz_HKg9Z1JhIN8dt5rB8qj0IGz1WnLl31a8RFVoK-pd2aa_XMKqLz0wJbcOivJQUYzygdNR0OK9Rn3g4FAgiD3wP4xjXHYCLW8Qs7Zv6rPd3poY0BYOXxPL7kaANXprWyXZqIm4-KqX9oTy3yXd43buNr-4WNyWDlZ5qFTSRma4AoCNQhHLAcyl5lG89wzTi7W"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim via-transparent to-transparent"></div>
+<div class="absolute top-md right-md flex gap-xs">
+<div class="bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full border border-white/10">
+<span class="font-label-md text-label-md text-secondary">Culture</span>
+</div>
+</div>
+</div>
+<div class="p-lg space-y-md relative">
+<div class="specular-highlight absolute top-0 left-0 right-0 h-[1px]"></div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Lotus Temple &amp; Tech Hubs</h3>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    Saved Feb 28, 2024
+                                </p>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:scale-125 transition-transform" data-weight="fill">bookmark</span>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Duration</p>
+<p class="font-label-md text-label-md text-on-surface">2 Days</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Vibe</p>
+<p class="font-label-md text-label-md text-on-surface">Modern</p>
+</div>
+</div>
+<button class="w-full py-sm rounded-xl border border-primary/30 text-primary hover:bg-primary/10 transition-all font-label-md text-label-md">View Full Plan</button>
+</div>
+</div>
+<!-- Card 3: Jaipur Pink City -->
+<div class="min-w-[320px] md:min-w-[420px] snap-center glass-card rounded-3xl overflow-hidden relative group/card">
+<div class="h-[280px] w-full relative">
+<img class="w-full h-full object-cover" data-alt="A luxurious view of a Pink City palace courtyard in Jaipur during the golden hour. The sunlight hits the terracotta walls, making them glow warmly against the deep shadows. The composition is regal and expansive, featuring intricate latticework and a soft atmospheric haze with hints of violet in the sky. The mood is one of timeless luxury and royal heritage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqavMWLfVw3NElrlP9ejfH8jZgEJheROZ3rIWd84knFb7EQ-ygCwF460rHx78_1A6KKJ3YmbEvdqyQVS6ngdurppnDmxQ2gZjgIyNQJM96EOv4jt0UKYO_qpTSOKpZmxr_DPVgNj1f38mHmNU1dbyLIsmRbwEP1RFA52oOaVclc8ZsCCGHBUHWVdHCNqQEHNstv21W8aOUDe2wN2SH0MDHrR6uTlcuXcnhCRAR2HtuSrG_FwmPl_GlozUTyIJgTJEpOKomgQUcWQXk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim via-transparent to-transparent"></div>
+<div class="absolute top-md right-md flex gap-xs">
+<div class="bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full border border-white/10">
+<span class="font-label-md text-label-md text-primary">Heritage</span>
+</div>
+</div>
+</div>
+<div class="p-lg space-y-md relative">
+<div class="specular-highlight absolute top-0 left-0 right-0 h-[1px]"></div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Pink City Royal Escape</h3>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    Saved Jan 15, 2024
+                                </p>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:scale-125 transition-transform" data-weight="fill">bookmark</span>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Duration</p>
+<p class="font-label-md text-label-md text-on-surface">3 Days</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Luxury</p>
+<p class="font-label-md text-label-md text-on-surface">Premium+</p>
+</div>
+</div>
+<button class="w-full py-sm rounded-xl border border-primary/30 text-primary hover:bg-primary/10 transition-all font-label-md text-label-md">View Full Plan</button>
+</div>
+</div>
+<!-- Card 4: Varanasi Ghats -->
+<div class="min-w-[320px] md:min-w-[420px] snap-center glass-card rounded-3xl overflow-hidden relative group/card">
+<div class="h-[280px] w-full relative">
+<img class="w-full h-full object-cover" data-alt="A meditative and cinematic night view of the Ganga Aarti ceremony in Varanasi. Thousands of small floating diya lamps twinkle on the dark river surface like stars, reflecting a deep purple and gold palette. The silhouettes of ancient temples rise against a smoky, atmospheric background. The lighting is mystical and evocative, emphasizing spiritual depth and luxury travel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKiKFebUgNTkqMz3zo1ZFBPg2sDfmLjVyvlLTSjvLBckxjBjOaUUAK5RKv5XuQ_lWrGKeX_c5KdMQJTlid3CeTP__X0yP6YMPhw0palBWQ3AWWFHvDkkoWY-jkQMJ6bWbgAS8TbK_hXjBAj3zhva8SoZz1ucPH-SOtnYKQP_yPKHPOK-CAJanSVtKCJE8doaRDIY5u9zxRnLvDjLTqr7qfUOmL9DS7hBvi3SdOTzapNT2fJ8ywSVzhG2BtA_0O4OKn2id2j8LVTHLV"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim via-transparent to-transparent"></div>
+<div class="absolute top-md right-md flex gap-xs">
+<div class="bg-surface/80 backdrop-blur-md px-sm py-xs rounded-full border border-white/10">
+<span class="font-label-md text-label-md text-tertiary">Spiritual</span>
+</div>
+</div>
+</div>
+<div class="p-lg space-y-md relative">
+<div class="specular-highlight absolute top-0 left-0 right-0 h-[1px]"></div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Varanasi Night Rites</h3>
+<p class="font-caption text-caption text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    Saved Dec 05, 2023
+                                </p>
+</div>
+<span class="material-symbols-outlined text-primary cursor-pointer hover:scale-125 transition-transform" data-weight="fill">bookmark</span>
+</div>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Duration</p>
+<p class="font-label-md text-label-md text-on-surface">1 Night</p>
+</div>
+<div class="bg-surface-container-low p-sm rounded-xl border border-white/5">
+<p class="font-caption text-caption text-on-surface-variant">Experience</p>
+<p class="font-label-md text-label-md text-on-surface">Unique</p>
+</div>
+</div>
+<button class="w-full py-sm rounded-xl border border-primary/30 text-primary hover:bg-primary/10 transition-all font-label-md text-label-md">View Full Plan</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-base w-full pt-xl pb-md border-t border-outline-variant/10">
+<p class="font-caption text-caption text-on-surface-variant">© 2024 Trip Pilot AI Travel OS. Cinematic exploration awaits.</p>
+<div class="flex gap-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Support</a>
+</div>
+</footer>
+<!-- Mobile Bottom Navigation (Visible on mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-2xl px-lg py-sm flex justify-around items-center z-50">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] uppercase font-bold">Explore</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="text-[10px] uppercase font-bold">AI Gen</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bookmarks</span>
+<span class="text-[10px] uppercase font-bold">Saved</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] uppercase font-bold">Profile</span>
+</button>
+</nav>
+<script>
+        function scrollCarousel(direction) {
+            const container = document.getElementById('trip-carousel');
+            const scrollAmount = direction * 450;
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+
+        // Add some atmospheric micro-interactions
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

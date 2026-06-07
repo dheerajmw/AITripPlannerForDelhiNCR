@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trip Pilot | Your Itinerary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#d0bcff",
+                        "inverse-surface": "#dfe2f0",
+                        "primary-container": "#a078ff",
+                        "on-primary-container": "#340080",
+                        "on-primary": "#3c0091",
+                        "primary": "#d0bcff",
+                        "on-secondary": "#490080",
+                        "on-surface-variant": "#cbc3d7",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "on-tertiary": "#640039",
+                        "on-secondary-container": "#d6a9ff",
+                        "surface-container-low": "#171c25",
+                        "on-secondary-fixed": "#2c0051",
+                        "surface-container-lowest": "#0a0e17",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "on-surface": "#dfe2f0",
+                        "secondary": "#ddb7ff",
+                        "tertiary-container": "#f751a1",
+                        "on-tertiary-fixed-variant": "#8c0053",
+                        "on-tertiary-container": "#570032",
+                        "secondary-container": "#6f00be",
+                        "outline": "#958ea0",
+                        "surface-dim": "#0f131d",
+                        "primary-fixed": "#e9ddff",
+                        "secondary-fixed": "#f0dbff",
+                        "surface-container": "#1b2029",
+                        "on-background": "#dfe2f0",
+                        "inverse-on-surface": "#2c303b",
+                        "surface": "#0f131d",
+                        "inverse-primary": "#6d3bd7",
+                        "background": "#0f131d",
+                        "surface-container-high": "#262a34",
+                        "on-tertiary-fixed": "#3e0022",
+                        "surface-bright": "#353944",
+                        "tertiary-fixed": "#ffd9e4",
+                        "outline-variant": "#494454",
+                        "on-primary-fixed": "#23005c",
+                        "tertiary": "#ffb0cd",
+                        "surface-tint": "#d0bcff",
+                        "tertiary-fixed-dim": "#ffb0cd",
+                        "on-primary-fixed-variant": "#5516be",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#31353f",
+                        "surface-variant": "#31353f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "sm": "16px",
+                        "gutter": "24px",
+                        "md": "24px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "lg": "40px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "caption": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #070B14;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+            color: #dfe2f0;
+        }
+
+        .glass-card {
+            background: rgba(15, 19, 29, 0.4);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(203, 195, 215, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+        }
+
+        .purple-glow {
+            box-shadow: 0 0 20px rgba(208, 188, 255, 0.1);
+        }
+
+        .aurora-text {
+            background: linear-gradient(to right, #d0bcff, #ddb7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .timeline-line {
+            background: linear-gradient(to bottom, transparent, #a078ff, #a078ff, transparent);
+            width: 2px;
+        }
+
+        .neon-route {
+            stroke-dasharray: 10;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-lg py-sm max-w-7xl mx-auto bg-surface/40 backdrop-blur-xl rounded-full mt-xs border border-on-surface-variant/10 shadow-[0_0_20px_rgba(208,188,255,0.1)]">
+<div class="flex items-center gap-xs">
+<span class="font-headline-md text-headline-md font-bold text-primary">Trip Pilot</span>
+</div>
+<div class="hidden md:flex items-center gap-lg">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Explore</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Generate Trip</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Saved Trips</a>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant/20 flex items-center justify-center overflow-hidden">
+<img alt="User profile with purple aurora glow" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUZjnU7vIe5C4uV6C-4AgY7z2fRhqruj_eIH6Qeqlt7yCvmldGs6wJwPR-XayOS1N1dgoy768VtaWlj7QjesZCnSqSgmM4im3lzjc52yz8YH_t7beyIYOYVoBaKCBn9nRgQXthgCv4j4_BNg7eLtA8Ap5guMm139Ud_hrrCcNq4-3yXHzIhAz92sZel8pcUt9EFF9zoJBa1ipmQITVcuzNxcUnJk4FPB67i-21OQ_6d0quL_oz2YmayFX9gic1YvkzmPs1HO_htMV-"/>
+</div>
+</div>
+</nav>
+<main class="pt-[120px] pb-xl px-md max-w-7xl mx-auto">
+<!-- Header Section -->
+<header class="text-center mb-xl">
+<h1 class="font-display-lg text-display-lg aurora-text mb-xs">Your Tokyo Odyssey</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">A 48-hour curated immersion into neon-lit streets, hidden shrines, and Michelin-starred mastery.</p>
+</header>
+<!-- AI Insights -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md mb-xl">
+<div class="glass-card p-md rounded-xl flex flex-col items-center text-center group hover:scale-[1.02] transition-transform duration-300">
+<span class="material-symbols-outlined text-primary mb-xs" style="font-size: 32px;">payments</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Est. Trip Cost</span>
+<span class="font-headline-md text-headline-md text-on-surface mt-base">$1,240.00</span>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col items-center text-center group hover:scale-[1.02] transition-transform duration-300">
+<span class="material-symbols-outlined text-primary mb-xs" style="font-size: 32px;">route</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Distance</span>
+<span class="font-headline-md text-headline-md text-on-surface mt-base">42.5 km</span>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col items-center text-center group hover:scale-[1.02] transition-transform duration-300">
+<span class="material-symbols-outlined text-primary mb-xs" style="font-size: 32px;">bolt</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Efficiency Score</span>
+<span class="font-headline-md text-headline-md text-on-surface mt-base">98%</span>
+</div>
+<div class="glass-card p-md rounded-xl flex flex-col items-center text-center group hover:scale-[1.02] transition-transform duration-300">
+<span class="material-symbols-outlined text-primary mb-xs" style="font-size: 32px;">partly_cloudy_day</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Weather Forecast</span>
+<span class="font-headline-md text-headline-md text-on-surface mt-base">22°C Clear</span>
+</div>
+</div>
+<!-- Layout Grid: Timeline & Map -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Timeline Column -->
+<div class="lg:col-span-7 relative">
+<div class="absolute left-6 top-8 bottom-8 timeline-line hidden md:block"></div>
+<div class="space-y-xl">
+<!-- Morning Section -->
+<section class="relative">
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center z-10 shadow-[0_0_15px_rgba(160,120,255,0.5)]">
+<span class="material-symbols-outlined text-on-primary filled-icon">light_mode</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">The Awakening</h2>
+</div>
+<div class="space-y-md ml-0 md:ml-16">
+<!-- Card 1 -->
+<div class="glass-card rounded-xl group overflow-hidden">
+<div class="h-[300px] w-full relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A cinematic low-angle shot of the Senso-ji temple in Asakusa at dawn, with soft purple and golden morning light filtering through the ancient red pillars. The atmosphere is serene and spiritual, capturing the historic architecture against a crisp, high-contrast dark sky typical of a luxury travel experience." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA8kjk5OcuhGkLpL0_CAcLgaUsEM4rYKmMJ0hC4GkmxZ2p8Rbb6XEmnYFoIC0es0jdllNYiXQ3N6nzZq1iSgH5lYt1pkcFCohE8ZiMjej31nI0Aqo73W56hINfdXvq_rctRdpvOSFFvUo_9ZF4_jB4aTvYW937HfbOFO-o4oDy5NT2K8O1jnjwQSJx4hyW-TVhlteoH28RmFHRhDjW9eHdQWh385hnky9Y93ya97n9FOq_FeuEpNsC-drCF-R3JlZyNv92RrjxDF15"/>
+<div class="absolute top-md right-md bg-primary-container/80 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs">
+<span class="material-symbols-outlined text-on-primary-container text-[18px]">auto_awesome</span>
+<span class="font-label-md text-label-md text-on-primary-container">AI Pick</span>
+</div>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="font-label-md text-label-md text-primary mb-xs block">08:00 AM — 10:30 AM</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Senso-ji Temple Morning Prayer</h3>
+</div>
+<span class="font-headline-md text-headline-md text-primary">$0</span>
+</div>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-surface-container-high px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant border border-outline-variant/30">Culture</span>
+<span class="bg-surface-container-high px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant border border-outline-variant/30">Historic</span>
+<span class="bg-surface-container-high px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant border border-outline-variant/30">Quiet Hours</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md leading-relaxed mb-lg">
+                                        Beat the crowds and witness the morning ritual at Tokyo's oldest temple. The incense-laden air and traditional architecture provide a peaceful start to your day.
+                                    </p>
+<div class="flex items-center gap-sm text-primary">
+<span class="material-symbols-outlined">directions_walk</span>
+<span class="font-label-md text-label-md">12 min walk to next destination</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Afternoon Section -->
+<section class="relative">
+<div class="flex items-center gap-md mb-lg">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center z-10 shadow-[0_0_15px_rgba(221,183,255,0.4)]">
+<span class="material-symbols-outlined text-secondary filled-icon">wb_sunny</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Modern Immersion</h2>
+</div>
+<div class="space-y-md ml-0 md:ml-16">
+<!-- Card 2 -->
+<div class="glass-card rounded-xl group overflow-hidden">
+<div class="h-[300px] w-full relative overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A vibrant, cinematic view of the Shibuya Crossing at high noon, emphasizing the high-tech urban energy with gleaming glass skyscrapers reflecting a deep blue sky. The scene is saturated with neon violet highlights and deep shadows, creating a sophisticated, AI-enhanced futuristic travel atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrLhus4smzs5OqeSCIlXmqk5_F9c4N9KVCUq6S1uHjBuNp5Qye-tOtiCUgg7Oi_mYYMSE0gUMH9p9etL2go9vsm-Z_pvvKWHlX3FHoBG_qTGntzUmPc-KeEZxb7WwEUlxywtQVb7uInGQT1fFoQFkxc6sLzmpift0y6f5waAjJcjLJJNj2vEINsL1-lqO39rr3Eh7MUwVr-PHo-ieKvNux2GG4MkMot9FRpZNxvnxcBufbeMEEAtO2wmeWb9dnoIGnnCEOCvWlaXJc"/>
+</div>
+<div class="p-lg">
+<div class="flex justify-between items-start mb-sm">
+<div>
+<span class="font-label-md text-label-md text-primary mb-xs block">12:30 PM — 15:00 PM</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Shibuya Sky &amp; Omotesando</h3>
+</div>
+<span class="font-headline-md text-headline-md text-primary">$45</span>
+</div>
+<div class="flex flex-wrap gap-xs mb-md">
+<span class="bg-surface-container-high px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant border border-outline-variant/30">Cityscape</span>
+<span class="bg-surface-container-high px-sm py-xs rounded-full font-label-md text-label-md text-on-surface-variant border border-outline-variant/30">Luxury Shopping</span>
+</div>
+<p class="text-on-surface-variant font-body-md text-body-md leading-relaxed mb-lg">
+                                        Experience 360-degree panoramic views of Tokyo from 229 meters up. Followed by a stroll through the architectural marvels of Omotesando's high-fashion district.
+                                    </p>
+<div class="flex items-center gap-sm text-primary">
+<span class="material-symbols-outlined">directions_subway</span>
+<span class="font-label-md text-label-md">15 min via Ginza Line</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Map & Sidebar Column -->
+<div class="lg:col-span-5 space-y-xl">
+<!-- Route Map -->
+<div class="glass-card rounded-2xl overflow-hidden sticky top-[120px]">
+<div class="p-md border-b border-outline-variant/10 flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Route Intelligence</h3>
+<div class="flex gap-xs">
+<button class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[18px]">layers</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[18px]">my_location</span>
+</button>
+</div>
+</div>
+<div class="relative h-[400px] w-full bg-[#0a0e17]">
+<!-- SVG Map Graphic -->
+<svg class="w-full h-full" preserveaspectratio="xMidYMid slice" viewbox="0 0 400 400">
+<defs>
+<radialgradient cx="50%" cy="50%" fx="50%" fy="50%" id="glow" r="50%">
+<stop offset="0%" style="stop-color:#a078ff;stop-opacity:0.3"></stop>
+<stop offset="100%" style="stop-color:#a078ff;stop-opacity:0"></stop>
+</radialgradient>
+</defs>
+<!-- Fake City Map Paths -->
+<path d="M 50 50 L 350 50 L 350 350 L 50 350 Z" fill="none" stroke="#31353f" stroke-width="1"></path>
+<path d="M 50 150 L 350 150 M 50 250 L 350 250 M 150 50 L 150 350 M 250 50 L 250 350" stroke="#1b2029" stroke-width="0.5"></path>
+<!-- Animated Route -->
+<path class="neon-route" d="M 80 80 Q 150 70 200 180 T 320 320" fill="none" filter="drop-shadow(0 0 5px #a078ff)" stroke="#d0bcff" stroke-linecap="round" stroke-width="3"></path>
+<!-- Location Pins -->
+<circle class="animate-pulse" cx="80" cy="80" fill="#a078ff" r="6"></circle>
+<circle cx="200" cy="180" fill="#a078ff" r="6"></circle>
+<circle cx="320" cy="320" fill="#a078ff" r="6"></circle>
+<!-- Glows -->
+<circle cx="80" cy="80" fill="url(#glow)" r="20"></circle>
+<circle cx="200" cy="180" fill="url(#glow)" r="20"></circle>
+<circle cx="320" cy="320" fill="url(#glow)" r="20"></circle>
+</svg>
+<div class="absolute bottom-md left-md right-md flex flex-col gap-xs">
+<div class="glass-card p-sm rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="font-label-md text-label-md text-on-surface">Currently Optimizing Flow...</span>
+</div>
+<div class="flex gap-xs h-1 w-12 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-2/3 animate-pulse"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-lg">
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-md">Optimization Insight</h4>
+<p class="text-on-surface font-body-md text-body-md italic border-l-2 border-primary pl-md">
+                            "Moving your dinner reservation by 15 minutes saves 22% on commute time due to the Ginza line rush hour patterns."
+                        </p>
+</div>
+</div>
+<!-- Next Steps CTA -->
+<div class="bg-gradient-to-br from-primary to-secondary p-1 rounded-2xl">
+<div class="bg-surface-dim p-lg rounded-2xl flex flex-col gap-md">
+<h3 class="font-headline-md text-headline-md text-on-surface">Ready to explore?</h3>
+<p class="text-on-surface-variant font-body-md text-body-md">Confirm this itinerary to sync it with your mobile wallet and calendar.</p>
+<button class="bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-headline-md text-headline-md py-md rounded-xl shadow-[0_0_20px_rgba(160,120,255,0.4)] hover:scale-[1.02] active:scale-95 transition-all duration-300">
+                            Plan My Trip
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-base w-full pt-xl pb-md border-t border-outline-variant/10">
+<div class="flex gap-lg mb-md">
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-secondary transition-colors" href="#">Support</a>
+</div>
+<p class="font-caption text-caption text-on-surface-variant">© 2024 Trip Pilot AI Travel OS. Cinematic exploration awaits.</p>
+</footer>
+<script>
+        // Micro-interaction: Hover effects on timeline cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.classList.add('purple-glow');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.classList.remove('purple-glow');
+            });
+        });
+
+        // Atmospheric Pulsing for Active State
+        const activeNav = document.querySelector('.text-primary.font-bold');
+        if(activeNav) {
+            let opacity = 1;
+            let growing = false;
+            setInterval(() => {
+                if(growing) {
+                    opacity += 0.01;
+                    if(opacity >= 1) growing = false;
+                } else {
+                    opacity -= 0.01;
+                    if(opacity <= 0.7) growing = true;
+                }
+                activeNav.style.opacity = opacity;
+            }, 50);
+        }
+    </script>
+</body></html>

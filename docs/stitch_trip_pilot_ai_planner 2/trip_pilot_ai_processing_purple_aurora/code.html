@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trip Pilot | AI Planning Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "secondary-fixed-dim": "#ddb7ff",
+                "on-error": "#690005",
+                "primary-fixed-dim": "#d0bcff",
+                "inverse-surface": "#dfe2f0",
+                "primary-container": "#a078ff",
+                "on-primary-container": "#340080",
+                "on-primary": "#3c0091",
+                "primary": "#d0bcff",
+                "on-secondary": "#490080",
+                "on-surface-variant": "#cbc3d7",
+                "on-secondary-fixed-variant": "#6900b3",
+                "on-tertiary": "#640039",
+                "on-secondary-container": "#d6a9ff",
+                "surface-container-low": "#171c25",
+                "on-secondary-fixed": "#2c0051",
+                "surface-container-lowest": "#0a0e17",
+                "error": "#ffb4ab",
+                "error-container": "#93000a",
+                "on-surface": "#dfe2f0",
+                "secondary": "#ddb7ff",
+                "tertiary-container": "#f751a1",
+                "on-tertiary-fixed-variant": "#8c0053",
+                "on-tertiary-container": "#570032",
+                "secondary-container": "#6f00be",
+                "outline": "#958ea0",
+                "surface-dim": "#0f131d",
+                "primary-fixed": "#e9ddff",
+                "secondary-fixed": "#f0dbff",
+                "surface-container": "#1b2029",
+                "on-background": "#dfe2f0",
+                "inverse-on-surface": "#2c303b",
+                "surface": "#0f131d",
+                "inverse-primary": "#6d3bd7",
+                "background": "#0f131d",
+                "surface-container-high": "#262a34",
+                "on-tertiary-fixed": "#3e0022",
+                "surface-bright": "#353944",
+                "tertiary-fixed": "#ffd9e4",
+                "outline-variant": "#494454",
+                "on-primary-fixed": "#23005c",
+                "tertiary": "#ffb0cd",
+                "surface-tint": "#d0bcff",
+                "tertiary-fixed-dim": "#ffb0cd",
+                "on-primary-fixed-variant": "#5516be",
+                "on-error-container": "#ffdad6",
+                "surface-container-highest": "#31353f",
+                "surface-variant": "#31353f"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "xl": "64px",
+                "sm": "16px",
+                "gutter": "24px",
+                "md": "24px",
+                "xs": "8px",
+                "base": "4px",
+                "lg": "40px",
+                "container-max": "1280px"
+              },
+              "fontFamily": {
+                "caption": ["Inter"],
+                "headline-lg": ["Inter"],
+                "body-lg": ["Inter"],
+                "label-md": ["Inter"],
+                "body-md": ["Inter"],
+                "display-lg-mobile": ["Inter"],
+                "display-lg": ["Inter"],
+                "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                "caption": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .aurora-bg {
+            background: radial-gradient(circle at 50% -20%, #340080 0%, #0f131d 60%);
+        }
+        .glow-pulse {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+        .line-animate {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 5s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .glass-card {
+            background: rgba(27, 32, 41, 0.6);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Atmospheric Elements -->
+<div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/20 blur-[120px] rounded-full glow-pulse"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary/15 blur-[100px] rounded-full glow-pulse" style="animation-delay: 2s"></div>
+<canvas class="absolute inset-0" id="particleCanvas"></canvas>
+</div>
+<!-- Side Navigation (Shared Component Integration) -->
+<nav class="h-screen w-xl fixed left-0 top-0 bg-surface-dim/80 backdrop-blur-2xl border-r border-outline-variant/20 shadow-2xl shadow-primary/5 flex flex-col py-lg px-md gap-md z-50 hidden md:flex">
+<div class="flex items-center gap-sm px-xs">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-[0_0_15px_rgba(160,120,255,0.4)]">
+<span class="material-symbols-outlined text-on-primary font-bold">flight_takeoff</span>
+</div>
+<div>
+<h1 class="font-display-lg text-headline-md bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Trip Pilot</h1>
+<p class="font-label-md text-on-surface-variant opacity-70">AI Travel OS</p>
+</div>
+</div>
+<div class="mt-xl flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-xl hover:scale-105 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md">Home</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-primary-container text-on-primary-container rounded-xl shadow-[0_0_15px_rgba(160,120,255,0.3)]" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="font-label-md">Discover</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-xl hover:scale-105 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-md">Assistant</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-container-high rounded-xl hover:scale-105 transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md">Settings</span>
+</a>
+</div>
+<div class="mt-auto">
+<button class="w-full py-md rounded-xl bg-primary text-on-primary font-bold shadow-[0_0_20px_rgba(208,188,255,0.3)] hover:scale-105 transition-transform duration-300">
+                Plan New Trip
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="relative z-10 h-screen flex flex-col items-center justify-center pl-0 md:pl-[240px]">
+<!-- Workflow Container -->
+<div class="max-w-4xl w-full px-lg flex flex-col items-center text-center">
+<!-- AI Core Hub -->
+<div class="relative mb-xl">
+<!-- Rotating Rings -->
+<div class="absolute inset-0 scale-[2.5] opacity-20">
+<div class="w-full h-full border-2 border-primary rounded-full animate-[spin_10s_linear_infinite]"></div>
+</div>
+<div class="absolute inset-0 scale-[2.2] opacity-10">
+<div class="w-full h-full border-2 border-secondary border-dashed rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+</div>
+<!-- Central Icon -->
+<div class="w-32 h-32 glass-card rounded-full flex items-center justify-center relative shadow-[0_0_50px_rgba(208,188,255,0.2)]">
+<span class="material-symbols-outlined text-primary text-[64px] animate-pulse" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<!-- Orbital Elements -->
+<div class="absolute -top-4 -right-4 glass-card p-2 rounded-lg floating shadow-lg" style="animation-delay: 1s">
+<span class="material-symbols-outlined text-secondary">hotel</span>
+</div>
+<div class="absolute -bottom-6 -left-2 glass-card p-2 rounded-lg floating shadow-lg" style="animation-delay: 2.5s">
+<span class="material-symbols-outlined text-tertiary">restaurant</span>
+</div>
+</div>
+</div>
+<!-- Dynamic Header -->
+<div class="mb-xl">
+<h2 class="font-headline-lg text-headline-lg md:text-display-lg text-primary mb-sm transition-all duration-500" id="processing-title">
+                    Discovering places
+                </h2>
+<p class="font-body-lg text-on-surface-variant max-w-lg mx-auto">
+                    Our AI is scanning millions of data points to curate your perfect escape to Tokyo.
+                </p>
+</div>
+<!-- Workflow Steps Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-md w-full mb-xl">
+<!-- Step 1 -->
+<div class="workflow-step relative flex flex-col items-center p-md glass-card rounded-xl border border-outline-variant/10 active-step transition-all duration-500 scale-100" data-step="1">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-primary">search</span>
+</div>
+<span class="font-label-md">Discovering</span>
+<div class="absolute bottom-0 left-0 h-1 bg-primary w-full rounded-b-xl overflow-hidden">
+<div class="h-full bg-white/40 animate-[shimmer_2s_infinite]"></div>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="workflow-step opacity-40 flex flex-col items-center p-md glass-card rounded-xl border border-outline-variant/10 transition-all duration-500" data-step="2">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-on-surface-variant">route</span>
+</div>
+<span class="font-label-md">Optimizing</span>
+</div>
+<!-- Step 3 -->
+<div class="workflow-step opacity-40 flex flex-col items-center p-md glass-card rounded-xl border border-outline-variant/10 transition-all duration-500" data-step="3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-on-surface-variant">thermostat</span>
+</div>
+<span class="font-label-md">Checking</span>
+</div>
+<!-- Step 4 -->
+<div class="workflow-step opacity-40 flex flex-col items-center p-md glass-card rounded-xl border border-outline-variant/10 transition-all duration-500" data-step="4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined text-on-surface-variant">calendar_month</span>
+</div>
+<span class="font-label-md">Building</span>
+</div>
+</div>
+<!-- Detailed Stats Terminal -->
+<div class="w-full glass-card rounded-2xl p-lg border border-outline-variant/20 text-left relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary opacity-50"></div>
+<div class="flex justify-between items-center mb-md">
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="font-label-md text-primary tracking-widest uppercase">System Log</span>
+</div>
+<span class="font-headline-md text-primary" id="percentage">24%</span>
+</div>
+<div class="space-y-sm font-caption text-on-surface-variant opacity-80 h-32 overflow-hidden" id="log-container">
+<p class="animate-in fade-in slide-in-from-left duration-300">&gt; Initializing neural trip engine...</p>
+<p class="animate-in fade-in slide-in-from-left delay-150 duration-300">&gt; Connecting to Global Flight GDS API...</p>
+<p class="animate-in fade-in slide-in-from-left delay-300 duration-300">&gt; Analyzing cultural preferences for "Tokyo Luxury"...</p>
+<p class="animate-in fade-in slide-in-from-left delay-500 duration-300">&gt; 452 hotels scanned. Filtering for 'Premium Aurora' standards...</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Cards Decoration -->
+<div class="absolute top-1/4 right-10 w-64 glass-card rounded-xl p-sm hidden xl:block floating shadow-2xl border-l-4 border-primary">
+<div class="flex gap-sm items-center">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A cinematic, high-contrast shot of the Shinjuku skyline at dusk, with neon lights reflecting off rain-slicked streets in vibrant shades of purple and electric blue. The atmosphere is mysterious and futuristic, echoing a cyberpunk aesthetic with deep shadows and glowing highlights that create a sense of vast urban depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD04GIar0b95hxgUp4lsB0AqDbL7SOaFeO1rv0vpq5M24Q-6fKdAnbZXqTtZAI6tUVfowrFT-Mwx7Sl4LioA_ddi1FJG_TyiGalXKebFGC3lfOI7mKD6zZCkQN8xd0Hld8et7drybSRck8Kw_zFz3LzqH-WnkoGWG3VVy-LYg6aA6M3udhZWFgD2vvfQQQzB4XsL-Jv1ENeH40paR4khqlORWZAbQhmnfnPearn3XrNCmyO497NdIZ_0IcCpAKtrXQSTxWRbkwWFUkC"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Park Hyatt Tokyo</p>
+<div class="flex text-primary">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-1/4 left-xl w-64 glass-card rounded-xl p-sm hidden xl:block floating shadow-2xl border-l-4 border-secondary" style="animation-delay: 2s">
+<div class="flex gap-sm items-center">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A breathtaking landscape of Mount Fuji during cherry blossom season, captured with a soft, ethereal lens flare. The pink blossoms frame the snow-capped peak against a clear violet-tinted morning sky. The lighting is soft and golden, creating a serene, high-end travel mood with rich, layered colors and a sense of peaceful exploration." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3-hxOTy_ElVHufKKEoS9-SvyOkMqQd8yo77hA0hzkxdkGmvfxyKvbBhHDXPUgcThaqw8JVYuP2EIZ-hMOsKruKp50cP8hNlcn8r9nibMkqGFNPxiUmTq5EJ1O_bY9KoCZ9GhwNtAgMQX0Hmer9kbfh1iC7SEq8Lp_9MLLk9TGpMGJY-Vh5TAe6hmMKgt3USghkV4FWCuaD4eWMBErGvN0TC7KtGoAnzu5EoU91CMd4Q8Um5OAggL7qGzn2vLEbCiY9fJK1CMFXZfO"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Mount Fuji View</p>
+<p class="font-caption text-secondary">Optimal Route Found</p>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-card border-t border-outline-variant/10 px-lg py-sm flex justify-around items-center z-50">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px]">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="text-[10px]">Discover</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="text-[10px]">AI</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px]">Profile</span>
+</button>
+</nav>
+<script>
+        // Particle Background Logic
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.color = Math.random() > 0.5 ? '#d0bcff' : '#ddb7ff';
+                this.alpha = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 80; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        initParticles();
+        animate();
+
+        // Simulation Logic
+        const steps = [
+            { title: "Discovering places", percentage: 25, log: ["> Fetching local gem data...", "> Analyzing user travel style: 'Minimalist Modern'", "> Cross-referencing 1,200 Michelin reviews..."] },
+            { title: "Optimizing routes", percentage: 50, log: ["> Running traffic flow simulations...", "> Calculating bullet train schedules...", "> Reducing walking transit time by 12%"] },
+            { title: "Checking weather", percentage: 75, log: ["> Accessing real-time satellite radar...", "> Adjusting indoor activities for expected rain...", "> Ensuring sunset views align with peak photography hours"] },
+            { title: "Building itinerary", percentage: 100, log: ["> Generating digital travel passes...", "> Finalizing meal reservations...", "> Trip ready for launch!"] }
+        ];
+
+        let currentStepIdx = 0;
+        const titleEl = document.getElementById('processing-title');
+        const percentageEl = document.getElementById('percentage');
+        const logEl = document.getElementById('log-container');
+        const stepElements = document.querySelectorAll('.workflow-step');
+
+        function updateSimulation() {
+            if (currentStepIdx >= steps.length) {
+                // Final state
+                percentageEl.innerText = "100%";
+                titleEl.innerText = "Itinerary complete";
+                titleEl.classList.add('text-secondary');
+                return;
+            }
+
+            const step = steps[currentStepIdx];
+            
+            // Update Title
+            titleEl.style.opacity = 0;
+            setTimeout(() => {
+                titleEl.innerText = step.title;
+                titleEl.style.opacity = 1;
+            }, 300);
+
+            // Update Percentage
+            let start = parseInt(percentageEl.innerText);
+            let end = step.percentage;
+            let current = start;
+            let timer = setInterval(() => {
+                if (current >= end) clearInterval(timer);
+                else {
+                    current++;
+                    percentageEl.innerText = current + "%";
+                }
+            }, 30);
+
+            // Update Workflow Grid
+            stepElements.forEach((el, idx) => {
+                if (idx === currentStepIdx) {
+                    el.classList.add('scale-105', 'shadow-2xl', 'border-primary/50');
+                    el.classList.remove('opacity-40');
+                    el.innerHTML += `<div class="absolute bottom-0 left-0 h-1 bg-primary w-full rounded-b-xl overflow-hidden"><div class="h-full bg-white/40 animate-[shimmer_2s_infinite]"></div></div>`;
+                } else if (idx < currentStepIdx) {
+                    el.classList.remove('opacity-40', 'scale-105');
+                    el.classList.add('border-primary/20');
+                    el.querySelector('span.material-symbols-outlined').innerText = "check_circle";
+                    el.querySelector('span.material-symbols-outlined').classList.add('text-primary');
+                }
+            });
+
+            // Update Logs
+            step.log.forEach((line, i) => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.className = "animate-in fade-in slide-in-from-left duration-300";
+                    p.innerText = line;
+                    logEl.prepend(p);
+                    if (logEl.children.length > 6) logEl.lastElementChild.remove();
+                }, i * 800);
+            });
+
+            currentStepIdx++;
+            setTimeout(updateSimulation, 4000);
+        }
+
+        setTimeout(updateSimulation, 2000);
+    </script>
+<style>
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</body></html>
