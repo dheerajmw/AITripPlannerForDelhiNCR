@@ -1,5 +1,5 @@
 # Streamlit Cloud / `pip install -r requirements.txt` at repo root
-streamlit>=1.40.0
+streamlit>=1.50.0
 pandas>=2.0.0
 
 # Backend planner (imported via sys.path from backend/)

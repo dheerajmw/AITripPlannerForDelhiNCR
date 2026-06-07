@@ -48,14 +48,9 @@ html, body, [class*="css"] {
 
 section.main > div.block-container {
     max-width: 80rem !important;
-    padding: 9.25rem 1.25rem 5rem !important;
+    padding: 1.25rem 1.25rem 5rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
-}
-@media (min-width: 1024px) {
-    section.main > div.block-container {
-        padding-top: 5.5rem !important;
-    }
 }
 
 /* Global page alignment */
@@ -141,41 +136,12 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     50% { transform: scale(1.1); opacity: 1; }
 }
 
-/* Fixed header — single nav bar (tabs overlay center on desktop) */
-.tp-header-fixed {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 100;
-    padding: 0.5rem 1.25rem 0;
-    pointer-events: none;
-}
-.tp-header-inner {
-    max-width: 80rem;
-    margin: 0 auto;
-}
-.tp-nav-bar.tp-topnav {
-    width: 100%;
-    min-height: 3.25rem;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    column-gap: 0.75rem;
-    padding: 0.5rem 1.25rem;
-    border-radius: 9999px;
-    border: 1px solid rgba(203, 195, 215, 0.1);
-    background: rgba(15, 19, 29, 0.55);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 0 20px rgba(208, 188, 255, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05);
-    pointer-events: auto;
-}
+/* App header (brand + segmented nav + actions) */
 .tp-nav-brand {
-    grid-column: 1;
-    justify-self: start;
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    min-height: 2.25rem;
 }
 .tp-brand-icon-wrap {
     width: 2.25rem;
@@ -236,12 +202,12 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     flex-shrink: 0;
 }
 .tp-nav-actions {
-    grid-column: 3;
-    justify-self: end;
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.65rem;
     flex-shrink: 0;
+    min-height: 2.25rem;
 }
 .tp-nav-bell {
     display: none;
@@ -852,89 +818,61 @@ def inject_itinerary_layout_styles() -> None:
     st.markdown(f"<style>{ITINERARY_LAYOUT_CSS}</style>", unsafe_allow_html=True)
 
 
-TAB_BAR_CSS = """
-section.main .tp-tab-bar-marker {
-    display: none;
+HEADER_SHELL_CSS = """
+/* First bordered container = sticky app header */
+section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type {
+    position: sticky !important;
+    top: 0.5rem;
+    z-index: 100;
+    margin-bottom: 1.25rem !important;
+    border-radius: 9999px !important;
+    border-color: rgba(203, 195, 215, 0.1) !important;
+    background: rgba(15, 19, 29, 0.72) !important;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 0 20px rgba(208, 188, 255, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    padding: 0.45rem 0.85rem 0.55rem !important;
 }
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] {
-    position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 101;
+section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="column"] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] {
     margin: 0 !important;
+}
+section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] > div {
+    background: transparent !important;
+    border: none !important;
     gap: 0.3rem !important;
-    align-items: stretch !important;
-    pointer-events: auto;
-}
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] [data-testid="column"] {
-    flex: 1 1 0 !important;
-    min-width: 0 !important;
-    padding: 0 !important;
-}
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton {
-    margin: 0 !important;
-}
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button {
     width: 100%;
+}
+section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] button {
+    flex: 1 1 0 !important;
     min-height: 2.25rem !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
     border-radius: 9999px !important;
     font-weight: 600 !important;
-    font-size: 0.8rem !important;
-    line-height: 1 !important;
-    padding: 0.45rem 0.7rem !important;
-    color: #cbc3d7 !important;
-    transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
-}
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="secondary"] {
-    background: rgba(255, 255, 255, 0.03) !important;
+    font-size: 0.78rem !important;
     border: 1px solid rgba(203, 195, 215, 0.08) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: #cbc3d7 !important;
 }
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="primary"] {
+section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] button[aria-checked="true"] {
     background: linear-gradient(135deg, #8b5cf6, #a855f7) !important;
-    border: none !important;
+    border-color: transparent !important;
     color: #fff !important;
     box-shadow: 0 0 16px rgba(160, 120, 255, 0.35) !important;
 }
-section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button[kind="secondary"]:hover {
-    background: rgba(208, 188, 255, 0.12) !important;
-    border-color: rgba(208, 188, 255, 0.2) !important;
-    color: #d0bcff !important;
-}
-/* Desktop: tabs embedded in center of nav bar */
-@media (min-width: 1024px) {
-    section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] {
-        top: 1.05rem;
-        width: 26rem;
-        max-width: min(26rem, calc(100vw - 22rem));
-        padding: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        backdrop-filter: none;
+@media (max-width: 900px) {
+    section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
     }
-}
-/* Mobile: tabs in second row below nav */
-@media (max-width: 1023px) {
-    section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] {
-        top: 4.35rem;
-        width: calc(100% - 2.5rem);
-        max-width: 80rem;
-        padding: 0.3rem;
-        border-radius: 9999px;
-        border: 1px solid rgba(203, 195, 215, 0.1);
-        background: rgba(15, 19, 29, 0.65);
-        backdrop-filter: blur(12px);
-    }
-    section.main .tp-tab-bar-marker ~ [data-testid="stHorizontalBlock"] .stButton > button {
-        font-size: 0.72rem !important;
-        padding: 0.5rem 0.35rem !important;
+    section.main > div.block-container > [data-testid="stVerticalBlockBorderWrapper"]:first-of-type [data-testid="stSegmentedControl"] button {
+        font-size: 0.68rem !important;
+        padding: 0.4rem 0.25rem !important;
     }
 }
 """
 
 
-def inject_tab_bar_styles() -> None:
-    st.markdown(f"<style>{TAB_BAR_CSS}</style>", unsafe_allow_html=True)
+def inject_header_styles() -> None:
+    st.markdown(f"<style>{HEADER_SHELL_CSS}</style>", unsafe_allow_html=True)

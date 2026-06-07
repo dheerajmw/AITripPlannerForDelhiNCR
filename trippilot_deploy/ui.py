@@ -23,7 +23,24 @@ def aurora_background_html(*, show_map: bool = True) -> str:
     """
 
 
-def top_nav_html(poi_count: int | None = None, *, api_ready: bool = True) -> str:
+NAV_LABELS = ("Explore", "Generate Trip", "Saved Trips")
+NAV_PAGES = ("home", "plan", "itinerary")
+NAV_LABEL_TO_PAGE = dict(zip(NAV_LABELS, NAV_PAGES))
+NAV_PAGE_TO_LABEL = dict(zip(NAV_PAGES, NAV_LABELS))
+
+
+def nav_brand_html() -> str:
+    return """
+    <div class="tp-nav-brand">
+      <span class="tp-brand-icon-wrap" aria-hidden="true">
+        <span class="tp-brand-icon">✈</span>
+      </span>
+      <span class="tp-brand-text">Trip Pilot</span>
+    </div>
+    """
+
+
+def nav_actions_html(poi_count: int | None = None, *, api_ready: bool = True) -> str:
     badge = ""
     if api_ready and poi_count is not None and poi_count > 0:
         badge = (
@@ -37,22 +54,10 @@ def top_nav_html(poi_count: int | None = None, *, api_ready: bool = True) -> str
         )
 
     return f"""
-    <div class="tp-header-fixed" aria-hidden="false">
-      <div class="tp-header-inner">
-        <div class="tp-nav-bar tp-topnav">
-          <div class="tp-nav-brand">
-            <span class="tp-brand-icon-wrap" aria-hidden="true">
-              <span class="tp-brand-icon">✈</span>
-            </span>
-            <span class="tp-brand-text">Trip Pilot</span>
-          </div>
-          <div class="tp-nav-actions">
-            {badge}
-            <span class="tp-nav-bell" aria-hidden="true">🔔</span>
-            <div class="tp-avatar">TP</div>
-          </div>
-        </div>
-      </div>
+    <div class="tp-nav-actions">
+      {badge}
+      <span class="tp-nav-bell" aria-hidden="true">🔔</span>
+      <div class="tp-avatar">TP</div>
     </div>
     """
 

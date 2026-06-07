@@ -15,12 +15,15 @@ configure_import_path()
 
 from app.config import DEFAULT_START, NCR_START_LOCATIONS
 from trippilot_deploy.theme import (
+    inject_header_styles,
     inject_itinerary_layout_styles,
     inject_plan_form_styles,
-    inject_tab_bar_styles,
     inject_theme,
 )
 from trippilot_deploy.ui import (
+    NAV_LABELS,
+    NAV_LABEL_TO_PAGE,
+    NAV_PAGE_TO_LABEL,
     aurora_background_html,
     empty_itinerary_html,
     google_maps_route_url,
@@ -29,9 +32,10 @@ from trippilot_deploy.ui import (
     itinerary_header_block,
     map_shell_close,
     map_shell_open,
+    nav_actions_html,
+    nav_brand_html,
     stats_panel_html,
     stop_card_html,
-    top_nav_html,
 )
 
 st.set_page_config(
@@ -60,30 +64,38 @@ def _current_page() -> str:
 
 def _go(page: str) -> None:
     st.session_state["page"] = page
+    st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL.get(page, "Explore")
     st.rerun()
 
 
-def render_tab_bar(active: str) -> None:
-    """Segmented tabs — embedded in nav on desktop, row below on mobile."""
-    inject_tab_bar_styles()
-    st.markdown('<div class="tp-tab-bar-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
-    cols = st.columns(3, gap="small")
-    for col, (page_id, label) in zip(
-        cols,
-        [
-            ("home", "Explore"),
-            ("plan", "Generate Trip"),
-            ("itinerary", "Saved Trips"),
-        ],
-    ):
-        with col:
-            if st.button(
-                label,
-                key=f"nav_tab_{page_id}",
-                use_container_width=True,
-                type="primary" if active == page_id else "secondary",
-            ):
-                _go(page_id)
+def render_app_header(active: str, poi_count: int | None, *, api_ready: bool = True) -> None:
+    """Sticky header — native Streamlit widgets (CSS sibling hacks do not work)."""
+    inject_header_styles()
+
+    with st.container(border=True):
+        brand_col, nav_col, actions_col = st.columns([1.15, 2.1, 1.15], gap="small")
+
+        with brand_col:
+            st.markdown(nav_brand_html(), unsafe_allow_html=True)
+
+        with nav_col:
+            default_label = NAV_PAGE_TO_LABEL.get(active, "Explore")
+            choice = st.segmented_control(
+                "Section",
+                list(NAV_LABELS),
+                default=default_label,
+                key="main_nav_segment",
+                label_visibility="collapsed",
+                width="stretch",
+            )
+            if choice and NAV_LABEL_TO_PAGE.get(choice) != active:
+                _go(NAV_LABEL_TO_PAGE[choice])
+
+        with actions_col:
+            st.markdown(
+                nav_actions_html(poi_count, api_ready=api_ready),
+                unsafe_allow_html=True,
+            )
 
 
 @st.cache_resource(show_spinner="Starting Trip Pilot…")
@@ -102,8 +114,7 @@ def _poi_count() -> int:
 def _shell_start(page: str, poi_count: int | None, *, api_ready: bool = True) -> None:
     show_map = page == "home"
     st.markdown(aurora_background_html(show_map=show_map), unsafe_allow_html=True)
-    st.markdown(top_nav_html(poi_count, api_ready=api_ready), unsafe_allow_html=True)
-    render_tab_bar(page)
+    render_app_header(page, poi_count, api_ready=api_ready)
 
 
 def _resolve_start(label: str) -> dict:
