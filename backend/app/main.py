@@ -1,5 +1,6 @@
 """FastAPI application entrypoint."""
 
+import asyncio
 import json
 from typing import Any, Dict, Optional
 
@@ -13,18 +14,36 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.v1.router import api_router
 from app.config import APP_VERSION
+from app.db.analytics_session import init_analytics_db
 from app.db.session import init_db
 from app.exceptions import AppError
 from app.models.errors import ErrorBody, ErrorResponse
+from app.services.analytics_snapshot import refresh_analytics_snapshot
 from app.settings import get_settings
 
 settings = get_settings()
+
+_SNAPSHOT_INTERVAL_SEC = 15 * 60
+
+
+async def _periodic_analytics_snapshot() -> None:
+    while True:
+        await asyncio.sleep(_SNAPSHOT_INTERVAL_SEC)
+        refresh_analytics_snapshot(force=True)
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     init_db()
+    init_analytics_db()
+    refresh_analytics_snapshot(force=True)
+    snapshot_task = asyncio.create_task(_periodic_analytics_snapshot())
     yield
+    snapshot_task.cancel()
+    try:
+        await snapshot_task
+    except asyncio.CancelledError:
+        pass
 
 
 app = FastAPI(

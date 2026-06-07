@@ -40,3 +40,6 @@ ingest:
 
 check-pois:
 	cd backend && .venv/bin/python scripts/check_poi_seed.py
+
+analytics-snapshot:
+	cd backend && .venv/bin/python scripts/refresh_analytics_snapshot.py

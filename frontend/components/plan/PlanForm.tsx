@@ -19,6 +19,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 
 import { AiProcessingView } from "@/components/plan/AiProcessingView";
 import { LocationPicker } from "@/components/plan/LocationPicker";
+import { trackEvent } from "@/lib/analytics";
 import { ApiError, generateItinerary } from "@/lib/api";
 import { DEFAULT_CITY } from "@/lib/constants";
 import { DEFAULT_START_LOCATION } from "@/lib/locations";
@@ -141,6 +142,10 @@ export function PlanForm() {
         }
         saveItinerary(result);
         savePlanForm(savedForm);
+        trackEvent({
+          event: "itinerary_generated",
+          properties: { mode: useAi ? "ai" : "rule" },
+        });
         router.push("/itinerary");
       } catch (err) {
         setError(

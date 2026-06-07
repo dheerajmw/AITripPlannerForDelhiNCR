@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 
+import { trackEvent } from "@/lib/analytics";
 import { ApiError, generateItinerary } from "@/lib/api";
 import { loadItinerary, loadPlanForm, saveItinerary } from "@/lib/storage";
 import type { ItineraryResponse } from "@/types/itinerary";
@@ -28,6 +29,7 @@ export function ItineraryView() {
       return;
     }
     setData(loaded);
+    trackEvent({ event: "itinerary_viewed" });
   }, []);
 
   const regenerate = useCallback(() => {
@@ -48,6 +50,10 @@ export function ItineraryView() {
         }
         saveItinerary(result);
         setData(result);
+        trackEvent({
+          event: "itinerary_generated",
+          properties: { mode: useAi ? "ai" : "rule" },
+        });
       } catch (err) {
         setError(
           err instanceof ApiError

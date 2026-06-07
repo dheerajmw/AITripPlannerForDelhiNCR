@@ -26,6 +26,14 @@ class Settings(BaseSettings):
         default="",
         description="SQLAlchemy URL; empty uses sqlite:///<repo>/data/pois.db",
     )
+    analytics_database_url: str = Field(
+        default="",
+        description="Analytics SQLite URL; empty uses sqlite:///<repo>/data/analytics.db",
+    )
+    analytics_read_key: Optional[str] = Field(
+        default=None,
+        description="Secret for GET /analytics/summary (X-Analytics-Key header)",
+    )
 
     overpass_api_url: str = Field(
         default="https://overpass-api.de/api/interpreter",
@@ -59,6 +67,13 @@ class Settings(BaseSettings):
         if self.database_url:
             return self.database_url
         db_path = self.data_dir / "pois.db"
+        return f"sqlite:///{db_path}"
+
+    @property
+    def resolved_analytics_database_url(self) -> str:
+        if self.analytics_database_url:
+            return self.analytics_database_url
+        db_path = self.data_dir / "analytics.db"
         return f"sqlite:///{db_path}"
 
     @property

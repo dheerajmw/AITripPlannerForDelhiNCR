@@ -1,7 +1,7 @@
 """
 Trip Pilot — Delhi NCR (Streamlit)
 
-Night Explorer UI — matches Next.js stitch_trip_pilot_ai_planner design.
+Purple Aurora UI — matches the Next.js frontend.
 Deploy with main file: streamlit_app.py
 """
 
@@ -9,23 +9,28 @@ from __future__ import annotations
 
 import streamlit as st
 
-from trippilot_deploy.bootstrap import init_backend
+from trippilot_deploy.bootstrap import configure_import_path, init_backend
+
+configure_import_path()
+
+from app.config import DEFAULT_START, NCR_START_LOCATIONS
 from trippilot_deploy.theme import inject_theme
 from trippilot_deploy.ui import (
+    aurora_background_html,
     empty_itinerary_html,
     expedition_header_html,
+    google_maps_route_url,
     hero_plan,
     home_page_html,
-    sidebar_html,
     stats_panel_html,
     stop_card_html,
     summary_bar_html,
-    top_bar_html,
+    top_nav_html,
 )
 
 st.set_page_config(
     page_title="Trip Pilot — Delhi NCR",
-    page_icon="🧭",
+    page_icon="✈",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -33,7 +38,13 @@ st.set_page_config(
 inject_theme()
 
 PAGES = ("home", "plan", "itinerary")
-STATUS = {"home": "Ready", "plan": "Planning", "itinerary": "Itinerary"}
+
+_START_LABELS = [str(loc["label"]) for loc in NCR_START_LOCATIONS]
+_START_BY_LABEL = {str(loc["label"]): loc for loc in NCR_START_LOCATIONS}
+
+
+def _default_start_label() -> str:
+    return str(DEFAULT_START["label"])
 
 
 def _current_page() -> str:
@@ -61,8 +72,13 @@ def _poi_count() -> int:
 
 
 def _shell_start(page: str, poi_count: int | None) -> None:
-    st.markdown(sidebar_html(page, poi_count), unsafe_allow_html=True)
-    st.markdown(top_bar_html(STATUS.get(page, "Ready"), active=page), unsafe_allow_html=True)
+    show_map = page != "itinerary"
+    st.markdown(aurora_background_html(show_map=show_map), unsafe_allow_html=True)
+    st.markdown(top_nav_html(page, poi_count), unsafe_allow_html=True)
+
+
+def _resolve_start(label: str) -> dict:
+    return _START_BY_LABEL.get(label, _START_BY_LABEL[_default_start_label()])
 
 
 def render_home() -> None:
@@ -78,9 +94,34 @@ def render_plan(poi_count: int) -> None:
 
     st.markdown(hero_plan(), unsafe_allow_html=True)
 
-    st.markdown('<div style="padding:0 1.5rem 2rem;">', unsafe_allow_html=True)
+    default_label = st.session_state.get("start_label", _default_start_label())
+    if default_label not in _START_LABELS:
+        default_label = _default_start_label()
+    default_idx = _START_LABELS.index(default_label)
+
     st.markdown('<div class="glass-panel form-panel">', unsafe_allow_html=True)
-    st.markdown('<div class="shine-line"></div>', unsafe_allow_html=True)
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown('<span class="field-label">Region</span>', unsafe_allow_html=True)
+        st.markdown(
+            '<span class="preview-chip preview-chip-active">Delhi NCR</span>',
+            unsafe_allow_html=True,
+        )
+        start_label = st.selectbox(
+            "Starting location",
+            _START_LABELS,
+            index=default_idx,
+            help="Route begins at a landmark within Delhi NCR only.",
+        )
+    with col_b:
+        duration = st.pills(
+            "Travel Duration",
+            ["4h", "8h", "1d"],
+            default="8h",
+            selection_mode="single",
+            key="pill_duration",
+        )
 
     budget = st.pills(
         "Estimated Budget",
@@ -90,37 +131,36 @@ def render_plan(poi_count: int) -> None:
         key="pill_budget",
     )
     interests = st.pills(
-        "Primary Interests",
+        "Interests",
         ["food", "history", "nature", "nightlife"],
         default=["history", "nature"],
         selection_mode="multi",
         key="pill_interests",
     )
-    duration = st.pills(
-        "Travel Duration",
-        ["4h", "8h", "1d"],
-        default="8h",
-        selection_mode="single",
-        key="pill_duration",
-    )
 
     use_ai = st.toggle("✨ Enhance with AI (Groq) — real-time tips per stop", value=False)
-    st.caption(f"{poi_count:,} places in database")
+    st.caption(f"{poi_count:,} places in database · starting near {start_label}")
 
-    if st.button("⚡ Generate My Trip", type="primary", use_container_width=True):
+    if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
         if not interests:
             st.error("Select at least one interest.")
         else:
+            start = _resolve_start(start_label)
             try:
                 body = ItineraryGenerateRequest(
                     budget=budget or "medium",
                     interests=list(interests),
                     duration=duration or "8h",
+                    start_lat=float(start["lat"]),
+                    start_lon=float(start["lon"]),
+                    start_label=str(start["label"]),
                 )
             except ValueError as exc:
                 st.error(str(exc))
             else:
-                with st.spinner("AI Navigator processing…" + (" (Groq tips)" if use_ai else "")):
+                with st.spinner(
+                    "Crafting your expedition…" + (" (Groq tips)" if use_ai else "")
+                ):
                     try:
                         with get_session_factory()() as db:
                             if use_ai:
@@ -135,16 +175,17 @@ def render_plan(poi_count: int) -> None:
                         st.session_state["itinerary"] = result.model_dump()
                         st.session_state["use_ai"] = use_ai
                         st.session_state["last_interests"] = list(interests)
+                        st.session_state["start_label"] = start_label
                         _go("itinerary")
 
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_itinerary() -> None:
     data = st.session_state.get("itinerary")
     if not data:
         st.markdown(empty_itinerary_html(), unsafe_allow_html=True)
-        if st.button("＋ New Expedition", type="primary"):
+        if st.button("✨ Generate AI Itinerary", type="primary"):
             _go("plan")
         return
 
@@ -181,6 +222,13 @@ def render_itinerary() -> None:
                 {"lat": [s["lat"] for s in stops], "lon": [s["lon"] for s in stops]}
             )
             st.map(map_df, latitude="lat", longitude="lon", zoom=11, height=280)
+            gmaps_url = google_maps_route_url(data)
+            if gmaps_url:
+                st.markdown(
+                    f'<a class="gmaps-link" href="{gmaps_url}" target="_blank" '
+                    f'rel="noopener">📍 Open full route in Google Maps</a>',
+                    unsafe_allow_html=True,
+                )
             st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown(stats_panel_html(meta, summary), unsafe_allow_html=True)
@@ -207,10 +255,19 @@ def _regenerate_itinerary() -> None:
         return
 
     meta = prev.get("meta", {})
+    start_label = st.session_state.get("start_label", _default_start_label())
+    start = _resolve_start(start_label)
+    sp = meta.get("start_point")
+    if sp and sp.get("label"):
+        start = _START_BY_LABEL.get(str(sp["label"]), start)
+
     body = ItineraryGenerateRequest(
         budget=meta.get("budget_tier", "medium"),
         interests=st.session_state.get("last_interests", ["history", "nature"]),
         duration=_duration_key(meta.get("duration_minutes", 480)),
+        start_lat=float(start.get("lat", sp["lat"] if sp else DEFAULT_START["lat"])),
+        start_lon=float(start.get("lon", sp["lon"] if sp else DEFAULT_START["lon"])),
+        start_label=str(start.get("label", sp.get("label") if sp else DEFAULT_START["label"])),
     )
     use_ai = st.session_state.get("use_ai", False)
 

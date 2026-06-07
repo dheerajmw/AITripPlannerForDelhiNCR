@@ -2,9 +2,10 @@
 
 from fastapi import APIRouter
 
-from app.api.v1 import health, itinerary, locations, pois, route
+from app.api.v1 import analytics, health, itinerary, locations, pois, route
 
 api_router = APIRouter()
+api_router.include_router(analytics.router)
 api_router.include_router(health.router)
 api_router.include_router(locations.router)
 api_router.include_router(pois.router)

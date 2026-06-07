@@ -21,6 +21,7 @@ frontend/.env.local
 # Data
 data/*.db
 data/*.sqlite
+data/analytics_summary.json
 
 # Next.js
 frontend/.next/
