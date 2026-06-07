@@ -3,10 +3,16 @@
 from __future__ import annotations
 
 import html
+from textwrap import dedent
 from typing import Any
 from urllib.parse import urlencode
 
 from trippilot_deploy.theme import HERO_IMAGE
+
+
+def _html(fragment: str) -> str:
+    """Strip indentation so Streamlit markdown does not treat HTML as a code block."""
+    return dedent(fragment).strip()
 
 def aurora_background_html(*, show_map: bool = True) -> str:
     map_div = ""
@@ -21,21 +27,21 @@ def aurora_background_html(*, show_map: bool = True) -> str:
     </div></div>"""
 
 
-NAV_LABELS = ("Explore", "Generate Trip", "Saved Trips")
+NAV_LABELS = ("Explore", "Generate Trip", "Your Itinerary")
 NAV_PAGES = ("home", "plan", "itinerary")
 NAV_LABEL_TO_PAGE = dict(zip(NAV_LABELS, NAV_PAGES))
 NAV_PAGE_TO_LABEL = dict(zip(NAV_PAGES, NAV_LABELS))
 
 
 def nav_brand_html() -> str:
-    return """
+    return _html("""
     <div class="tp-nav-brand">
       <span class="tp-brand-icon-wrap" aria-hidden="true">
         <span class="tp-brand-icon">✈</span>
       </span>
       <span class="tp-brand-text">Trip Pilot</span>
     </div>
-    """
+    """)
 
 
 def nav_actions_html(poi_count: int | None = None, *, api_ready: bool = True) -> str:
@@ -61,7 +67,7 @@ def nav_actions_html(poi_count: int | None = None, *, api_ready: bool = True) ->
 
 
 def home_page_html(city: str = "Delhi NCR") -> str:
-    return f"""
+    return _html(f"""
     <div class="tp-page-shell">
       <div class="hero-center">
         <div class="hero-orb"><span class="hero-orb-glow"></span>✨</div>
@@ -75,22 +81,22 @@ def home_page_html(city: str = "Delhi NCR") -> str:
       {bento_grid_html()}
       <p class="footer-note">Estimates only · MVP · No bookings or tickets</p>
     </div>
-    """
+    """)
 
 
 def hero_plan() -> str:
-    return """
+    return _html("""
     <div class="hero-plan-compact">
       <div class="hero-orb hero-orb-sm" aria-hidden="true">✨</div>
       <h1>Generate Your <span class="aurora-text">Expedition</span></h1>
       <p>Tailor your Delhi NCR experience with AI-driven precision. Every route is optimized
       for walking times and your interests.</p>
     </div>
-    """
+    """)
 
 
 def quick_plan_card() -> str:
-    return """
+    return _html("""
     <div class="glass-panel quick-plan-card">
       <p class="preview-note">Example trip preferences · customize on the next step</p>
       <div class="quick-plan-grid">
@@ -132,11 +138,11 @@ def quick_plan_card() -> str:
         </div>
       </div>
     </div>
-    """
+    """)
 
 
 def bento_grid_html() -> str:
-    return """
+    return _html("""
     <div class="bento-grid">
       <div class="glass-card bento-card bento-wide">
         <span class="bento-tag">Exclusive Access</span>
@@ -167,7 +173,7 @@ def bento_grid_html() -> str:
         <p>Immersive theater — AI recommends tickets.</p>
       </div>
     </div>
-    """
+    """)
 
 
 def google_maps_route_url(data: dict[str, Any]) -> str | None:
@@ -205,7 +211,7 @@ def warnings_banner_html(warnings: list[str], *, fallback_reason: str | None = N
     if not items:
         return ""
     lis = "".join(f"<li>{item}</li>" for item in items)
-    return f"""
+    return _html(f"""
     <div class="tp-warnings-banner" role="status">
       <span class="tp-warnings-icon" aria-hidden="true">⚠</span>
       <div>
@@ -213,7 +219,7 @@ def warnings_banner_html(warnings: list[str], *, fallback_reason: str | None = N
         <ul class="tp-warnings-list">{lis}</ul>
       </div>
     </div>
-    """
+    """)
 
 
 def expedition_hero_html(meta: dict, summary: dict) -> str:
@@ -231,7 +237,7 @@ def expedition_hero_html(meta: dict, summary: dict) -> str:
         status = "AI enhanced" if meta.get("ai_status") == "success" else "AI fallback"
         ai_pill = f'<span class="expedition-ai-pill">✨ {status}</span>'
 
-    return f"""
+    return _html(f"""
     <div class="itinerary-shell">
       <div class="expedition-hero glass-panel">
         <div class="expedition-hero-top">
@@ -265,7 +271,7 @@ def expedition_hero_html(meta: dict, summary: dict) -> str:
         {_weather_line_html(meta)}
       </div>
     </div>
-    """
+    """)
 
 
 def _plan_date_suffix(meta: dict) -> str:
@@ -291,12 +297,8 @@ def itinerary_header_block(meta: dict, summary: dict) -> str:
     return expedition_hero_html(meta, summary)
 
 
-def map_shell_open() -> str:
-    return '<div class="map-shell"><p class="map-label">Live Route</p>'
-
-
-def map_shell_close() -> str:
-    return "</div>"
+def map_route_marker_html() -> str:
+    return '<div class="map-route-marker" aria-hidden="true"></div>'
 
 
 def stats_panel_html(meta: dict, summary: dict) -> str:
@@ -313,7 +315,7 @@ def stats_panel_html(meta: dict, summary: dict) -> str:
             f'<p class="stat-tip">{html.escape(str(weather.get("description", "")))} '
             f"(~{temp}°C){suffix}</p></div>"
         )
-    return f"""
+    return _html(f"""
     <div class="glass-panel stats-panel">
       <h3>Pilot intelligence</h3>
       <div class="stats-grid">
@@ -333,7 +335,7 @@ def stats_panel_html(meta: dict, summary: dict) -> str:
         </div>
       </div>
     </div>
-    """
+    """)
 
 
 def stop_card_html(stop: dict) -> str:
@@ -351,7 +353,7 @@ def stop_card_html(stop: dict) -> str:
     notes = ""
     if stop.get("notes"):
         notes = f'<div class="stop-notes">✨ {html.escape(stop["notes"])}</div>'
-    return f"""
+    return _html(f"""
     <div class="stop-card">
       <span class="stop-time">{html.escape(stop.get("arrive_at", ""))} – {html.escape(stop.get("depart_at", ""))}</span>
       <span class="stop-cat">{html.escape(stop.get("category", ""))}</span>
@@ -361,14 +363,14 @@ def stop_card_html(stop: dict) -> str:
       </div>
       {notes}
     </div>
-    """
+    """)
 
 
 def empty_itinerary_html() -> str:
-    return """
+    return _html("""
     <div class="glass-panel empty-state">
       <p class="empty-icon">📍</p>
-      <h2>No saved trips yet</h2>
-      <p>Generate a plan to see your expedition itinerary.</p>
+      <h2>No itinerary yet</h2>
+      <p>Generate a plan to see your expedition timeline and route.</p>
     </div>
-    """
+    """)

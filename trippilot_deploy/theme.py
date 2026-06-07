@@ -714,25 +714,12 @@ section.main [data-testid="stElementContainer"]:has(.tp-aurora-host) {
 .stat-tip-title { font-size: 0.85rem; font-weight: 700; color: #d0bcff !important; margin: 0 0 0.25rem; }
 .stat-tip { font-size: 0.75rem; color: #cbc3d7 !important; margin: 0; line-height: 1.5; }
 
-.map-shell {
-    margin-bottom: 1rem;
-    border-radius: 1rem;
-    border: 1px solid rgba(73, 68, 84, 0.4);
-    background: #1b2029;
-    overflow: hidden;
-}
-.map-label {
-    padding: 0.65rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #d0bcff;
-    margin: 0;
-}
-.map-shell [data-testid="stDeckGlJsonChart"] {
+.map-route-marker,
+.home-cta-marker {
+    display: none !important;
+    height: 0 !important;
     margin: 0 !important;
+    padding: 0 !important;
 }
 .form-field-block {
     margin-bottom: 0.25rem;
@@ -831,13 +818,14 @@ section.main [data-testid="stElementContainer"]:has(.tp-aurora-host) {
 }
 [data-testid="stSelectbox"] label { color: #d0bcff !important; font-weight: 600 !important; }
 
-.home-cta-row {
+section.main [data-testid="stElementContainer"]:has(.home-cta-marker) + [data-testid="stHorizontalBlock"] {
     max-width: 36rem;
-    margin: -0.5rem auto 2.5rem;
+    margin: -0.5rem auto 2.5rem !important;
+    width: 100%;
     position: relative;
     z-index: 2;
 }
-.home-cta-row .stButton > button {
+section.main [data-testid="stElementContainer"]:has(.home-cta-marker) + [data-testid="stHorizontalBlock"] [data-testid="stButton"] > button {
     min-height: 3.25rem !important;
     font-size: 1rem !important;
 }
@@ -913,6 +901,35 @@ section.main .itinerary-shell ~ [data-testid="stHorizontalBlock"] {
 }
 section.main .itinerary-shell ~ [data-testid="stHorizontalBlock"] [data-testid="column"] {
     align-self: stretch !important;
+}
+section.main [data-testid="stElementContainer"]:has(.map-route-marker) + [data-testid="stElementContainer"] {
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(73, 68, 84, 0.4);
+    background: #1b2029;
+    overflow: hidden;
+    position: relative;
+    padding-top: 2.35rem;
+}
+section.main [data-testid="stElementContainer"]:has(.map-route-marker) + [data-testid="stElementContainer"]::before {
+    content: "Live Route";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #d0bcff;
+    background: #1b2029;
+    z-index: 1;
+}
+section.main [data-testid="stElementContainer"]:has(.map-route-marker) + [data-testid="stElementContainer"] [data-testid="stDeckGlJsonChart"],
+section.main [data-testid="stElementContainer"]:has(.map-route-marker) + [data-testid="stElementContainer"] iframe {
+    margin: 0 !important;
 }
 section.main .itinerary-actions-marker ~ [data-testid="stHorizontalBlock"] {
     max-width: 72rem;

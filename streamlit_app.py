@@ -33,8 +33,7 @@ from trippilot_deploy.ui import (
     hero_plan,
     home_page_html,
     itinerary_header_block,
-    map_shell_close,
-    map_shell_open,
+    map_route_marker_html,
     nav_actions_html,
     nav_brand_html,
     stats_panel_html,
@@ -68,6 +67,8 @@ def _current_page() -> str:
 
 def _go(page: str) -> None:
     st.session_state["page"] = page
+    if page in NAV_PAGE_TO_LABEL:
+        st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL[page]
     st.rerun()
 
 
@@ -159,12 +160,11 @@ def _resolve_start(label: str) -> dict:
 
 def render_home() -> None:
     st.markdown(home_page_html(), unsafe_allow_html=True)
-    st.markdown('<div class="home-cta-row">', unsafe_allow_html=True)
+    st.markdown('<div class="home-cta-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
     _, center, _ = st.columns([1, 1.4, 1])
     with center:
         if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
             _go("plan")
-    st.markdown("</div>", unsafe_allow_html=True)
 
 
 def render_plan(poi_count: int) -> None:
@@ -367,7 +367,7 @@ def render_itinerary() -> None:
         if stops:
             import pandas as pd
 
-            st.markdown(map_shell_open(), unsafe_allow_html=True)
+            st.markdown(map_route_marker_html(), unsafe_allow_html=True)
             map_df = pd.DataFrame(
                 {"lat": [s["lat"] for s in stops], "lon": [s["lon"] for s in stops]}
             )
@@ -379,7 +379,6 @@ def render_itinerary() -> None:
                     f'rel="noopener">📍 Open full route in Google Maps</a>',
                     unsafe_allow_html=True,
                 )
-            st.markdown(map_shell_close(), unsafe_allow_html=True)
 
         st.markdown(stats_panel_html(meta, summary), unsafe_allow_html=True)
 
