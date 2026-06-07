@@ -14,7 +14,7 @@ from trippilot_deploy.bootstrap import configure_import_path, init_backend
 configure_import_path()
 
 from app.config import DEFAULT_START, NCR_START_LOCATIONS
-from trippilot_deploy.theme import inject_theme
+from trippilot_deploy.theme import inject_plan_form_styles, inject_theme
 from trippilot_deploy.ui import (
     aurora_background_html,
     empty_itinerary_html,
@@ -72,7 +72,7 @@ def _poi_count() -> int:
 
 
 def _shell_start(page: str, poi_count: int | None) -> None:
-    show_map = page != "itinerary"
+    show_map = page == "home"
     st.markdown(aurora_background_html(show_map=show_map), unsafe_allow_html=True)
     st.markdown(top_nav_html(page, poi_count), unsafe_allow_html=True)
 
@@ -92,6 +92,7 @@ def render_plan(poi_count: int) -> None:
     from app.services.planner.orchestrator import PlannerOrchestrator
     from app.db.session import get_session_factory
 
+    inject_plan_form_styles()
     st.markdown(hero_plan(), unsafe_allow_html=True)
 
     default_label = st.session_state.get("start_label", _default_start_label())
@@ -99,86 +100,95 @@ def render_plan(poi_count: int) -> None:
         default_label = _default_start_label()
     default_idx = _START_LABELS.index(default_label)
 
-    st.markdown('<div class="glass-panel form-panel">', unsafe_allow_html=True)
+    with st.container(border=True):
+        col_left, col_right = st.columns(2, gap="large")
 
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.markdown('<span class="field-label">Region</span>', unsafe_allow_html=True)
-        st.markdown(
-            '<span class="preview-chip preview-chip-active">Delhi NCR</span>',
-            unsafe_allow_html=True,
+        with col_left:
+            st.markdown('<span class="section-label">Region</span>', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="region-chip-row"><span class="preview-chip preview-chip-active">'
+                "📍 Delhi NCR</span></div>",
+                unsafe_allow_html=True,
+            )
+
+            st.markdown(
+                '<span class="section-label">Starting location</span>',
+                unsafe_allow_html=True,
+            )
+            start_label = st.selectbox(
+                "Starting location",
+                _START_LABELS,
+                index=default_idx,
+                label_visibility="collapsed",
+                help="Route begins at a landmark within Delhi NCR only.",
+            )
+
+            duration = st.pills(
+                "Travel Duration",
+                ["4h", "8h", "1d"],
+                default="8h",
+                selection_mode="single",
+                key="pill_duration",
+            )
+
+        with col_right:
+            budget = st.pills(
+                "Estimated Budget",
+                ["low", "medium", "high"],
+                default="medium",
+                selection_mode="single",
+                key="pill_budget",
+            )
+            interests = st.pills(
+                "Interests",
+                ["food", "history", "nature", "nightlife"],
+                default=["history", "nature"],
+                selection_mode="multi",
+                key="pill_interests",
+            )
+
+        use_ai = st.toggle(
+            "Enhance with AI (Groq) — real-time tips per stop",
+            value=st.session_state.get("use_ai", False),
         )
-        start_label = st.selectbox(
-            "Starting location",
-            _START_LABELS,
-            index=default_idx,
-            help="Route begins at a landmark within Delhi NCR only.",
-        )
-    with col_b:
-        duration = st.pills(
-            "Travel Duration",
-            ["4h", "8h", "1d"],
-            default="8h",
-            selection_mode="single",
-            key="pill_duration",
-        )
+        st.caption(f"{poi_count:,} places in database · starting near {start_label}")
 
-    budget = st.pills(
-        "Estimated Budget",
-        ["low", "medium", "high"],
-        default="medium",
-        selection_mode="single",
-        key="pill_budget",
-    )
-    interests = st.pills(
-        "Interests",
-        ["food", "history", "nature", "nightlife"],
-        default=["history", "nature"],
-        selection_mode="multi",
-        key="pill_interests",
-    )
-
-    use_ai = st.toggle("✨ Enhance with AI (Groq) — real-time tips per stop", value=False)
-    st.caption(f"{poi_count:,} places in database · starting near {start_label}")
-
-    if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
-        if not interests:
-            st.error("Select at least one interest.")
-        else:
-            start = _resolve_start(start_label)
-            try:
-                body = ItineraryGenerateRequest(
-                    budget=budget or "medium",
-                    interests=list(interests),
-                    duration=duration or "8h",
-                    start_lat=float(start["lat"]),
-                    start_lon=float(start["lon"]),
-                    start_label=str(start["label"]),
-                )
-            except ValueError as exc:
-                st.error(str(exc))
+        if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
+            if not interests:
+                st.error("Select at least one interest.")
             else:
-                with st.spinner(
-                    "Crafting your expedition…" + (" (Groq tips)" if use_ai else "")
-                ):
-                    try:
-                        with get_session_factory()() as db:
-                            if use_ai:
-                                result = AIPlannerService(db).generate(body)
-                            else:
-                                result = PlannerOrchestrator(db).generate(body)
-                    except AppError as exc:
-                        st.error(exc.message)
-                    except Exception as exc:
-                        st.error(f"Could not generate itinerary: {exc}")
-                    else:
-                        st.session_state["itinerary"] = result.model_dump()
-                        st.session_state["use_ai"] = use_ai
-                        st.session_state["last_interests"] = list(interests)
-                        st.session_state["start_label"] = start_label
-                        _go("itinerary")
-
-    st.markdown("</div>", unsafe_allow_html=True)
+                start = _resolve_start(start_label)
+                try:
+                    body = ItineraryGenerateRequest(
+                        budget=budget or "medium",
+                        interests=list(interests),
+                        duration=duration or "8h",
+                        start_lat=float(start["lat"]),
+                        start_lon=float(start["lon"]),
+                        start_label=str(start["label"]),
+                    )
+                except ValueError as exc:
+                    st.error(str(exc))
+                else:
+                    with st.spinner(
+                        "Crafting your expedition…" + (" (Groq tips)" if use_ai else "")
+                    ):
+                        try:
+                            with get_session_factory()() as db:
+                                if use_ai:
+                                    result = AIPlannerService(db).generate(body)
+                                else:
+                                    result = PlannerOrchestrator(db).generate(body)
+                        except AppError as exc:
+                            st.error(exc.message)
+                        except Exception as exc:
+                            st.error(f"Could not generate itinerary: {exc}")
+                        else:
+                            st.session_state["itinerary"] = result.model_dump()
+                            st.session_state["use_ai"] = use_ai
+                            st.session_state["last_interests"] = list(interests)
+                            st.session_state["start_label"] = start_label
+                            _go("itinerary")
 
 
 def render_itinerary() -> None:

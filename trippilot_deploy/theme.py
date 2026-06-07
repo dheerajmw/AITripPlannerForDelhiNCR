@@ -244,23 +244,37 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     margin-right: auto;
 }
 
-.hero-plan {
+.hero-plan-compact {
     position: relative;
     text-align: center;
-    padding: 2rem 1rem 2.5rem;
+    padding: 1rem 1rem 1.5rem;
     z-index: 1;
+    max-width: 48rem;
+    margin: 0 auto;
 }
-.hero-plan h1 {
+.hero-orb-sm {
+    width: 5rem !important;
+    height: 5rem !important;
+    min-width: 5rem;
+    min-height: 5rem;
+    max-width: 5rem;
+    max-height: 5rem;
+    margin: 0 auto 1rem !important;
+    font-size: 2rem !important;
+    flex-shrink: 0;
+}
+.hero-plan-compact h1 {
     font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 800;
     margin: 0;
+    color: #dfe2f0 !important;
 }
-.hero-plan p {
+.hero-plan-compact p {
     color: #cbc3d7 !important;
     margin-top: 0.75rem;
-    max-width: 36rem;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-shadow: 0 1px 12px rgba(7, 11, 20, 0.85);
 }
 
 /* Glass */
@@ -399,10 +413,8 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 .stat-fill.secondary { background: #ddb7ff; box-shadow: 0 0 8px #ddb7ff; }
 .stat-fill.error { background: #ffb4ab; box-shadow: 0 0 8px #ffb4ab; }
 
-.form-panel {
-    max-width: 56rem;
-    margin: 0 auto;
-    padding: 2rem 2.5rem;
+.form-section-gap {
+    margin-bottom: 1.25rem;
 }
 
 .summary-bar {
@@ -589,3 +601,48 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 
 def inject_theme() -> None:
     st.markdown(f"<style>{DESIGN_CSS}</style>", unsafe_allow_html=True)
+
+
+PLAN_FORM_CSS = """
+section.main [data-testid="stVerticalBlockBorderWrapper"] {
+    background: rgba(15, 19, 29, 0.72) !important;
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(203, 195, 215, 0.12) !important;
+    border-radius: 2rem !important;
+    padding: 1.75rem 2rem 2rem !important;
+    max-width: 56rem;
+    margin: 0 auto 2rem !important;
+    box-shadow: 0 25px 50px rgba(160, 120, 255, 0.08);
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stWidgetLabel"] p {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    color: #d0bcff !important;
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"] > div > div {
+    background: rgba(49, 53, 63, 0.6) !important;
+    border-color: rgba(73, 68, 84, 0.5) !important;
+    border-radius: 0.75rem !important;
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button {
+    min-height: 2.5rem;
+    border-radius: 0.75rem !important;
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button[aria-pressed="true"] {
+    background: rgba(160, 120, 255, 0.25) !important;
+    border-color: rgba(208, 188, 255, 0.45) !important;
+    color: #d0bcff !important;
+    box-shadow: 0 0 12px rgba(160, 120, 255, 0.2);
+}
+section.main [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stToggle"] {
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(73, 68, 84, 0.35);
+    margin-top: 0.5rem;
+}
+"""
+
+
+def inject_plan_form_styles() -> None:
+    st.markdown(f"<style>{PLAN_FORM_CSS}</style>", unsafe_allow_html=True)

@@ -84,10 +84,8 @@ def home_page_html(city: str = "Delhi NCR") -> str:
 
 def hero_plan() -> str:
     return """
-    <div class="hero-plan">
-      <div class="hero-orb" style="width:5rem;height:5rem;font-size:2rem;margin-bottom:1rem;">
-        <span class="hero-orb-glow"></span>✨
-      </div>
+    <div class="hero-plan-compact">
+      <div class="hero-orb hero-orb-sm" aria-hidden="true">✨</div>
       <h1>Generate Your <span class="aurora-text">Expedition</span></h1>
       <p>Tailor your Delhi NCR experience with AI-driven precision. Every route is optimized
       for walking times and your interests.</p>
