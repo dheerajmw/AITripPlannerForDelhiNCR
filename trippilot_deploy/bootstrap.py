@@ -45,6 +45,7 @@ def apply_secrets_to_env() -> None:
         "POI_DB_DOWNLOAD_URL": "POI_DB_DOWNLOAD_URL",
         "DATABASE_URL": "DATABASE_URL",
         "OPENWEATHER_API_KEY": "OPENWEATHER_API_KEY",
+        "GOOGLE_MAPS_API_KEY": "GOOGLE_MAPS_API_KEY",
     }
     for secret_key, env_key in mapping.items():
         if secret_key in secrets:

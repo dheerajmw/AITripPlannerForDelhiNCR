@@ -22,6 +22,7 @@ from app.models.itinerary import (
 from app.models.route import RouteOptimizeRequest
 from app.services.planner.cost import CostEstimator
 from app.services.planner.filter import PreferenceFilter
+from app.services.planner.maps_filter import MapsEligibilityFilter
 from app.services.planner.scheduler import ScheduleBuilder
 from app.services.planner.selector import CandidateSelector
 from app.services.route_service import RouteService
@@ -34,6 +35,7 @@ class PlannerOrchestrator:
         self._repo = POIRepository(session)
         self._route = RouteService(session)
         self._filter = PreferenceFilter()
+        self._maps = MapsEligibilityFilter()
         self._selector = CandidateSelector()
         self._scheduler = ScheduleBuilder()
         self._cost = CostEstimator()
@@ -64,6 +66,15 @@ class PlannerOrchestrator:
                 details={"budget": request.budget, "interests": list(request.interests)},
             )
 
+        filtered, maps_warnings = self._maps.apply(filtered)
+        warnings.extend(maps_warnings)
+        if not filtered:
+            raise UnprocessablePlanError(
+                "No Google Maps–listed places match your preferences in Delhi NCR. "
+                "Try different interests or add GOOGLE_MAPS_API_KEY for stricter verification.",
+                details={"interests": list(request.interests), "budget": request.budget},
+            )
+
         if weather_summary and weather_summary.applied:
             filtered = self._weather.rank_candidates(filtered, weather_summary)
             if not any(p.category in {"park", "nature"} for p in filtered) and weather_summary.bias == "rain":
@@ -72,6 +83,15 @@ class PlannerOrchestrator:
                 )
 
         shortlist = self._selector.select(filtered)
+        shortlist, shortlist_warnings = self._maps.ensure_shortlist(shortlist, filtered)
+        warnings.extend(shortlist_warnings)
+        if len(shortlist) < MIN_ITINERARY_STOPS:
+            raise UnprocessablePlanError(
+                "Not enough Google Maps–verified stops for this trip. "
+                "Try different interests or a longer duration.",
+                details={"verified_stops": len(shortlist)},
+            )
+
         ordered_pois, route_warnings, routing_source, leg_minutes = self._fit_route(
             shortlist,
             start=start,

@@ -67,6 +67,11 @@ class Settings(BaseSettings):
         description="OpenWeatherMap API base URL",
     )
 
+    google_maps_api_key: Optional[str] = Field(
+        default=None,
+        description="Google Maps Platform key for Places verification (optional)",
+    )
+
     @property
     def data_dir(self) -> Path:
         return _REPO_ROOT / "data"

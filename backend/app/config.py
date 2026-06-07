@@ -148,6 +148,9 @@ INDOOR_POI_CATEGORIES: FrozenSet[str] = frozenset(
     }
 )
 WEATHER_PLANNING_TZ = "Asia/Kolkata"
+
+# Google Maps — only named / verified POIs are used in itineraries
+MAPS_VERIFY_MAX_DISTANCE_M = 1500
 WEATHER_RAIN_CONDITIONS: FrozenSet[str] = frozenset({"Rain", "Drizzle", "Thunderstorm"})
 WEATHER_HEAT_THRESHOLD_C = 40.0
 WEATHER_OUTDOOR_VISIT_FACTOR = 0.75

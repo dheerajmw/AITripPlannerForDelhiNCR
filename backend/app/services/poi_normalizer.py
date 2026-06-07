@@ -127,6 +127,8 @@ def normalize_element(element: Dict[str, Any]) -> Optional[POIRecord]:
 
     category, interest_tags = classify_category(tags)
     name = display_name(tags, category)
+    if name.startswith("Unnamed "):
+        return None
     opening_hours = tags.get("opening_hours")
     visit_min = DEFAULT_VISIT_MINUTES_BY_CATEGORY.get(category, 45)
 
