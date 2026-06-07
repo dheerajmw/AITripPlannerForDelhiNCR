@@ -14,13 +14,11 @@ def aurora_background_html(*, show_map: bool = True) -> str:
         map_div = (
             f'<div class="tp-aurora-map" style="background-image:url(\'{HERO_IMAGE}\')"></div>'
         )
-    return f"""
-    <div class="tp-aurora" aria-hidden="true">
+    return f"""<div class="tp-aurora-host" aria-hidden="true"><div class="tp-aurora">
       <div class="tp-aurora-blob-1"></div>
       <div class="tp-aurora-blob-2"></div>
       {map_div}
-    </div>
-    """
+    </div></div>"""
 
 
 NAV_LABELS = ("Explore", "Generate Trip", "Saved Trips")

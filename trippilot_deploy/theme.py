@@ -35,22 +35,49 @@ html, body, [class*="css"] {
     background: #070b14 !important;
 }
 
-#MainMenu, footer, header[data-testid="stHeader"] {
+#MainMenu, footer,
+header[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"] {
+    display: none !important;
     visibility: hidden !important;
     height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
 }
 
 [data-testid="stSidebar"] { display: none !important; }
+
+.stApp {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+[data-testid="stAppViewContainer"] {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
 
 [data-testid="stAppViewContainer"] > section.main {
     background: transparent !important;
 }
 
-section.main > div.block-container {
+section.main > div.block-container,
+[data-testid="stMainBlockContainer"] {
     max-width: 80rem !important;
-    padding: 1.25rem 1.25rem 5rem !important;
+    padding: 0.5rem 1.25rem 5rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
+}
+
+/* First vertical stack — no extra gap above header */
+section.main > div.block-container > [data-testid="stVerticalBlock"],
+[data-testid="stMainBlockContainer"] > [data-testid="stVerticalBlock"] {
+    gap: 0.5rem !important;
 }
 
 /* Global page alignment */
@@ -92,7 +119,25 @@ section.main [data-testid="stCaptionContainer"] {
 h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
 .stCaption { color: #cbc3d7 !important; }
 
-/* Aurora backdrop */
+/* Aurora backdrop — host collapses so markdown row does not reserve height */
+.tp-aurora-host {
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    line-height: 0 !important;
+    border: none !important;
+}
+[data-testid="stMarkdownContainer"]:has(.tp-aurora-host),
+section.main [data-testid="stElementContainer"]:has(.tp-aurora-host) {
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    line-height: 0 !important;
+}
 .tp-aurora {
     pointer-events: none;
     position: fixed;
@@ -790,6 +835,14 @@ h1, h2, h3, h4, p, label, .stMarkdown { color: #dfe2f0; }
     margin: 0 !important;
     padding: 0 !important;
 }
+[data-testid="stMarkdownContainer"]:has(.tp-app-header-marker),
+section.main [data-testid="stElementContainer"]:has(.tp-app-header-marker) {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
 """
 
 
@@ -881,7 +934,7 @@ def inject_itinerary_layout_styles() -> None:
 HEADER_SHELL_CSS = """
 section.main .tp-app-header-marker + [data-testid="stVerticalBlockBorderWrapper"] {
     position: sticky !important;
-    top: 0.5rem;
+    top: 0;
     z-index: 100;
     margin-bottom: 1.25rem !important;
     border-radius: 9999px !important;
