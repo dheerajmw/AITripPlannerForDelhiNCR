@@ -7,6 +7,8 @@ Deploy with main file: streamlit_app.py
 
 from __future__ import annotations
 
+import html
+
 import streamlit as st
 
 from trippilot_deploy.bootstrap import configure_import_path, init_backend
@@ -185,14 +187,13 @@ def render_plan(poi_count: int) -> None:
 
     st.markdown('<div class="tp-plan-form-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
     with st.container(border=True):
-        col_left, col_right = st.columns(2, gap="large")
+        col_left, col_right = st.columns(2, gap="medium")
 
         with col_left:
             st.markdown(
                 '<div class="form-field-block">'
-                '<span class="section-label">Region</span>'
-                '<div class="region-chip-row"><span class="preview-chip preview-chip-active">'
-                "📍 Delhi NCR</span></div></div>",
+                '<span class="section-label">📍 Region</span>'
+                '<div class="plan-region-display">Delhi NCR</div></div>',
                 unsafe_allow_html=True,
             )
 
@@ -212,12 +213,12 @@ def render_plan(poi_count: int) -> None:
             from datetime import date as date_cls
 
             st.markdown(
-                '<div class="form-field-block">'
-                '<span class="section-label">Trip date</span></div>',
+                '<div class="form-field-block plan-trip-date-block">'
+                '<span class="section-label">☀️ Trip date</span></div>',
                 unsafe_allow_html=True,
             )
             use_weather = st.toggle(
-                "Use weather-aware recommendations",
+                "Weather-aware recommendations",
                 value=st.session_state.get("use_weather", True),
                 help="Requires OPENWEATHER_API_KEY on the server.",
             )
@@ -229,10 +230,12 @@ def render_plan(poi_count: int) -> None:
                     label_visibility="collapsed",
                     help="Forecast adjusts indoor/outdoor stops for the next 5 days.",
                 )
+                st.caption("Forecast adjusts indoor/outdoor stops for the next 5 days.")
 
             st.markdown(
                 '<div class="form-field-block">'
-                '<span class="section-label">Travel duration</span></div>',
+                '<span class="section-label">Travel duration</span></div>'
+                '<div class="plan-field-duration-marker" aria-hidden="true"></div>',
                 unsafe_allow_html=True,
             )
             duration = st.pills(
@@ -247,7 +250,8 @@ def render_plan(poi_count: int) -> None:
         with col_right:
             st.markdown(
                 '<div class="form-field-block">'
-                '<span class="section-label">Estimated budget</span></div>',
+                '<span class="section-label">💰 Estimated budget</span></div>'
+                '<div class="plan-field-budget-marker" aria-hidden="true"></div>',
                 unsafe_allow_html=True,
             )
             budget = st.pills(
@@ -260,7 +264,8 @@ def render_plan(poi_count: int) -> None:
             )
             st.markdown(
                 '<div class="form-field-block">'
-                '<span class="section-label">Interests</span></div>',
+                '<span class="section-label">Interests</span></div>'
+                '<div class="plan-field-interests-marker" aria-hidden="true"></div>',
                 unsafe_allow_html=True,
             )
             interests = st.pills(
@@ -272,11 +277,16 @@ def render_plan(poi_count: int) -> None:
                 label_visibility="collapsed",
             )
 
+        st.markdown('<div class="plan-form-footer-marker" aria-hidden="true"></div>', unsafe_allow_html=True)
         use_ai = st.toggle(
             "Enhance with AI (Groq) — real-time tips per stop",
             value=st.session_state.get("use_ai", False),
         )
-        st.caption(f"{poi_count:,} places in database · starting near {start_label}")
+        st.markdown(
+            f'<p class="plan-db-note">{poi_count:,} places in database · starting near '
+            f"{html.escape(start_label)}</p>",
+            unsafe_allow_html=True,
+        )
 
         if st.button("✨ Generate AI Itinerary", type="primary", use_container_width=True):
             if not interests:

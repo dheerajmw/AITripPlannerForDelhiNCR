@@ -735,10 +735,32 @@ section.main [data-testid="stElementContainer"]:has(.tp-aurora-host) {
     margin: 0 !important;
 }
 .form-field-block {
-    margin-bottom: 1rem;
+    margin-bottom: 0.25rem;
 }
-.region-chip-row {
-    margin-bottom: 0.75rem;
+.plan-region-display {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(49, 53, 63, 0.6);
+    border: 1px solid rgba(73, 68, 84, 0.35);
+    color: #dfe2f0 !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.plan-db-note {
+    margin: 0.75rem 0 1rem;
+    font-size: 0.8rem;
+    color: #cbc3d7 !important;
+    text-align: center;
+}
+.plan-field-duration-marker,
+.plan-field-budget-marker,
+.plan-field-interests-marker,
+.plan-form-footer-marker {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 .itinerary-actions {
     max-width: 72rem;
@@ -905,27 +927,77 @@ section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"]
     backdrop-filter: blur(16px);
     border: 1px solid rgba(203, 195, 215, 0.12) !important;
     border-radius: 2rem !important;
-    padding: 1.75rem 2rem 2rem !important;
+    padding: 1.5rem 1.25rem 1.75rem !important;
     max-width: 56rem;
     margin: 0 auto 2rem !important;
     box-shadow: 0 25px 50px rgba(160, 120, 255, 0.08);
 }
+@media (min-width: 640px) {
+    section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] {
+        padding: 2rem 2.5rem 2.25rem !important;
+    }
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stHorizontalBlock"] {
+    align-items: flex-start !important;
+    gap: 1.75rem !important;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
 section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stWidgetLabel"] p {
     font-size: 0.75rem !important;
     font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
-    color: #d0bcff !important;
+    text-transform: none !important;
+    letter-spacing: 0.02em !important;
+    color: #dfe2f0 !important;
 }
 section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"] > div > div,
 section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stDateInput"] > div > div {
     background: rgba(49, 53, 63, 0.6) !important;
     border-color: rgba(73, 68, 84, 0.5) !important;
     border-radius: 0.75rem !important;
+    min-height: 2.75rem;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"],
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stDateInput"] {
+    margin-bottom: 1.1rem;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-trip-date-block) + [data-testid="stElementContainer"] [data-testid="stToggle"] {
+    margin-bottom: 0.35rem;
+    padding: 0;
+    border: none;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-trip-date-block) ~ [data-testid="stElementContainer"] [data-testid="stDateInput"] {
+    margin-top: 0.25rem;
+    margin-bottom: 0.35rem;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stCaptionContainer"] {
+    text-align: left;
+    margin: -0.15rem 0 1rem !important;
+    font-size: 0.75rem !important;
+    color: #cbc3d7 !important;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] {
+    margin-bottom: 1.1rem;
+    width: 100%;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] > div {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    width: 100%;
 }
 section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button {
-    min-height: 2.5rem;
+    min-height: 2.6rem;
     border-radius: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: capitalize;
+    border: 1px solid rgba(73, 68, 84, 0.45) !important;
+    background: rgba(49, 53, 63, 0.55) !important;
+    color: #cbc3d7 !important;
 }
 section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] button[aria-pressed="true"] {
     background: rgba(160, 120, 255, 0.25) !important;
@@ -933,23 +1005,58 @@ section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"]
     color: #d0bcff !important;
     box-shadow: 0 0 12px rgba(160, 120, 255, 0.2);
 }
-section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stToggle"] {
-    padding-top: 0.75rem;
-    border-top: 1px solid rgba(73, 68, 84, 0.35);
-    margin-top: 0.5rem;
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-field-duration-marker) + [data-testid="stElementContainer"] [data-testid="stPills"] > div {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem !important;
 }
-section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-field-duration-marker) + [data-testid="stElementContainer"] [data-testid="stPills"] button {
+    width: 100%;
 }
-section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stSelectbox"],
-section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stDateInput"],
-section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stPills"] {
-    margin-bottom: 1rem;
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-field-budget-marker) + [data-testid="stElementContainer"] [data-testid="stPills"] > div {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem !important;
 }
-section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stCaptionContainer"] {
-    text-align: left;
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-field-budget-marker) + [data-testid="stElementContainer"] [data-testid="stPills"] button {
+    width: 100%;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-field-interests-marker) + [data-testid="stElementContainer"] [data-testid="stPills"] button {
+    flex: 0 1 auto;
+    min-width: 5.5rem;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-form-footer-marker) + [data-testid="stElementContainer"] {
+    margin-top: 1.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(203, 195, 215, 0.15);
+    background: rgba(49, 53, 63, 0.45);
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-form-footer-marker) + [data-testid="stElementContainer"] [data-testid="stToggle"] {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stElementContainer"]:has(.plan-form-footer-marker) + [data-testid="stElementContainer"] [data-testid="stWidgetLabel"] p {
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    color: #dfe2f0 !important;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stButton"] {
+    margin-top: 0.25rem;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stButton"] > button {
+    min-height: 3.25rem;
+    border-radius: 1rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    background: linear-gradient(to right, #8b5cf6, #a855f7) !important;
+    border: none !important;
+    box-shadow: 0 0 30px rgba(160, 120, 255, 0.35) !important;
+}
+section.main .tp-plan-form-marker + [data-testid="stVerticalBlockBorderWrapper"] [data-testid="stButton"] > button:hover {
+    box-shadow: 0 0 40px rgba(160, 120, 255, 0.5) !important;
 }
 """
 
