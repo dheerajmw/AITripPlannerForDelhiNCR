@@ -23,6 +23,7 @@ from trippilot_deploy.theme import (
 from trippilot_deploy.ui import (
     NAV_LABELS,
     NAV_LABEL_TO_PAGE,
+    NAV_PAGES,
     NAV_PAGE_TO_LABEL,
     aurora_background_html,
     empty_itinerary_html,
@@ -64,8 +65,20 @@ def _current_page() -> str:
 
 def _go(page: str) -> None:
     st.session_state["page"] = page
-    st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL.get(page, "Explore")
     st.rerun()
+
+
+def _on_main_nav_change() -> None:
+    label = st.session_state.get("main_nav_segment")
+    page = NAV_LABEL_TO_PAGE.get(label)
+    if page:
+        st.session_state["page"] = page
+
+
+def _sync_nav_segment(active: str) -> None:
+    """Align tab widget with `page` when navigation came from elsewhere (not the segment)."""
+    if NAV_LABEL_TO_PAGE.get(st.session_state.get("main_nav_segment")) != active:
+        st.session_state["main_nav_segment"] = NAV_PAGE_TO_LABEL.get(active, "Explore")
 
 
 def render_app_header(active: str, poi_count: int | None, *, api_ready: bool = True) -> None:
@@ -79,17 +92,26 @@ def render_app_header(active: str, poi_count: int | None, *, api_ready: bool = T
             st.markdown(nav_brand_html(), unsafe_allow_html=True)
 
         with nav_col:
-            default_label = NAV_PAGE_TO_LABEL.get(active, "Explore")
-            choice = st.segmented_control(
-                "Section",
-                list(NAV_LABELS),
-                default=default_label,
-                key="main_nav_segment",
-                label_visibility="collapsed",
-                width="stretch",
-            )
-            if choice and NAV_LABEL_TO_PAGE.get(choice) != active:
-                _go(NAV_LABEL_TO_PAGE[choice])
+            _sync_nav_segment(active)
+            if hasattr(st, "segmented_control"):
+                st.segmented_control(
+                    "Section",
+                    list(NAV_LABELS),
+                    key="main_nav_segment",
+                    on_change=_on_main_nav_change,
+                    label_visibility="collapsed",
+                )
+            else:
+                tab_cols = st.columns(3, gap="small")
+                for col, (page_id, label) in zip(tab_cols, zip(NAV_PAGES, NAV_LABELS)):
+                    with col:
+                        if st.button(
+                            label,
+                            key=f"nav_tab_{page_id}",
+                            use_container_width=True,
+                            type="primary" if active == page_id else "secondary",
+                        ):
+                            _go(page_id)
 
         with actions_col:
             st.markdown(
