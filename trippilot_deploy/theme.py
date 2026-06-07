@@ -430,6 +430,8 @@ section.main [data-testid="stElementContainer"]:has(.tp-aurora-host) {
     font-size: 0.85rem;
     font-weight: 600;
     border: 1px solid rgba(73, 68, 84, 0.3);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .preview-chip-muted {
     background: rgba(49, 53, 63, 0.6);
@@ -444,24 +446,53 @@ section.main [data-testid="stElementContainer"]:has(.tp-aurora-host) {
 .quick-plan-card {
     max-width: 56rem;
     margin: 0 auto;
-    padding: 2rem 2.5rem;
+    padding: 1.5rem 1.25rem;
     box-shadow: 0 25px 50px rgba(160, 120, 255, 0.08);
+}
+@media (min-width: 640px) {
+    .quick-plan-card {
+        padding: 2rem 2.5rem;
+    }
 }
 .quick-plan-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: 1fr;
     gap: 1.5rem;
+    text-align: left;
+}
+@media (min-width: 640px) {
+    .quick-plan-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+}
+.quick-plan-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 0;
+}
+.quick-plan-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
 }
 .field-label {
     display: block;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: #d0bcff;
-    margin-bottom: 0.5rem;
+    margin: 0;
 }
-.chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
 .preview-note {
     text-align: center;
     font-size: 0.75rem;

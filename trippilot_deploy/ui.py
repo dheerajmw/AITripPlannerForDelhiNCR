@@ -94,36 +94,40 @@ def quick_plan_card() -> str:
     <div class="glass-panel quick-plan-card">
       <p class="preview-note">Example trip preferences · customize on the next step</p>
       <div class="quick-plan-grid">
-        <div>
-          <span class="field-label">📍 Destination</span>
-          <span class="preview-chip preview-chip-active">Delhi NCR</span>
-        </div>
-        <div>
-          <span class="field-label">Trip date</span>
-          <span class="preview-chip preview-chip-active">Today · weather-aware</span>
-        </div>
-        <div>
-          <span class="field-label">Duration</span>
-          <div class="chip-row">
-            <span class="preview-chip preview-chip-muted">4h</span>
-            <span class="preview-chip preview-chip-active">8h</span>
-            <span class="preview-chip preview-chip-muted">1 day</span>
+        <div class="quick-plan-col">
+          <div class="quick-plan-field">
+            <span class="field-label">📍 Destination</span>
+            <span class="preview-chip preview-chip-active">Delhi NCR</span>
+          </div>
+          <div class="quick-plan-field">
+            <span class="field-label">Trip date</span>
+            <span class="preview-chip preview-chip-active">Today · weather-aware</span>
+          </div>
+          <div class="quick-plan-field">
+            <span class="field-label">Duration</span>
+            <div class="chip-row">
+              <span class="preview-chip preview-chip-muted">4h</span>
+              <span class="preview-chip preview-chip-active">8h</span>
+              <span class="preview-chip preview-chip-muted">1 day</span>
+            </div>
           </div>
         </div>
-        <div>
-          <span class="field-label">Interests</span>
-          <div class="chip-row">
-            <span class="preview-chip preview-chip-active">Food</span>
-            <span class="preview-chip preview-chip-active">History</span>
-            <span class="preview-chip preview-chip-active">Nature</span>
+        <div class="quick-plan-col">
+          <div class="quick-plan-field">
+            <span class="field-label">Interests</span>
+            <div class="chip-row">
+              <span class="preview-chip preview-chip-active">Food</span>
+              <span class="preview-chip preview-chip-active">History</span>
+              <span class="preview-chip preview-chip-active">Nature</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <span class="field-label">Budget</span>
-          <div class="chip-row">
-            <span class="preview-chip preview-chip-muted">Low</span>
-            <span class="preview-chip preview-chip-active">Medium</span>
-            <span class="preview-chip preview-chip-muted">High</span>
+          <div class="quick-plan-field">
+            <span class="field-label">Budget</span>
+            <div class="chip-row">
+              <span class="preview-chip preview-chip-muted">Low</span>
+              <span class="preview-chip preview-chip-active">Medium</span>
+              <span class="preview-chip preview-chip-muted">High</span>
+            </div>
           </div>
         </div>
       </div>
